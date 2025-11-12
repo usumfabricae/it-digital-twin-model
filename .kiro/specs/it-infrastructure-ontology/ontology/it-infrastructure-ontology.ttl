@@ -1,0 +1,1197 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================================
+# Ontology Metadata
+# ============================================================================
+
+<http://example.org/it-infrastructure-ontology>
+  rdf:type owl:Ontology ;
+  owl:versionInfo "1.0.0" ;
+  dcterms:title "IT Infrastructure and Application Dependency Ontology" ;
+  dcterms:description "A formal ontology for representing IT infrastructure and application dependencies across six layers: Business Processes, Application Layer, Container and Orchestration, Physical Infrastructure, Network Topology, and Security Infrastructure." ;
+  dcterms:creator "IT Infrastructure Ontology Working Group" ;
+  dcterms:created "2024-01-01"^^xsd:date ;
+  dcterms:modified "2024-01-01"^^xsd:date ;
+  dcterms:source "TOGAF, CIM, ITIL, ArchiMate, Kubernetes API, Cloud Provider APIs" ;
+  rdfs:comment "This ontology enables root cause analysis, impact analysis, and change management by providing a formal model of IT infrastructure dependencies." .
+
+# ============================================================================
+# Base Class Hierarchy
+# ============================================================================
+
+:InfrastructureEntity
+  rdf:type owl:Class ;
+  rdfs:label "Infrastructure Entity" ;
+  rdfs:comment "Base class for all infrastructure components in the ontology" ;
+  skos:definition "An infrastructure entity is any component that participates in the IT infrastructure ecosystem" .
+
+# ============================================================================
+# Layer Classes (Disjoint)
+# ============================================================================
+
+:BusinessProcessLayer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :InfrastructureEntity ;
+  rdfs:label "Business Process Layer" ;
+  rdfs:comment "Layer 1: Business processes, capabilities, services, and products" ;
+  skos:definition "The business process layer represents business capabilities, processes, services, and products that drive IT requirements" .
+
+:ApplicationLayer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :InfrastructureEntity ;
+  rdfs:label "Application Layer" ;
+  rdfs:comment "Layer 2: Applications, services, databases, and data objects" ;
+  skos:definition "The application layer represents software applications, services, and data objects that fulfill business requirements" .
+
+:ContainerLayer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :InfrastructureEntity ;
+  rdfs:label "Container and Orchestration Layer" ;
+  rdfs:comment "Layer 3: Containers, pods, orchestration platforms, and container services" ;
+  skos:definition "The container layer represents containerization and orchestration technologies that package and manage applications" .
+
+:PhysicalInfrastructureLayer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :InfrastructureEntity ;
+  rdfs:label "Physical Infrastructure Layer" ;
+  rdfs:comment "Layer 4: Physical and virtual compute, storage, and infrastructure resources" ;
+  skos:definition "The physical infrastructure layer represents physical and virtual compute, storage, and infrastructure resources" .
+
+:NetworkLayer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :InfrastructureEntity ;
+  rdfs:label "Network Topology and Communication Path Layer" ;
+  rdfs:comment "Layer 5: Network devices, interfaces, segments, and communication paths" ;
+  skos:definition "The network layer represents network infrastructure and communication paths between components" .
+
+:SecurityLayer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :InfrastructureEntity ;
+  rdfs:label "Security Infrastructure Layer" ;
+  rdfs:comment "Layer 6: Security controls, policies, certificates, and security zones" ;
+  skos:definition "The security layer represents security controls, policies, and infrastructure that protect IT resources" .
+
+# Disjointness axiom: Each entity belongs to exactly one layer
+[]  rdf:type owl:AllDisjointClasses ;
+    owl:members ( :BusinessProcessLayer :ApplicationLayer :ContainerLayer :PhysicalInfrastructureLayer :NetworkLayer :SecurityLayer ) .
+
+# ============================================================================
+# Layer 1: Business Process Layer Entity Types
+# ============================================================================
+
+:BusinessProcess
+  rdf:type owl:Class ;
+  rdfs:subClassOf :BusinessProcessLayer ;
+  rdfs:label "Business Process" ;
+  rdfs:comment "A sequence of activities that produces a business outcome" ;
+  skos:definition "A business process represents operational workflows, procedures, or activities that the organization executes to achieve business objectives" ;
+  skos:example "Order Fulfillment, Customer Onboarding, Invoice Processing" ;
+  dcterms:source "TOGAF Business Architecture, ArchiMate Business Layer" .
+
+:BusinessCapability
+  rdf:type owl:Class ;
+  rdfs:subClassOf :BusinessProcessLayer ;
+  rdfs:label "Business Capability" ;
+  rdfs:comment "An ability that a business possesses to achieve specific outcomes" ;
+  skos:definition "A business capability represents what the business can do, independent of how it does it" ;
+  skos:example "Customer Relationship Management, Financial Reporting, Supply Chain Management" ;
+  dcterms:source "TOGAF Business Architecture, ArchiMate" .
+
+:BusinessService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :BusinessProcessLayer ;
+  rdfs:label "Business Service" ;
+  rdfs:comment "A service that supports business operations" ;
+  skos:definition "A business service represents an explicitly defined service offering that delivers value to business stakeholders" ;
+  skos:example "Customer Support Service, Payment Processing Service, Reporting Service" ;
+  dcterms:source "TOGAF, ITIL Service Strategy" .
+
+:Product
+  rdf:type owl:Class ;
+  rdfs:subClassOf :BusinessProcessLayer ;
+  rdfs:label "Product" ;
+  rdfs:comment "A business product or offering delivered to customers" ;
+  skos:definition "A product represents tangible or intangible offerings that the business sells or provides to external customers" ;
+  skos:example "Mobile Banking App, Insurance Policy, Cloud Storage Subscription" ;
+  dcterms:source "TOGAF, ArchiMate" .
+
+# ============================================================================
+# Layer 2: Application Layer Entity Types
+# ============================================================================
+
+:Application
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Application" ;
+  rdfs:comment "A software system that provides business functionality" ;
+  skos:definition "An application is a software system that delivers business capabilities through one or more application components" ;
+  dcterms:source "TOGAF Application Architecture, CIM ApplicationSystem" .
+
+:ApplicationComponent
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Application Component" ;
+  rdfs:comment "A modular part of an application" ;
+  skos:definition "An application component is a self-contained unit of functionality within an application" ;
+  skos:example "Servlet, EJB, Web Service, REST API" ;
+  dcterms:source "TOGAF Application Architecture" .
+
+:ApplicationServer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Application Server" ;
+  rdfs:comment "A runtime environment for hosting applications" ;
+  skos:definition "An application server provides runtime services and infrastructure for executing applications" ;
+  skos:example "WebSphere, WebLogic, JBoss, Tomcat, IIS" ;
+  dcterms:source "CIM ApplicationSystem" .
+
+:Service
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Service" ;
+  rdfs:comment "A service in SOA or microservices architecture" ;
+  skos:definition "A service is a self-contained unit of functionality that can be accessed remotely and independently deployed" ;
+  dcterms:source "TOGAF, SOA Reference Architecture" .
+
+:API
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "API" ;
+  rdfs:comment "An application programming interface" ;
+  skos:definition "An API defines the contract for how software components communicate and exchange data" ;
+  dcterms:source "TOGAF Application Architecture" .
+
+:Database
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Database" ;
+  rdfs:comment "A logical database system" ;
+  skos:definition "A database is a system for storing, organizing, and retrieving data with query capabilities" ;
+  dcterms:source "CIM DatabaseSystem" .
+
+:DatabaseInstance
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Database Instance" ;
+  rdfs:comment "A specific database instance or schema" ;
+  skos:definition "A database instance is a specific running instance or logical schema within a database system" ;
+  dcterms:source "CIM DatabaseSystem" .
+
+:DataObject
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Data Object" ;
+  rdfs:comment "A logical data entity or schema element" ;
+  skos:definition "A data object represents a logical data structure such as a table, collection, document, or view" ;
+  dcterms:source "TOGAF Data Architecture" .
+
+:FileStorageService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "File Storage Service" ;
+  rdfs:comment "A logical file storage service" ;
+  skos:definition "A file storage service provides hierarchical file system access with directories and files" ;
+  skos:example "NFS share, CIFS share, mounted filesystem" ;
+  dcterms:source "CIM Storage Model" .
+
+:ObjectStorageService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Object Storage Service" ;
+  rdfs:comment "A logical object storage service" ;
+  skos:definition "An object storage service provides scalable storage with key-value access patterns" ;
+  skos:example "S3 bucket, Azure Blob container, GCS bucket" ;
+  dcterms:source "Cloud Provider APIs" .
+
+:CacheService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Cache Service" ;
+  rdfs:comment "A caching layer for high-speed data access" ;
+  skos:definition "A cache service provides in-memory data storage for fast access to frequently used data" ;
+  skos:example "Redis, Memcached, Hazelcast" ;
+  dcterms:source "CIM" .
+
+:MessageQueue
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:label "Message Queue" ;
+  rdfs:comment "A message-oriented middleware component" ;
+  skos:definition "A message queue enables asynchronous communication between applications through message passing" ;
+  skos:example "RabbitMQ, Kafka, IBM MQ, AWS SQS" ;
+  dcterms:source "TOGAF, Enterprise Integration Patterns" .
+
+# ============================================================================
+# Layer 3: Container and Orchestration Layer Entity Types
+# ============================================================================
+
+:Container
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Container" ;
+  rdfs:comment "A containerized application instance" ;
+  skos:definition "A container is a lightweight, standalone executable package that includes application code and dependencies" ;
+  dcterms:source "Kubernetes API, CIM Container" .
+
+:Pod
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Pod" ;
+  rdfs:comment "A Kubernetes pod" ;
+  skos:definition "A pod is the smallest deployable unit in Kubernetes, containing one or more containers" ;
+  dcterms:source "Kubernetes API" .
+
+:ContainerImage
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Container Image" ;
+  rdfs:comment "A container image template" ;
+  skos:definition "A container image is an immutable template containing application code, runtime, and dependencies" ;
+  dcterms:source "Docker, Kubernetes API" .
+
+:Cluster
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Cluster" ;
+  rdfs:comment "An orchestration cluster" ;
+  skos:definition "A cluster is a set of nodes that run containerized applications managed by an orchestration platform" ;
+  dcterms:source "Kubernetes API, OpenShift API" .
+
+:Namespace
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Namespace" ;
+  rdfs:comment "A logical isolation boundary within a cluster" ;
+  skos:definition "A namespace provides resource isolation, access control, and quota management within a cluster" ;
+  dcterms:source "Kubernetes API" .
+
+:Deployment
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Deployment" ;
+  rdfs:comment "A deployment configuration" ;
+  skos:definition "A deployment provides declarative updates for pods and manages their lifecycle" ;
+  dcterms:source "Kubernetes API" .
+
+:KubernetesService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Kubernetes Service" ;
+  rdfs:comment "A Kubernetes/OpenShift service" ;
+  skos:definition "A service provides stable networking and load balancing for a set of pods" ;
+  dcterms:source "Kubernetes API, OpenShift API" .
+
+:Route
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Route" ;
+  rdfs:comment "An OpenShift route" ;
+  skos:definition "A route exposes a service at an external hostname for external access" ;
+  dcterms:source "OpenShift API" .
+
+:IngressController
+  rdf:type owl:Class ;
+  rdfs:subClassOf :ContainerLayer ;
+  rdfs:label "Ingress Controller" ;
+  rdfs:comment "A controller for managing external access" ;
+  skos:definition "An ingress controller manages external HTTP/HTTPS access to services in a cluster" ;
+  dcterms:source "Kubernetes API" .
+
+# ============================================================================
+# Layer 4: Physical Infrastructure Layer Entity Types
+# ============================================================================
+
+:PhysicalServer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Physical Server" ;
+  rdfs:comment "A physical server machine" ;
+  skos:definition "A physical server is a bare-metal computer system that provides compute resources" ;
+  dcterms:source "CIM ComputerSystem" .
+
+:VirtualMachine
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Virtual Machine" ;
+  rdfs:comment "A virtualized server instance" ;
+  skos:definition "A virtual machine is a software emulation of a physical computer system" ;
+  dcterms:source "CIM VirtualComputerSystem" .
+
+:Hypervisor
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Hypervisor" ;
+  rdfs:comment "A virtualization platform" ;
+  skos:definition "A hypervisor is software that creates and manages virtual machines on physical hardware" ;
+  dcterms:source "CIM Virtualization" .
+
+:CloudInstance
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Cloud Instance" ;
+  rdfs:comment "A cloud provider compute instance" ;
+  skos:definition "A cloud instance is a virtual server provided by a cloud service provider" ;
+  skos:example "AWS EC2, Azure VM, GCP Compute Engine" ;
+  dcterms:source "AWS API, Azure API, GCP API" .
+
+:CloudService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Cloud Service" ;
+  rdfs:comment "A managed cloud service" ;
+  skos:definition "A cloud service is a fully managed platform or software service provided by a cloud provider" ;
+  skos:example "AWS RDS, AWS Lambda, Azure SQL, Cloud Functions" ;
+  dcterms:source "AWS API, Azure API, GCP API" .
+
+:StorageArray
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Storage Array" ;
+  rdfs:comment "A physical storage system" ;
+  skos:definition "A storage array is a hardware device that provides centralized storage capacity" ;
+  skos:example "NetApp SAN, EMC VNX, HPE 3PAR" ;
+  dcterms:source "CIM StorageExtent" .
+
+:StorageVolume
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Storage Volume" ;
+  rdfs:comment "A logical storage volume or LUN" ;
+  skos:definition "A storage volume is a logical unit of storage allocated from a storage array or pool" ;
+  dcterms:source "CIM StorageExtent" .
+
+:FileSystem
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "File System" ;
+  rdfs:comment "A mounted file system" ;
+  skos:definition "A file system provides hierarchical file storage with directories and files" ;
+  dcterms:source "CIM FileSystem" .
+
+:StoragePool
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Storage Pool" ;
+  rdfs:comment "A logical grouping of storage resources" ;
+  skos:definition "A storage pool aggregates physical storage into a logical unit for allocation" ;
+  dcterms:source "CIM StoragePool" .
+
+:CloudStorageService
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Cloud Storage Service" ;
+  rdfs:comment "A managed cloud storage service" ;
+  skos:definition "A cloud storage service provides managed storage capacity from a cloud provider" ;
+  skos:example "AWS EBS, AWS RDS, Azure Managed Disk" ;
+  dcterms:source "AWS API, Azure API, GCP API" .
+
+:ObjectStorageBucket
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Object Storage Bucket" ;
+  rdfs:comment "A physical object storage bucket" ;
+  skos:definition "An object storage bucket is the physical storage container for object storage" ;
+  skos:example "S3 bucket, Azure Blob container, GCS bucket" ;
+  dcterms:source "AWS S3 API, Azure Blob API, GCP Storage API" .
+
+# ============================================================================
+# Layer 5: Network Layer Entity Types
+# ============================================================================
+
+:NetworkDevice
+  rdf:type owl:Class ;
+  rdfs:subClassOf :NetworkLayer ;
+  rdfs:label "Network Device" ;
+  rdfs:comment "A network device such as router, switch, or gateway" ;
+  skos:definition "A network device is a hardware or virtual appliance that routes, switches, or processes network traffic" ;
+  skos:example "Router, Switch, Firewall, Gateway" ;
+  dcterms:source "CIM NetworkDevice" .
+
+:LoadBalancer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :NetworkLayer ;
+  rdfs:label "Load Balancer" ;
+  rdfs:comment "A load balancing device or service" ;
+  skos:definition "A load balancer distributes network traffic across multiple backend targets for high availability and performance" ;
+  dcterms:source "CIM, Cloud Provider APIs" .
+
+:NetworkInterface
+  rdf:type owl:Class ;
+  rdfs:subClassOf :NetworkLayer ;
+  rdfs:label "Network Interface" ;
+  rdfs:comment "A network interface card or virtual NIC" ;
+  skos:definition "A network interface provides network connectivity for a compute resource" ;
+  dcterms:source "CIM NetworkPort" .
+
+:NetworkSegment
+  rdf:type owl:Class ;
+  rdfs:subClassOf :NetworkLayer ;
+  rdfs:label "Network Segment" ;
+  rdfs:comment "A network subnet or VLAN" ;
+  skos:definition "A network segment is a logical subdivision of a network" ;
+  dcterms:source "CIM IPSubnet" .
+
+:CommunicationPath
+  rdf:type owl:Class ;
+  rdfs:subClassOf :NetworkLayer ;
+  rdfs:label "Communication Path" ;
+  rdfs:comment "A logical communication path between components" ;
+  skos:definition "A communication path represents the network route and protocol used for communication between two components" ;
+  dcterms:source "CIM NetworkPipe" .
+
+:NetworkRoute
+  rdf:type owl:Class ;
+  rdfs:subClassOf :NetworkLayer ;
+  rdfs:label "Network Route" ;
+  rdfs:comment "A routing rule or path configuration" ;
+  skos:definition "A network route defines how traffic is directed from source to destination" ;
+  dcterms:source "IETF Routing Protocols" .
+
+# ============================================================================
+# Layer 6: Security Layer Entity Types
+# ============================================================================
+
+:Firewall
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Firewall" ;
+  rdfs:comment "A network firewall device or service" ;
+  skos:definition "A firewall is a security device that monitors and controls network traffic based on security rules" ;
+  dcterms:source "CIM SecurityService, NIST Cybersecurity Framework" .
+
+:WAF
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Web Application Firewall" ;
+  rdfs:comment "A web application firewall" ;
+  skos:definition "A WAF protects web applications by filtering and monitoring HTTP/HTTPS traffic" ;
+  dcterms:source "OWASP, NIST" .
+
+:Certificate
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Certificate" ;
+  rdfs:comment "A digital certificate" ;
+  skos:definition "A certificate is a digital document that binds a public key to an identity" ;
+  dcterms:source "X.509, PKI Standards" .
+
+:CertificateAuthority
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Certificate Authority" ;
+  rdfs:comment "A certificate authority" ;
+  skos:definition "A certificate authority is a trusted entity that issues digital certificates" ;
+  dcterms:source "X.509, PKI Standards" .
+
+:SecurityPolicy
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Security Policy" ;
+  rdfs:comment "A security policy or rule set" ;
+  skos:definition "A security policy defines rules and controls for protecting resources" ;
+  dcterms:source "NIST SP 800-53, ISO 27001" .
+
+:IdentityProvider
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Identity Provider" ;
+  rdfs:comment "An identity provider for authentication and authorization" ;
+  skos:definition "An identity provider manages user identities and provides authentication and authorization services" ;
+  skos:example "Okta, Azure AD, Auth0, LDAP" ;
+  dcterms:source "SAML, OAuth2, OpenID Connect" .
+
+:SecurityZone
+  rdf:type owl:Class ;
+  rdfs:subClassOf :SecurityLayer ;
+  rdfs:label "Security Zone" ;
+  rdfs:comment "A security zone or trust boundary" ;
+  skos:definition "A security zone is a logical grouping of resources with similar security requirements and trust levels" ;
+  skos:example "DMZ, Internal Network, Restricted Zone" ;
+  dcterms:source "NIST Cybersecurity Framework" .
+
+# ============================================================================
+# Object Properties (Relationships)
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer Relationships
+# ----------------------------------------------------------------------------
+
+:part_of
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "part of" ;
+  rdfs:comment "Indicates hierarchical containment relationship" ;
+  rdfs:domain [ owl:unionOf ( :BusinessProcess :BusinessCapability ) ] ;
+  rdfs:range :BusinessCapability ;
+  owl:inverseOf :contains .
+
+:contains
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "contains" ;
+  rdfs:comment "Contains child entities" ;
+  owl:inverseOf :part_of .
+
+:enables
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "enables" ;
+  rdfs:comment "Capability enables the execution of a process" ;
+  rdfs:domain :BusinessCapability ;
+  rdfs:range :BusinessProcess ;
+  owl:inverseOf :enabled_by .
+
+:enabled_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "enabled by" ;
+  rdfs:comment "Process is enabled by capability" ;
+  owl:inverseOf :enables .
+
+:supports
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "supports" ;
+  rdfs:comment "Service supports process or product delivery" ;
+  rdfs:domain :BusinessService ;
+  rdfs:range [ owl:unionOf ( :BusinessProcess :Product ) ] ;
+  owl:inverseOf :supported_by .
+
+:supported_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "supported by" ;
+  rdfs:comment "Entity is supported by service" ;
+  owl:inverseOf :supports .
+
+:delivers
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "delivers" ;
+  rdfs:comment "Process delivers product to customers" ;
+  rdfs:domain :BusinessProcess ;
+  rdfs:range :Product ;
+  owl:inverseOf :delivered_by .
+
+:delivered_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "delivered by" ;
+  rdfs:comment "Product is delivered by process" ;
+  owl:inverseOf :delivers .
+
+# Cross-layer: Business to Application
+:realized_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "realized by" ;
+  rdfs:comment "Business element is implemented by application" ;
+  rdfs:domain [ owl:unionOf ( :BusinessProcess :BusinessCapability :BusinessService ) ] ;
+  rdfs:range :Application ;
+  owl:inverseOf :realizes .
+
+:realizes
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "realizes" ;
+  rdfs:comment "Application realizes business element" ;
+  owl:inverseOf :realized_by .
+
+:requires
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "requires" ;
+  rdfs:comment "Product requires application to function" ;
+  rdfs:domain :Product ;
+  rdfs:range :Application ;
+  owl:inverseOf :required_by .
+
+:required_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "required by" ;
+  rdfs:comment "Application is required by product" ;
+  owl:inverseOf :requires .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer Relationships
+# ----------------------------------------------------------------------------
+
+:deployed_on
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "deployed on" ;
+  rdfs:comment "Application component is deployed on an application server" ;
+  rdfs:domain :ApplicationComponent ;
+  rdfs:range :ApplicationServer ;
+  owl:inverseOf :hosts_component .
+
+:hosts_component
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "hosts component" ;
+  rdfs:comment "Application server hosts component" ;
+  owl:inverseOf :deployed_on .
+
+:uses
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "uses" ;
+  rdfs:comment "Entity uses another entity or service" ;
+  rdfs:domain [ owl:unionOf ( :Application :Service :Container ) ] ;
+  rdfs:range [ owl:unionOf ( :Database :CacheService :FileStorageService :ObjectStorageService :MessageQueue :API :Service :StorageVolume :PersistentVolume ) ] .
+
+:calls
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "calls" ;
+  rdfs:comment "Service calls another service" ;
+  rdfs:domain :Service ;
+  rdfs:range [ owl:unionOf ( :Service :API ) ] ;
+  owl:inverseOf :called_by .
+
+:called_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "called by" ;
+  rdfs:comment "Service is called by another service" ;
+  owl:inverseOf :calls .
+
+:exposes
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "exposes" ;
+  rdfs:comment "Application exposes an API" ;
+  rdfs:domain :Application ;
+  rdfs:range :API ;
+  owl:inverseOf :exposed_by .
+
+:exposed_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "exposed by" ;
+  rdfs:comment "API is exposed by application" ;
+  owl:inverseOf :exposes .
+
+:stored_on
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "stored on" ;
+  rdfs:comment "Data is stored on storage infrastructure" ;
+  rdfs:domain [ owl:unionOf ( :Database :DatabaseInstance :DataObject ) ] ;
+  rdfs:range [ owl:unionOf ( :StorageVolume :CloudStorageService :FileSystem ) ] ;
+  owl:inverseOf :stores .
+
+:stores
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "stores" ;
+  rdfs:comment "Storage infrastructure stores data" ;
+  owl:inverseOf :stored_on .
+
+# Cross-layer: Application to Container
+:packaged_in
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "packaged in" ;
+  rdfs:comment "Application is packaged in a container" ;
+  rdfs:domain :Application ;
+  rdfs:range :Container ;
+  owl:inverseOf :packages .
+
+:packages
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "packages" ;
+  rdfs:comment "Container packages an application" ;
+  rdfs:domain :Container ;
+  rdfs:range :Application ;
+  owl:inverseOf :packaged_in .
+
+:deployed_as
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "deployed as" ;
+  rdfs:comment "Application is deployed as pods or containers" ;
+  rdfs:domain :Application ;
+  rdfs:range [ owl:unionOf ( :Pod :Container ) ] ;
+  owl:inverseOf :deploys .
+
+:deploys
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "deploys" ;
+  rdfs:comment "Pod/Container deploys application" ;
+  owl:inverseOf :deployed_as .
+
+# Cross-layer: Application to Physical Infrastructure
+:hosted_on
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "hosted on" ;
+  rdfs:comment "Entity is hosted on infrastructure" ;
+  rdfs:domain [ owl:unionOf ( :Application :Database :ApplicationServer ) ] ;
+  rdfs:range [ owl:unionOf ( :VirtualMachine :PhysicalServer :CloudInstance :CloudService ) ] ;
+  owl:inverseOf :hosts .
+
+:hosts
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "hosts" ;
+  rdfs:comment "Infrastructure hosts entity" ;
+  owl:inverseOf :hosted_on .
+
+# ----------------------------------------------------------------------------
+# Layer 3: Container Layer Relationships
+# ----------------------------------------------------------------------------
+
+:runs_in
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "runs in" ;
+  rdfs:comment "Pod runs in a namespace" ;
+  rdfs:domain :Pod ;
+  rdfs:range :Namespace ;
+  owl:inverseOf :contains_pod .
+
+:contains_pod
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "contains pod" ;
+  rdfs:comment "Namespace contains pod" ;
+  owl:inverseOf :runs_in .
+
+:uses_image
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "uses image" ;
+  rdfs:comment "Container uses a container image" ;
+  rdfs:domain :Container ;
+  rdfs:range :ContainerImage ;
+  rdf:type owl:FunctionalProperty ;
+  owl:inverseOf :used_by .
+
+:used_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "used by" ;
+  rdfs:comment "Image is used by container" ;
+  owl:inverseOf :uses_image .
+
+:exposes_pods
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "exposes pods" ;
+  rdfs:comment "Service exposes pods for network access" ;
+  rdfs:domain :KubernetesService ;
+  rdfs:range :Pod ;
+  owl:inverseOf :exposed_by_service .
+
+:exposed_by_service
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "exposed by service" ;
+  rdfs:comment "Pod is exposed by service" ;
+  owl:inverseOf :exposes_pods .
+
+:routes_to
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "routes to" ;
+  rdfs:comment "Route routes traffic to a service" ;
+  rdfs:domain [ owl:unionOf ( :Route :IngressController ) ] ;
+  rdfs:range :KubernetesService ;
+  owl:inverseOf :receives_traffic_from .
+
+:receives_traffic_from
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "receives traffic from" ;
+  rdfs:comment "Service receives traffic from route" ;
+  owl:inverseOf :routes_to .
+
+:managed_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "managed by" ;
+  rdfs:comment "Resources are managed by a cluster" ;
+  rdfs:domain [ owl:unionOf ( :Pod :Deployment :KubernetesService :Namespace ) ] ;
+  rdfs:range :Cluster ;
+  owl:inverseOf :manages .
+
+:manages
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "manages" ;
+  rdfs:comment "Cluster manages resources" ;
+  owl:inverseOf :managed_by .
+
+# Cross-layer: Container to Physical Infrastructure
+:runs_on
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "runs on" ;
+  rdfs:comment "Entity runs on infrastructure" ;
+  rdfs:domain [ owl:unionOf ( :Pod :Container :VirtualMachine :ApplicationServer ) ] ;
+  rdfs:range [ owl:unionOf ( :VirtualMachine :PhysicalServer :CloudInstance :Hypervisor ) ] ;
+  owl:inverseOf :hosts .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer Relationships
+# ----------------------------------------------------------------------------
+
+:allocated_from
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "allocated from" ;
+  rdfs:comment "Volume is allocated from storage array or pool" ;
+  rdfs:domain :StorageVolume ;
+  rdfs:range [ owl:unionOf ( :StorageArray :StoragePool ) ] ;
+  owl:inverseOf :allocates .
+
+:allocates
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "allocates" ;
+  rdfs:comment "Storage array/pool allocates volume" ;
+  owl:inverseOf :allocated_from .
+
+:mounted_from
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "mounted from" ;
+  rdfs:comment "Filesystem is mounted from storage volume" ;
+  rdfs:domain :FileSystem ;
+  rdfs:range :StorageVolume ;
+  owl:inverseOf :provides_mount .
+
+:provides_mount
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "provides mount" ;
+  rdfs:comment "Storage volume provides filesystem mount" ;
+  owl:inverseOf :mounted_from .
+
+:stored_in
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "stored in" ;
+  rdfs:comment "Data is stored in object storage bucket" ;
+  rdfs:domain :ObjectStorageService ;
+  rdfs:range :ObjectStorageBucket ;
+  owl:inverseOf :stores_data .
+
+:stores_data
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "stores data" ;
+  rdfs:comment "Bucket stores data" ;
+  owl:inverseOf :stored_in .
+
+:provisioned_from
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "provisioned from" ;
+  rdfs:comment "Cloud storage is provisioned from cloud service" ;
+  rdfs:domain :CloudStorageService ;
+  rdfs:range :CloudService ;
+  owl:inverseOf :provisions .
+
+:provisions
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "provisions" ;
+  rdfs:comment "Cloud service provisions storage" ;
+  owl:inverseOf :provisioned_from .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer Relationships
+# ----------------------------------------------------------------------------
+
+:connected_to
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:SymmetricProperty ;
+  rdfs:label "connected to" ;
+  rdfs:comment "Physical or logical connection between network devices" ;
+  rdfs:domain :NetworkDevice ;
+  rdfs:range :NetworkDevice .
+
+:routes_through
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "routes through" ;
+  rdfs:comment "Communication path routes through network device" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range :NetworkDevice ;
+  owl:inverseOf :routes .
+
+:routes
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "routes" ;
+  rdfs:comment "Network device routes communication path" ;
+  owl:inverseOf :routes_through .
+
+:attached_to
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "attached to" ;
+  rdfs:comment "Network interface attached to compute resource" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container ) ] ;
+  owl:inverseOf :has_interface .
+
+:has_interface
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "has interface" ;
+  rdfs:comment "Compute resource has network interface" ;
+  owl:inverseOf :attached_to .
+
+:part_of_segment
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "part of segment" ;
+  rdfs:comment "Network interface or device is part of network segment" ;
+  rdfs:domain [ owl:unionOf ( :NetworkInterface :NetworkDevice ) ] ;
+  rdfs:range :NetworkSegment ;
+  owl:inverseOf :contains_network_member .
+
+:contains_network_member
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "contains network member" ;
+  rdfs:comment "Network segment contains interface or device" ;
+  owl:inverseOf :part_of_segment .
+
+:applies_to
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "applies to" ;
+  rdfs:comment "Network route applies to network segment" ;
+  rdfs:domain :NetworkRoute ;
+  rdfs:range :NetworkSegment ;
+  owl:inverseOf :has_route .
+
+:has_route
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "has route" ;
+  rdfs:comment "Network segment has route" ;
+  owl:inverseOf :applies_to .
+
+:balances_to
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "balances to" ;
+  rdfs:comment "Load balancer distributes traffic to backend targets" ;
+  rdfs:domain :LoadBalancer ;
+  rdfs:range [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container :Service ) ] ;
+  owl:inverseOf :balanced_by .
+
+:balanced_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "balanced by" ;
+  rdfs:comment "Target is balanced by load balancer" ;
+  owl:inverseOf :balances_to .
+
+# Cross-layer: Application to Network
+:communicates_via
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "communicates via" ;
+  rdfs:comment "Application communicates via communication path" ;
+  rdfs:domain [ owl:unionOf ( :Application :Service :Database :MessageQueue ) ] ;
+  rdfs:range :CommunicationPath ;
+  owl:inverseOf :used_by_application .
+
+:used_by_application
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "used by application" ;
+  rdfs:comment "Communication path is used by application" ;
+  owl:inverseOf :communicates_via .
+
+:exposes_via
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "exposes via" ;
+  rdfs:comment "Application is exposed via load balancer" ;
+  rdfs:domain [ owl:unionOf ( :Application :Service :Container ) ] ;
+  rdfs:range :LoadBalancer ;
+  owl:inverseOf :exposes_application .
+
+:exposes_application
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "exposes application" ;
+  rdfs:comment "Load balancer exposes application" ;
+  owl:inverseOf :exposes_via .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer Relationships
+# ----------------------------------------------------------------------------
+
+:issued_by
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "issued by" ;
+  rdfs:comment "Certificate issued by certificate authority" ;
+  rdfs:domain :Certificate ;
+  rdfs:range :CertificateAuthority ;
+  owl:inverseOf :issues .
+
+:issues
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "issues" ;
+  rdfs:comment "Certificate authority issues certificate" ;
+  owl:inverseOf :issued_by .
+
+:enforces
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "enforces" ;
+  rdfs:comment "Security component enforces security policy" ;
+  rdfs:domain [ owl:unionOf ( :Firewall :WAF :IdentityProvider ) ] ;
+  rdfs:range :SecurityPolicy ;
+  owl:inverseOf :enforced_by .
+
+:enforced_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "enforced by" ;
+  rdfs:comment "Security policy is enforced by security component" ;
+  owl:inverseOf :enforces .
+
+:trusts
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "trusts" ;
+  rdfs:comment "Certificate authority trusts another CA" ;
+  rdfs:domain :CertificateAuthority ;
+  rdfs:range :CertificateAuthority ;
+  owl:inverseOf :trusted_by .
+
+:trusted_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "trusted by" ;
+  rdfs:comment "Certificate authority is trusted by another CA" ;
+  owl:inverseOf :trusts .
+
+# Cross-layer: Security to All Layers
+:protected_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "protected by" ;
+  rdfs:comment "Entity protected by security component" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range [ owl:unionOf ( :Firewall :WAF :SecurityZone ) ] ;
+  owl:inverseOf :protects .
+
+:protects
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "protects" ;
+  rdfs:comment "Security component protects entity" ;
+  owl:inverseOf :protected_by .
+
+:secured_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "secured by" ;
+  rdfs:comment "Entity is secured by security policy" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range :SecurityPolicy ;
+  owl:inverseOf :secures .
+
+:secures
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "secures" ;
+  rdfs:comment "Security policy secures entity" ;
+  owl:inverseOf :secured_by .
+
+:belongs_to_zone
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "belongs to zone" ;
+  rdfs:comment "Entity belongs to security zone" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range :SecurityZone ;
+  owl:inverseOf :contains_entity .
+
+:contains_entity
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "contains entity" ;
+  rdfs:comment "Security zone contains entity" ;
+  owl:inverseOf :belongs_to_zone .
+
+:authenticated_by
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "authenticated by" ;
+  rdfs:comment "Entity is authenticated by identity provider" ;
+  rdfs:domain [ owl:unionOf ( :Application :Service :API ) ] ;
+  rdfs:range :IdentityProvider ;
+  owl:inverseOf :authenticates .
+
+:authenticates
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "authenticates" ;
+  rdfs:comment "Identity provider authenticates entity" ;
+  owl:inverseOf :authenticated_by .
+
+:uses_certificate
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "uses certificate" ;
+  rdfs:comment "Entity uses certificate for encryption/authentication" ;
+  rdfs:domain [ owl:unionOf ( :Application :Service :API :LoadBalancer :Route ) ] ;
+  rdfs:range :Certificate ;
+  owl:inverseOf :used_by_entity .
+
+:used_by_entity
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "used by entity" ;
+  rdfs:comment "Certificate is used by entity" ;
+  owl:inverseOf :uses_certificate .
+
+# ----------------------------------------------------------------------------
+# Property Chains for Cross-Layer Traversal
+# ----------------------------------------------------------------------------
+
+# Property chain: Application to Physical Infrastructure through Container
+[]  rdf:type owl:Axiom ;
+    owl:annotatedSource :Application ;
+    owl:annotatedProperty :runs_on ;
+    owl:annotatedTarget :PhysicalServer ;
+    rdfs:comment "Application runs on physical infrastructure through container deployment" ;
+    owl:propertyChainAxiom ( :deployed_as :runs_on ) .
+
+# Property chain: Business Process to Application to Infrastructure
+[]  rdf:type owl:Axiom ;
+    owl:annotatedSource :BusinessProcess ;
+    owl:annotatedProperty :depends_on_infrastructure ;
+    owl:annotatedTarget :PhysicalInfrastructureLayer ;
+    rdfs:comment "Business process depends on infrastructure through application realization" ;
+    owl:propertyChainAxiom ( :realized_by :hosted_on ) .
+
+# Property chain: Application to Storage through Database
+[]  rdf:type owl:Axiom ;
+    owl:annotatedSource :Application ;
+    owl:annotatedProperty :uses_storage ;
+    owl:annotatedTarget :StorageVolume ;
+    rdfs:comment "Application uses storage through database" ;
+    owl:propertyChainAxiom ( :uses :stored_on ) .
+
+# ============================================================================
+# Data Properties (Attributes)
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Common Data Properties (applicable to multiple entity types)
+# ----------------------------------------------------------------------------
+
+:name
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "name" ;
+  rdfs:comment "Entity name or identifier" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF, CIM" .
+
+:description
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "description" ;
+  rdfs:comment "Entity description" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF" .
+
+:owner
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "owner" ;
+  rdfs:comment "Entity owner or responsible party" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF, ITIL" .
+
+:criticality
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "criticality" ;
+  rdfs:comment "Business or operational criticality" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF, ITIL" .
+
+:lifecycle_status
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "lifecycle status" ;
+  rdfs:comment "Current lifecycle state" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF, CIM, ITIL" .
+
+:version
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "version" ;
+  rdfs:comment "Version identifier" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF, CIM" .
+
+:location
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "location" ;
+  rdfs:comment "Physical or logical location" ;
+  rdfs:domain :InfrastructureEntity ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
