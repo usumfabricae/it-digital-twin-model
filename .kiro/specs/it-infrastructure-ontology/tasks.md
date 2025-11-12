@@ -406,7 +406,7 @@ This implementation plan outlines the tasks for developing a comprehensive IT in
   - Provide examples of hybrid on-premises and cloud deployments
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 10.1, 10.2, 10.3, 10.4_
 
-- [-] 10. Develop Query Patterns and Examples
+- [x] 10. Develop Query Patterns and Examples
 
 
 
@@ -417,7 +417,8 @@ This implementation plan outlines the tasks for developing a comprehensive IT in
   - _Requirements: 3.1, 3.2, 3.3, 9.1, 9.2, 9.3, 9.4, 15.1, 15.2, 15.3, 15.4_
 
 
-- [ ] 10.1 Create root cause analysis queries
+- [x] 10.1 Create root cause analysis queries
+
   - Develop SPARQL queries for finding failed dependencies
   - Develop Cypher queries for finding failed dependencies
   - Create queries for upstream traversal to identify root causes
@@ -425,7 +426,8 @@ This implementation plan outlines the tasks for developing a comprehensive IT in
   - Document query patterns and usage
   - _Requirements: 3.1, 9.1, 9.2, 15.1, 15.2, 15.3, 15.4_
 
-- [ ] 10.2 Create impact analysis queries
+
+- [x] 10.2 Create impact analysis queries
   - Develop SPARQL queries for finding affected components
   - Develop Cypher queries for finding affected components
   - Create queries for downstream traversal to identify impacts
@@ -433,7 +435,9 @@ This implementation plan outlines the tasks for developing a comprehensive IT in
   - Document query patterns and usage
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 15.1, 15.2, 15.3, 15.4_
 
-- [ ] 10.3 Create decomposition and traversal queries
+
+- [x] 10.3 Create decomposition and traversal queries
+
   - Develop queries for full stack decomposition (Business Process to Physical Infrastructure)
   - Create queries for storage dependency analysis
   - Create queries for network path analysis
