@@ -1,0 +1,413 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix inst: <http://example.org/instances#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# Sample Instance Data: Cloud Infrastructure (AWS)
+# ============================================================================
+# Scenario: Modern web application with managed database service (RDS)
+# and object storage (S3) on AWS
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer
+# ----------------------------------------------------------------------------
+
+inst:CustomerOnboardingProcess
+  rdf:type :BusinessProcess ;
+  :name "Customer Onboarding Process" ;
+  :description "Process for onboarding new customers" ;
+  :owner "Customer Success Manager" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "on-demand" ;
+  :sla_target "95% completion within 24 hours" .
+
+inst:CustomerManagementCapability
+  rdf:type :BusinessCapability ;
+  :name "Customer Management" ;
+  :description "Capability to manage customer relationships" ;
+  :owner "VP of Customer Success" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :capability_level 2 ;
+  :maturity_level "defined" .
+
+inst:CustomerPortalProduct
+  rdf:type :Product ;
+  :name "Customer Portal" ;
+  :description "Self-service customer portal" ;
+  :owner "Product Manager" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :product_type "saas" ;
+  :launch_date "2023-06-01"^^xsd:date .
+
+# Relationships
+inst:CustomerOnboardingProcess :part_of inst:CustomerManagementCapability .
+inst:CustomerOnboardingProcess :delivers inst:CustomerPortalProduct .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer
+# ----------------------------------------------------------------------------
+
+inst:CustomerPortalApp
+  rdf:type :Application ;
+  :name "Customer Portal Application" ;
+  :description "Web-based customer portal" ;
+  :version "2.5.0" ;
+  :application_type "web_app" ;
+  :deployment_model "cloud_managed" ;
+  :runtime_environment "Node.js 18" ;
+  :technology_stack "React, Node.js, Express" ;
+  :data_classification "internal" ;
+  :lifecycle_status "production" .
+
+inst:CustomerAPIService
+  rdf:type :Service ;
+  :name "Customer API Service" ;
+  :description "RESTful API for customer operations" ;
+  :version "2.5.0" ;
+  :application_type "microservice" ;
+  :deployment_model "cloud_managed" ;
+  :service_type "rest_api" ;
+  :endpoint_url "https://api.example.com/customers"^^xsd:anyURI ;
+  :protocol "https" ;
+  :lifecycle_status "production" .
+
+inst:CustomerAPI
+  rdf:type :API ;
+  :name "Customer Management API" ;
+  :description "API for customer CRUD operations" ;
+  :version "v2" ;
+  :api_type "REST" ;
+  :endpoint_url "https://api.example.com/v2/customers"^^xsd:anyURI ;
+  :lifecycle_status "active" .
+
+inst:CustomerDatabase
+  rdf:type :Database ;
+  :name "Customer Database" ;
+  :description "PostgreSQL database for customer data" ;
+  :version "14.7" ;
+  :database_type "relational" ;
+  :database_product "PostgreSQL" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "active" .
+
+inst:CustomerDBInstance
+  rdf:type :DatabaseInstance ;
+  :name "customer-db-prod" ;
+  :description "Production customer database instance" ;
+  :version "14.7" ;
+  :port 5432 ;
+  :lifecycle_status "active" .
+
+inst:DocumentStorage
+  rdf:type :ObjectStorageService ;
+  :name "customer-documents-bucket" ;
+  :description "S3 bucket for customer documents" ;
+  :lifecycle_status "active" .
+
+inst:SessionCache
+  rdf:type :CacheService ;
+  :name "Session Cache" ;
+  :description "Redis cache for user sessions" ;
+  :version "7.0" ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:CustomerOnboardingProcess :realized_by inst:CustomerPortalApp .
+inst:CustomerPortalProduct :requires inst:CustomerPortalApp .
+inst:CustomerPortalApp :exposes inst:CustomerAPI .
+inst:CustomerAPIService :exposes inst:CustomerAPI .
+inst:CustomerPortalApp :uses inst:CustomerDatabase .
+inst:CustomerPortalApp :uses inst:DocumentStorage .
+inst:CustomerPortalApp :uses inst:SessionCache .
+inst:CustomerDatabase :contains inst:CustomerDBInstance .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer (Cloud)
+# ----------------------------------------------------------------------------
+
+inst:EC2Instance01
+  rdf:type :CloudInstance ;
+  :name "i-0123456789abcdef0" ;
+  :description "EC2 instance for customer portal app" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "t3.large" ;
+  :region "us-east-1" ;
+  :vcpu_count 2 ;
+  :memory_gb 8.0 ;
+  :operating_system "Amazon Linux 2023" ;
+  :ip_address "10.0.1.50" ;
+  :lifecycle_status "running" .
+
+inst:EC2Instance02
+  rdf:type :CloudInstance ;
+  :name "i-0123456789abcdef1" ;
+  :description "EC2 instance for customer API service" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "t3.large" ;
+  :region "us-east-1" ;
+  :vcpu_count 2 ;
+  :memory_gb 8.0 ;
+  :operating_system "Amazon Linux 2023" ;
+  :ip_address "10.0.1.51" ;
+  :lifecycle_status "running" .
+
+inst:RDSInstance
+  rdf:type :CloudService ;
+  :name "customer-db-prod" ;
+  :description "AWS RDS PostgreSQL instance" ;
+  :resource_type "cloud_paas" ;
+  :cloud_provider "aws" ;
+  :region "us-east-1" ;
+  :version "14.7" ;
+  :lifecycle_status "running" .
+
+inst:RDSStorage
+  rdf:type :CloudStorageService ;
+  :name "rds-storage-customer-db" ;
+  :description "EBS storage for RDS instance" ;
+  :cloud_provider "aws" ;
+  :region "us-east-1" ;
+  :lifecycle_status "in_use" .
+
+inst:S3Bucket
+  rdf:type :ObjectStorageBucket ;
+  :name "s3://customer-documents-prod" ;
+  :description "S3 bucket for customer documents" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:ElastiCacheCluster
+  rdf:type :CloudService ;
+  :name "session-cache-cluster" ;
+  :description "ElastiCache Redis cluster" ;
+  :resource_type "cloud_paas" ;
+  :cloud_provider "aws" ;
+  :region "us-east-1" ;
+  :version "7.0" ;
+  :lifecycle_status "running" .
+
+# Relationships
+inst:CustomerPortalApp :hosted_on inst:EC2Instance01 .
+inst:CustomerAPIService :hosted_on inst:EC2Instance02 .
+inst:CustomerDatabase :hosted_on inst:RDSInstance .
+inst:CustomerDBInstance :stored_on inst:RDSStorage .
+inst:DocumentStorage :stored_in inst:S3Bucket .
+inst:SessionCache :hosted_on inst:ElastiCacheCluster .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer
+# ----------------------------------------------------------------------------
+
+inst:ALB01
+  rdf:type :LoadBalancer ;
+  :name "customer-portal-alb" ;
+  :description "Application Load Balancer for customer portal" ;
+  :device_type "load_balancer" ;
+  :lb_type "cloud" ;
+  :location "us-east-1" ;
+  :algorithm "least_outstanding_requests" ;
+  :lifecycle_status "active" .
+
+inst:VPC01
+  rdf:type :NetworkSegment ;
+  :name "customer-portal-vpc" ;
+  :description "VPC for customer portal infrastructure" ;
+  :segment_type "vpc" ;
+  :cidr_block "10.0.0.0/16" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:PublicSubnet01
+  rdf:type :NetworkSegment ;
+  :name "public-subnet-1a" ;
+  :description "Public subnet in availability zone 1a" ;
+  :segment_type "subnet" ;
+  :cidr_block "10.0.1.0/24" ;
+  :location "us-east-1a" ;
+  :lifecycle_status "active" .
+
+inst:PrivateSubnet01
+  rdf:type :NetworkSegment ;
+  :name "private-subnet-1a" ;
+  :description "Private subnet for database" ;
+  :segment_type "subnet" ;
+  :cidr_block "10.0.10.0/24" ;
+  :location "us-east-1a" ;
+  :lifecycle_status "active" .
+
+inst:NetworkInterface03
+  rdf:type :NetworkInterface ;
+  :name "eni-portal-app" ;
+  :description "ENI for customer portal EC2 instance" ;
+  :interface_type "virtual" ;
+  :ip_address "10.0.1.50" ;
+  :mac_address "02:12:34:56:78:90" ;
+  :subnet_mask "255.255.255.0" ;
+  :lifecycle_status "active" .
+
+inst:NetworkInterface04
+  rdf:type :NetworkInterface ;
+  :name "eni-api-service" ;
+  :description "ENI for API service EC2 instance" ;
+  :interface_type "virtual" ;
+  :ip_address "10.0.1.51" ;
+  :mac_address "02:12:34:56:78:91" ;
+  :subnet_mask "255.255.255.0" ;
+  :lifecycle_status "active" .
+
+inst:CommPath03
+  rdf:type :CommunicationPath ;
+  :name "Portal-to-API" ;
+  :description "Communication from portal to API service" ;
+  :protocol "https" ;
+  :path_type "direct" ;
+  :destination_port 443 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+inst:CommPath04
+  rdf:type :CommunicationPath ;
+  :name "API-to-Database" ;
+  :description "Communication from API to RDS database" ;
+  :protocol "sql" ;
+  :path_type "private_link" ;
+  :destination_port 5432 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+inst:CommPath05
+  rdf:type :CommunicationPath ;
+  :name "Portal-to-S3" ;
+  :description "Communication from portal to S3" ;
+  :protocol "https" ;
+  :path_type "internet" ;
+  :destination_port 443 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:NetworkInterface03 :attached_to inst:EC2Instance01 .
+inst:NetworkInterface04 :attached_to inst:EC2Instance02 .
+inst:NetworkInterface03 :part_of_segment inst:PublicSubnet01 .
+inst:NetworkInterface04 :part_of_segment inst:PublicSubnet01 .
+inst:CustomerPortalApp :communicates_via inst:CommPath03 .
+inst:CustomerAPIService :communicates_via inst:CommPath04 .
+inst:CustomerPortalApp :communicates_via inst:CommPath05 .
+inst:CustomerPortalApp :exposes_via inst:ALB01 .
+inst:ALB01 :balances_to inst:EC2Instance01 .
+inst:CommPath03 :routes_through inst:ALB01 .
+inst:CommPath04 :routes_through inst:ALB01 .
+inst:CommPath05 :routes_through inst:ALB01 .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer
+# ----------------------------------------------------------------------------
+
+inst:WAF01
+  rdf:type :WAF ;
+  :name "customer-portal-waf" ;
+  :description "AWS WAF for customer portal" ;
+  :security_type "waf" ;
+  :waf_type "cloud" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:SecurityGroup01
+  rdf:type :Firewall ;
+  :name "sg-portal-app" ;
+  :description "Security group for portal application" ;
+  :security_type "firewall" ;
+  :firewall_type "cloud" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:SecurityGroup02
+  rdf:type :Firewall ;
+  :name "sg-rds-database" ;
+  :description "Security group for RDS database" ;
+  :security_type "firewall" ;
+  :firewall_type "cloud" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:ACMCertificate
+  rdf:type :Certificate ;
+  :name "*.example.com" ;
+  :description "AWS Certificate Manager wildcard certificate" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=*.example.com, O=Example Corp, C=US" ;
+  :issuer "CN=Amazon, O=Amazon, C=US" ;
+  :common_name "*.example.com" ;
+  :valid_from "2024-01-01T00:00:00Z"^^xsd:dateTime ;
+  :valid_to "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :expiration_date "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :lifecycle_status "active" .
+
+inst:AmazonCA
+  rdf:type :CertificateAuthority ;
+  :name "Amazon Certificate Authority" ;
+  :description "AWS Certificate Manager CA" ;
+  :security_type "certificate" ;
+  :ca_type "root_ca" ;
+  :subject "CN=Amazon, O=Amazon, C=US" ;
+  :issuer "CN=Amazon Root CA, O=Amazon, C=US" ;
+  :trust_level "trusted" ;
+  :lifecycle_status "active" .
+
+inst:CloudSecurityPolicy
+  rdf:type :SecurityPolicy ;
+  :name "Cloud Security Policy" ;
+  :description "Security policy for cloud resources" ;
+  :security_type "policy" ;
+  :policy_type "access_control" ;
+  :policy_framework "AWS Well-Architected" ;
+  :enforcement_mode "enforcing" ;
+  :lifecycle_status "active" .
+
+inst:PublicZone
+  rdf:type :SecurityZone ;
+  :name "Public Zone" ;
+  :description "Public-facing zone for web applications" ;
+  :security_type "security_zone" ;
+  :zone_type "public" ;
+  :trust_level "semi_trusted" ;
+  :security_classification "internal" ;
+  :mfa_enabled false ;
+  :lifecycle_status "active" .
+
+inst:DatabaseZone
+  rdf:type :SecurityZone ;
+  :name "Database Zone" ;
+  :description "Restricted zone for databases" ;
+  :security_type "security_zone" ;
+  :zone_type "restricted" ;
+  :trust_level "trusted" ;
+  :security_classification "confidential" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:ACMCertificate :issued_by inst:AmazonCA .
+inst:ALB01 :uses_certificate inst:ACMCertificate .
+inst:WAF01 :enforces inst:CloudSecurityPolicy .
+inst:SecurityGroup01 :enforces inst:CloudSecurityPolicy .
+inst:SecurityGroup02 :enforces inst:CloudSecurityPolicy .
+inst:CustomerPortalApp :protected_by inst:WAF01 .
+inst:CustomerPortalApp :protected_by inst:SecurityGroup01 .
+inst:CustomerDatabase :protected_by inst:SecurityGroup02 .
+inst:CustomerPortalApp :secured_by inst:CloudSecurityPolicy .
+inst:CustomerDatabase :secured_by inst:CloudSecurityPolicy .
+inst:EC2Instance01 :belongs_to_zone inst:PublicZone .
+inst:EC2Instance02 :belongs_to_zone inst:PublicZone .
+inst:RDSInstance :belongs_to_zone inst:DatabaseZone .
+inst:PublicSubnet01 :belongs_to_zone inst:PublicZone .
+inst:PrivateSubnet01 :belongs_to_zone inst:DatabaseZone .

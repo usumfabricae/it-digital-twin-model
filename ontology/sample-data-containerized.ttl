@@ -1,0 +1,549 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix inst: <http://example.org/instances#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# Sample Instance Data: Containerized Applications (Kubernetes/OpenShift)
+# ============================================================================
+# Scenario: Microservices architecture deployed on OpenShift
+# with multiple services communicating via APIs
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer
+# ----------------------------------------------------------------------------
+
+inst:PaymentProcessingProcess
+  rdf:type :BusinessProcess ;
+  :name "Payment Processing" ;
+  :description "Process for processing customer payments" ;
+  :owner "Finance Manager" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :sla_target "99.99% availability, <500ms response time" .
+
+inst:PaymentCapability
+  rdf:type :BusinessCapability ;
+  :name "Payment Processing Capability" ;
+  :description "Capability to process various payment methods" ;
+  :owner "VP of Finance" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :capability_level 2 ;
+  :maturity_level "optimized" .
+
+inst:PaymentPlatformProduct
+  rdf:type :Product ;
+  :name "Payment Platform" ;
+  :description "Multi-channel payment processing platform" ;
+  :owner "Product Owner" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :product_type "platform" ;
+  :launch_date "2022-03-15"^^xsd:date .
+
+# Relationships
+inst:PaymentProcessingProcess :part_of inst:PaymentCapability .
+inst:PaymentProcessingProcess :delivers inst:PaymentPlatformProduct .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer
+# ----------------------------------------------------------------------------
+
+inst:PaymentGatewayService
+  rdf:type :Service ;
+  :name "Payment Gateway Service" ;
+  :description "Microservice for payment gateway integration" ;
+  :version "3.2.1" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :service_type "microservice" ;
+  :endpoint_url "http://payment-gateway-svc:8080"^^xsd:anyURI ;
+  :protocol "http" ;
+  :lifecycle_status "production" .
+
+inst:OrderService
+  rdf:type :Service ;
+  :name "Order Service" ;
+  :description "Microservice for order management" ;
+  :version "2.8.0" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :service_type "microservice" ;
+  :endpoint_url "http://order-svc:8080"^^xsd:anyURI ;
+  :protocol "http" ;
+  :lifecycle_status "production" .
+
+inst:NotificationService
+  rdf:type :Service ;
+  :name "Notification Service" ;
+  :description "Microservice for sending notifications" ;
+  :version "1.5.2" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :service_type "microservice" ;
+  :endpoint_url "http://notification-svc:8080"^^xsd:anyURI ;
+  :protocol "http" ;
+  :lifecycle_status "production" .
+
+inst:PaymentAPI
+  rdf:type :API ;
+  :name "Payment API" ;
+  :description "RESTful API for payment operations" ;
+  :version "v3" ;
+  :api_type "REST" ;
+  :endpoint_url "https://api.payment.example.com/v3"^^xsd:anyURI ;
+  :lifecycle_status "active" .
+
+inst:OrderAPI
+  rdf:type :API ;
+  :name "Order API" ;
+  :description "RESTful API for order operations" ;
+  :version "v2" ;
+  :api_type "REST" ;
+  :endpoint_url "https://api.payment.example.com/v2/orders"^^xsd:anyURI ;
+  :lifecycle_status "active" .
+
+inst:PaymentDatabase
+  rdf:type :Database ;
+  :name "Payment Database" ;
+  :description "PostgreSQL database for payment data" ;
+  :version "15.2" ;
+  :application_type "legacy" ;
+  :deployment_model "containerized" ;
+  :database_type "relational" ;
+  :database_product "PostgreSQL" ;
+  :data_classification "restricted" ;
+  :lifecycle_status "production" .
+
+inst:OrderDatabase
+  rdf:type :Database ;
+  :name "Order Database" ;
+  :description "MongoDB database for order data" ;
+  :version "6.0" ;
+  :database_type "nosql_document" ;
+  :database_product "MongoDB" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "active" .
+
+inst:MessageQueue01
+  rdf:type :MessageQueue ;
+  :name "Payment Events Queue" ;
+  :description "Kafka topic for payment events" ;
+  :version "3.4" ;
+  :protocol "kafka" ;
+  :lifecycle_status "active" .
+
+inst:RedisCache
+  rdf:type :CacheService ;
+  :name "Payment Cache" ;
+  :description "Redis cache for payment session data" ;
+  :version "7.0" ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:PaymentProcessingProcess :realized_by inst:PaymentGatewayService .
+inst:PaymentProcessingProcess :realized_by inst:OrderService .
+inst:PaymentPlatformProduct :requires inst:PaymentGatewayService .
+inst:PaymentPlatformProduct :requires inst:OrderService .
+inst:PaymentGatewayService :exposes inst:PaymentAPI .
+inst:OrderService :exposes inst:OrderAPI .
+inst:PaymentGatewayService :uses inst:PaymentDatabase .
+inst:OrderService :uses inst:OrderDatabase .
+inst:PaymentGatewayService :uses inst:MessageQueue01 .
+inst:OrderService :uses inst:MessageQueue01 .
+inst:PaymentGatewayService :uses inst:RedisCache .
+inst:PaymentGatewayService :calls inst:NotificationService .
+inst:OrderService :calls inst:PaymentGatewayService .
+
+# ----------------------------------------------------------------------------
+# Layer 3: Container and Orchestration Layer
+# ----------------------------------------------------------------------------
+
+inst:OpenShiftCluster01
+  rdf:type :Cluster ;
+  :name "payment-cluster-prod" ;
+  :description "OpenShift production cluster for payment platform" ;
+  :orchestration_platform "openshift" ;
+  :version "4.12" ;
+  :region "us-east-1" ;
+  :api_endpoint "https://api.payment-cluster.example.com:6443"^^xsd:anyURI ;
+  :lifecycle_status "active" .
+
+inst:PaymentNamespace
+  rdf:type :Namespace ;
+  :name "payment-prod" ;
+  :description "Production namespace for payment services" ;
+  :lifecycle_status "active" .
+
+inst:PaymentGatewayDeployment
+  rdf:type :Deployment ;
+  :name "payment-gateway-deployment" ;
+  :description "Deployment for payment gateway service" ;
+  :namespace "payment-prod" ;
+  :replica_count 3 ;
+  :lifecycle_status "active" .
+
+inst:PaymentGatewayPod01
+  rdf:type :Pod ;
+  :name "payment-gateway-pod-abc123" ;
+  :description "Pod instance for payment gateway" ;
+  :namespace "payment-prod" ;
+  :pod_ip "10.128.2.50" ;
+  :lifecycle_status "Running" .
+
+inst:PaymentGatewayPod02
+  rdf:type :Pod ;
+  :name "payment-gateway-pod-def456" ;
+  :description "Pod instance for payment gateway" ;
+  :namespace "payment-prod" ;
+  :pod_ip "10.128.2.51" ;
+  :lifecycle_status "Running" .
+
+inst:PaymentGatewayContainer01
+  rdf:type :Container ;
+  :name "payment-gateway-container" ;
+  :description "Container running payment gateway service" ;
+  :image_name "registry.example.com/payment-gateway:3.2.1" ;
+  :orchestration_platform "openshift" ;
+  :lifecycle_status "Running" .
+
+inst:PaymentGatewayContainer02
+  rdf:type :Container ;
+  :name "payment-gateway-container" ;
+  :description "Container running payment gateway service" ;
+  :image_name "registry.example.com/payment-gateway:3.2.1" ;
+  :orchestration_platform "openshift" ;
+  :lifecycle_status "Running" .
+
+inst:PaymentGatewayImage
+  rdf:type :ContainerImage ;
+  :name "payment-gateway" ;
+  :description "Container image for payment gateway service" ;
+  :version "3.2.1" ;
+  :lifecycle_status "active" .
+
+inst:OrderServiceDeployment
+  rdf:type :Deployment ;
+  :name "order-service-deployment" ;
+  :description "Deployment for order service" ;
+  :namespace "payment-prod" ;
+  :replica_count 2 ;
+  :lifecycle_status "active" .
+
+inst:OrderServicePod01
+  rdf:type :Pod ;
+  :name "order-service-pod-xyz789" ;
+  :description "Pod instance for order service" ;
+  :namespace "payment-prod" ;
+  :pod_ip "10.128.2.60" ;
+  :lifecycle_status "Running" .
+
+inst:OrderServiceContainer01
+  rdf:type :Container ;
+  :name "order-service-container" ;
+  :description "Container running order service" ;
+  :image_name "registry.example.com/order-service:2.8.0" ;
+  :orchestration_platform "openshift" ;
+  :lifecycle_status "Running" .
+
+inst:PaymentGatewayK8sService
+  rdf:type :KubernetesService ;
+  :name "payment-gateway-svc" ;
+  :description "Kubernetes service for payment gateway" ;
+  :namespace "payment-prod" ;
+  :service_type "ClusterIP" ;
+  :lifecycle_status "active" .
+
+inst:OrderK8sService
+  rdf:type :KubernetesService ;
+  :name "order-svc" ;
+  :description "Kubernetes service for order service" ;
+  :namespace "payment-prod" ;
+  :service_type "ClusterIP" ;
+  :lifecycle_status "active" .
+
+inst:PaymentRoute
+  rdf:type :Route ;
+  :name "payment-gateway-route" ;
+  :description "OpenShift route for external access to payment gateway" ;
+  :namespace "payment-prod" ;
+  :external_hostname "api.payment.example.com" ;
+  :tls_termination "edge" ;
+  :lifecycle_status "active" .
+
+inst:IngressController01
+  rdf:type :IngressController ;
+  :name "openshift-ingress-controller" ;
+  :description "OpenShift ingress controller" ;
+  :version "4.12" ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:PaymentNamespace :managed_by inst:OpenShiftCluster01 .
+inst:PaymentGatewayDeployment :managed_by inst:OpenShiftCluster01 .
+inst:OrderServiceDeployment :managed_by inst:OpenShiftCluster01 .
+inst:PaymentGatewayPod01 :runs_in inst:PaymentNamespace .
+inst:PaymentGatewayPod02 :runs_in inst:PaymentNamespace .
+inst:OrderServicePod01 :runs_in inst:PaymentNamespace .
+inst:PaymentGatewayPod01 :contains inst:PaymentGatewayContainer01 .
+inst:PaymentGatewayPod02 :contains inst:PaymentGatewayContainer02 .
+inst:OrderServicePod01 :contains inst:OrderServiceContainer01 .
+inst:PaymentGatewayContainer01 :uses_image inst:PaymentGatewayImage .
+inst:PaymentGatewayContainer02 :uses_image inst:PaymentGatewayImage .
+inst:PaymentGatewayContainer01 :packages inst:PaymentGatewayService .
+inst:PaymentGatewayContainer02 :packages inst:PaymentGatewayService .
+inst:OrderServiceContainer01 :packages inst:OrderService .
+inst:PaymentGatewayService :deployed_as inst:PaymentGatewayPod01 .
+inst:PaymentGatewayService :deployed_as inst:PaymentGatewayPod02 .
+inst:OrderService :deployed_as inst:OrderServicePod01 .
+inst:PaymentGatewayK8sService :exposes_pods inst:PaymentGatewayPod01 .
+inst:PaymentGatewayK8sService :exposes_pods inst:PaymentGatewayPod02 .
+inst:OrderK8sService :exposes_pods inst:OrderServicePod01 .
+inst:PaymentRoute :routes_to inst:PaymentGatewayK8sService .
+inst:IngressController01 :routes_to inst:PaymentGatewayK8sService .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer
+# ----------------------------------------------------------------------------
+
+inst:WorkerNode01
+  rdf:type :VirtualMachine ;
+  :name "worker-node-01" ;
+  :description "OpenShift worker node" ;
+  :resource_type "virtual" ;
+  :location "us-east-1a" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Red Hat CoreOS 4.12" ;
+  :ip_address "10.0.20.10" ;
+  :lifecycle_status "running" .
+
+inst:WorkerNode02
+  rdf:type :VirtualMachine ;
+  :name "worker-node-02" ;
+  :description "OpenShift worker node" ;
+  :resource_type "virtual" ;
+  :location "us-east-1b" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Red Hat CoreOS 4.12" ;
+  :ip_address "10.0.20.11" ;
+  :lifecycle_status "running" .
+
+inst:WorkerNode03
+  rdf:type :VirtualMachine ;
+  :name "worker-node-03" ;
+  :description "OpenShift worker node" ;
+  :resource_type "virtual" ;
+  :location "us-east-1c" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Red Hat CoreOS 4.12" ;
+  :ip_address "10.0.20.12" ;
+  :lifecycle_status "running" .
+
+inst:PostgreSQLPod
+  rdf:type :Pod ;
+  :name "postgresql-pod-pqr123" ;
+  :description "Pod for PostgreSQL database" ;
+  :namespace "payment-prod" ;
+  :pod_ip "10.128.2.70" ;
+  :lifecycle_status "Running" .
+
+inst:PostgreSQLContainer
+  rdf:type :Container ;
+  :name "postgresql-container" ;
+  :description "Container running PostgreSQL" ;
+  :image_name "registry.redhat.io/rhel8/postgresql-15:latest" ;
+  :orchestration_platform "openshift" ;
+  :lifecycle_status "Running" .
+
+inst:PersistentVolume01
+  rdf:type :StorageVolume ;
+  :name "pvc-postgresql-data" ;
+  :description "Persistent volume for PostgreSQL data" ;
+  :volume_type "persistent_volume" ;
+  :capacity_gb 100.0 ;
+  :encrypted true ;
+  :lifecycle_status "in_use" .
+
+inst:EBSVolume01
+  rdf:type :CloudStorageService ;
+  :name "vol-0abcdef123456789" ;
+  :description "EBS volume for persistent storage" ;
+  :cloud_provider "aws" ;
+  :region "us-east-1" ;
+  :lifecycle_status "in_use" .
+
+# Relationships
+inst:PaymentGatewayPod01 :runs_on inst:WorkerNode01 .
+inst:PaymentGatewayPod02 :runs_on inst:WorkerNode02 .
+inst:OrderServicePod01 :runs_on inst:WorkerNode03 .
+inst:PostgreSQLPod :runs_on inst:WorkerNode01 .
+inst:PostgreSQLPod :contains inst:PostgreSQLContainer .
+inst:PostgreSQLContainer :packages inst:PaymentDatabase .
+inst:PaymentDatabase :deployed_as inst:PostgreSQLPod .
+inst:PostgreSQLContainer :uses inst:PersistentVolume01 .
+inst:PersistentVolume01 :provisioned_from inst:EBSVolume01 .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer
+# ----------------------------------------------------------------------------
+
+inst:OpenShiftRouter
+  rdf:type :LoadBalancer ;
+  :name "openshift-router" ;
+  :description "OpenShift router for ingress traffic" ;
+  :device_type "load_balancer" ;
+  :lb_type "software" ;
+  :location "us-east-1" ;
+  :algorithm "round-robin" ;
+  :lifecycle_status "active" .
+
+inst:ClusterNetwork
+  rdf:type :NetworkSegment ;
+  :name "cluster-network" ;
+  :description "OpenShift cluster network" ;
+  :segment_type "vpc" ;
+  :cidr_block "10.128.0.0/14" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:PodNetwork
+  rdf:type :NetworkSegment ;
+  :name "pod-network" ;
+  :description "Network for pod communication" ;
+  :segment_type "subnet" ;
+  :cidr_block "10.128.2.0/24" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:CommPath06
+  rdf:type :CommunicationPath ;
+  :name "Order-to-Payment" ;
+  :description "Communication from order service to payment gateway" ;
+  :protocol "http" ;
+  :path_type "direct" ;
+  :destination_port 8080 ;
+  :encrypted false ;
+  :lifecycle_status "active" .
+
+inst:CommPath07
+  rdf:type :CommunicationPath ;
+  :name "Payment-to-Database" ;
+  :description "Communication from payment service to database" ;
+  :protocol "sql" ;
+  :path_type "direct" ;
+  :destination_port 5432 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+inst:CommPath08
+  rdf:type :CommunicationPath ;
+  :name "External-to-Payment" ;
+  :description "External communication to payment gateway" ;
+  :protocol "https" ;
+  :path_type "routed" ;
+  :destination_port 443 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:OrderService :communicates_via inst:CommPath06 .
+inst:PaymentGatewayService :communicates_via inst:CommPath07 .
+inst:PaymentGatewayService :communicates_via inst:CommPath08 .
+inst:PaymentGatewayService :exposes_via inst:OpenShiftRouter .
+inst:OpenShiftRouter :balances_to inst:PaymentGatewayPod01 .
+inst:OpenShiftRouter :balances_to inst:PaymentGatewayPod02 .
+inst:CommPath06 :routes_through inst:OpenShiftRouter .
+inst:CommPath07 :routes_through inst:OpenShiftRouter .
+inst:CommPath08 :routes_through inst:OpenShiftRouter .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer
+# ----------------------------------------------------------------------------
+
+inst:OpenShiftFirewall
+  rdf:type :Firewall ;
+  :name "openshift-network-policy" ;
+  :description "Network policy for pod-to-pod communication" ;
+  :security_type "firewall" ;
+  :firewall_type "virtual" ;
+  :location "us-east-1" ;
+  :lifecycle_status "active" .
+
+inst:PaymentCertificate
+  rdf:type :Certificate ;
+  :name "api.payment.example.com" ;
+  :description "TLS certificate for payment API" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=api.payment.example.com, O=Example Corp, C=US" ;
+  :issuer "CN=Let's Encrypt Authority X3, O=Let's Encrypt, C=US" ;
+  :common_name "api.payment.example.com" ;
+  :valid_from "2024-01-01T00:00:00Z"^^xsd:dateTime ;
+  :valid_to "2026-04-01T00:00:00Z"^^xsd:dateTime ;
+  :expiration_date "2026-04-01T00:00:00Z"^^xsd:dateTime ;
+  :lifecycle_status "active" .
+
+inst:LetsEncryptCA
+  rdf:type :CertificateAuthority ;
+  :name "Let's Encrypt Authority" ;
+  :description "Let's Encrypt certificate authority" ;
+  :security_type "certificate" ;
+  :ca_type "intermediate_ca" ;
+  :subject "CN=Let's Encrypt Authority X3, O=Let's Encrypt, C=US" ;
+  :issuer "CN=DST Root CA X3, O=Digital Signature Trust Co." ;
+  :trust_level "trusted" ;
+  :lifecycle_status "active" .
+
+inst:PCI_DSS_Policy
+  rdf:type :SecurityPolicy ;
+  :name "PCI DSS Compliance Policy" ;
+  :description "Policy for PCI DSS compliance" ;
+  :security_type "policy" ;
+  :policy_type "compliance" ;
+  :policy_framework "PCI DSS 4.0" ;
+  :enforcement_mode "enforcing" ;
+  :lifecycle_status "active" .
+
+inst:Okta_IdP
+  rdf:type :IdentityProvider ;
+  :name "Okta Identity Provider" ;
+  :description "Okta SSO for payment platform" ;
+  :security_type "iam" ;
+  :idp_type "saml" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+inst:PaymentSecurityZone
+  rdf:type :SecurityZone ;
+  :name "Payment Processing Zone" ;
+  :description "High-security zone for payment processing" ;
+  :security_type "security_zone" ;
+  :zone_type "restricted" ;
+  :trust_level "high_security" ;
+  :security_classification "restricted" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:PaymentCertificate :issued_by inst:LetsEncryptCA .
+inst:PaymentRoute :uses_certificate inst:PaymentCertificate .
+inst:OpenShiftFirewall :enforces inst:PCI_DSS_Policy .
+inst:PaymentGatewayService :protected_by inst:OpenShiftFirewall .
+inst:OrderService :protected_by inst:OpenShiftFirewall .
+inst:PaymentDatabase :protected_by inst:OpenShiftFirewall .
+inst:PaymentGatewayService :secured_by inst:PCI_DSS_Policy .
+inst:PaymentDatabase :secured_by inst:PCI_DSS_Policy .
+inst:PaymentGatewayService :authenticated_by inst:Okta_IdP .
+inst:OrderService :authenticated_by inst:Okta_IdP .
+inst:PaymentGatewayPod01 :belongs_to_zone inst:PaymentSecurityZone .
+inst:PaymentGatewayPod02 :belongs_to_zone inst:PaymentSecurityZone .
+inst:OrderServicePod01 :belongs_to_zone inst:PaymentSecurityZone .
+inst:PostgreSQLPod :belongs_to_zone inst:PaymentSecurityZone .
+inst:PodNetwork :belongs_to_zone inst:PaymentSecurityZone .

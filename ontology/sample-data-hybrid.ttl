@@ -1,0 +1,503 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix inst: <http://example.org/instances#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# Sample Instance Data: Hybrid Infrastructure
+# ============================================================================
+# Scenario: Hybrid deployment with on-premises core systems integrated
+# with cloud-based analytics and mobile services
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer
+# ----------------------------------------------------------------------------
+
+inst:InventoryManagementProcess
+  rdf:type :BusinessProcess ;
+  :name "Inventory Management Process" ;
+  :description "Process for managing product inventory across warehouses" ;
+  :owner "Supply Chain Manager" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :sla_target "99.5% availability" .
+
+inst:SupplyChainCapability
+  rdf:type :BusinessCapability ;
+  :name "Supply Chain Management" ;
+  :description "Capability to manage end-to-end supply chain" ;
+  :owner "VP of Supply Chain" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :capability_level 1 ;
+  :maturity_level "managed" .
+
+inst:InventorySystemProduct
+  rdf:type :Product ;
+  :name "Inventory Management System" ;
+  :description "Integrated inventory management solution" ;
+  :owner "Product Manager" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :product_type "software" ;
+  :launch_date "2018-09-01"^^xsd:date .
+
+# Relationships
+inst:InventoryManagementProcess :part_of inst:SupplyChainCapability .
+inst:InventoryManagementProcess :delivers inst:InventorySystemProduct .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer (Hybrid)
+# ----------------------------------------------------------------------------
+
+# On-premises core inventory system
+inst:CoreInventoryApp
+  rdf:type :Application ;
+  :name "Core Inventory Application" ;
+  :description "Legacy inventory management system" ;
+  :version "8.5.2" ;
+  :application_type "monolithic" ;
+  :deployment_model "vm_based" ;
+  :runtime_environment "JBoss EAP 7.4" ;
+  :technology_stack "Java EE" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" .
+
+# Cloud-based analytics service
+inst:InventoryAnalyticsService
+  rdf:type :Service ;
+  :name "Inventory Analytics Service" ;
+  :description "Cloud-based analytics microservice" ;
+  :version "1.3.0" ;
+  :application_type "microservice" ;
+  :deployment_model "cloud_managed" ;
+  :service_type "microservice" ;
+  :endpoint_url "https://analytics.inventory.example.com/api"^^xsd:anyURI ;
+  :protocol "https" ;
+  :lifecycle_status "production" .
+
+# Cloud-based mobile API
+inst:MobileInventoryAPI
+  rdf:type :API ;
+  :name "Mobile Inventory API" ;
+  :description "API for mobile inventory applications" ;
+  :version "v2" ;
+  :api_type "REST" ;
+  :endpoint_url "https://mobile-api.inventory.example.com/v2"^^xsd:anyURI ;
+  :lifecycle_status "active" .
+
+inst:JBossAppServer
+  rdf:type :ApplicationServer ;
+  :name "JBoss EAP Server" ;
+  :description "JBoss Enterprise Application Platform" ;
+  :version "7.4.0" ;
+  :application_type "legacy" ;
+  :deployment_model "vm_based" ;
+  :runtime_environment "JBoss EAP 7.4" ;
+  :port 8080 ;
+  :lifecycle_status "production" .
+
+# On-premises database
+inst:InventoryDatabase
+  rdf:type :Database ;
+  :name "Inventory Database" ;
+  :description "SQL Server database for inventory data" ;
+  :version "2019" ;
+  :database_type "relational" ;
+  :database_product "Microsoft SQL Server" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "active" .
+
+# Cloud data warehouse
+inst:AnalyticsDataWarehouse
+  rdf:type :Database ;
+  :name "Analytics Data Warehouse" ;
+  :description "Snowflake data warehouse for analytics" ;
+  :version "7.0" ;
+  :database_type "nosql_columnar" ;
+  :database_product "Snowflake" ;
+  :data_classification "internal" ;
+  :lifecycle_status "active" .
+
+# Integration message queue
+inst:IntegrationQueue
+  rdf:type :MessageQueue ;
+  :name "Inventory Integration Queue" ;
+  :description "RabbitMQ for on-prem to cloud integration" ;
+  :version "3.11" ;
+  :protocol "amqp" ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:InventoryManagementProcess :realized_by inst:CoreInventoryApp .
+inst:InventoryManagementProcess :realized_by inst:InventoryAnalyticsService .
+inst:InventorySystemProduct :requires inst:CoreInventoryApp .
+inst:InventorySystemProduct :requires inst:InventoryAnalyticsService .
+inst:CoreInventoryApp :uses inst:InventoryDatabase .
+inst:CoreInventoryApp :uses inst:IntegrationQueue .
+inst:InventoryAnalyticsService :uses inst:AnalyticsDataWarehouse .
+inst:InventoryAnalyticsService :uses inst:IntegrationQueue .
+inst:InventoryAnalyticsService :exposes inst:MobileInventoryAPI .
+inst:CoreInventoryApp :deployed_on inst:JBossAppServer .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer (Hybrid)
+# ----------------------------------------------------------------------------
+
+# On-premises infrastructure
+inst:OnPremPhysicalServer02
+  rdf:type :PhysicalServer ;
+  :name "SRV-RACK02-SLOT10" ;
+  :description "HP ProLiant DL380 server" ;
+  :resource_type "physical" ;
+  :location "Datacenter-Chicago-Rack02-Slot10" ;
+  :manufacturer "HP" ;
+  :model "ProLiant DL380 Gen10" ;
+  :serial_number "SN246813579" ;
+  :cpu_count 2 ;
+  :memory_gb 256.0 ;
+  :operating_system "VMware ESXi 7.0" ;
+  :ip_address "10.2.1.20" ;
+  :lifecycle_status "active" .
+
+inst:OnPremHypervisor02
+  rdf:type :Hypervisor ;
+  :name "ESXi-Host-02" ;
+  :description "VMware ESXi hypervisor" ;
+  :version "7.0 U3" ;
+  :hypervisor_type "vmware_esxi" ;
+  :location "Datacenter-Chicago" ;
+  :lifecycle_status "active" .
+
+inst:InventoryAppVM
+  rdf:type :VirtualMachine ;
+  :name "INV-APP-VM-01" ;
+  :description "VM for inventory application" ;
+  :resource_type "virtual" ;
+  :location "Datacenter-Chicago" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Red Hat Enterprise Linux 8.6" ;
+  :ip_address "10.2.10.100" ;
+  :lifecycle_status "running" .
+
+inst:InventoryDBVM
+  rdf:type :VirtualMachine ;
+  :name "INV-DB-VM-01" ;
+  :description "VM for inventory database" ;
+  :resource_type "virtual" ;
+  :location "Datacenter-Chicago" ;
+  :vcpu_count 16 ;
+  :memory_gb 128.0 ;
+  :operating_system "Windows Server 2019" ;
+  :ip_address "10.2.10.101" ;
+  :lifecycle_status "running" .
+
+inst:OnPremStorageArray02
+  rdf:type :StorageArray ;
+  :name "HPE-3PAR-01" ;
+  :description "HPE 3PAR storage array" ;
+  :location "Datacenter-Chicago" ;
+  :manufacturer "HPE" ;
+  :model "3PAR 8400" ;
+  :serial_number "SN135792468" ;
+  :total_capacity_tb 100.0 ;
+  :lifecycle_status "active" .
+
+inst:InventoryDBVolume
+  rdf:type :StorageVolume ;
+  :name "LUN-INV-DB-01" ;
+  :description "Storage volume for inventory database" ;
+  :volume_type "lun" ;
+  :capacity_gb 2000.0 ;
+  :encrypted true ;
+  :lifecycle_status "in_use" .
+
+# Cloud infrastructure (AWS)
+inst:AnalyticsEC2Instance
+  rdf:type :CloudInstance ;
+  :name "i-0fedcba987654321" ;
+  :description "EC2 instance for analytics service" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "r5.xlarge" ;
+  :region "us-west-2" ;
+  :vcpu_count 4 ;
+  :memory_gb 32.0 ;
+  :operating_system "Amazon Linux 2023" ;
+  :ip_address "10.100.1.50" ;
+  :lifecycle_status "running" .
+
+inst:SnowflakeService
+  rdf:type :CloudService ;
+  :name "snowflake-analytics-warehouse" ;
+  :description "Snowflake data warehouse service" ;
+  :resource_type "cloud_saas" ;
+  :cloud_provider "snowflake" ;
+  :region "us-west-2" ;
+  :version "7.0" ;
+  :lifecycle_status "running" .
+
+inst:RabbitMQCloudService
+  rdf:type :CloudService ;
+  :name "rabbitmq-integration-cluster" ;
+  :description "CloudAMQP RabbitMQ cluster" ;
+  :resource_type "cloud_paas" ;
+  :cloud_provider "aws" ;
+  :region "us-west-2" ;
+  :version "3.11" ;
+  :lifecycle_status "running" .
+
+# Relationships
+inst:OnPremHypervisor02 :runs_on inst:OnPremPhysicalServer02 .
+inst:InventoryAppVM :runs_on inst:OnPremHypervisor02 .
+inst:InventoryDBVM :runs_on inst:OnPremHypervisor02 .
+inst:JBossAppServer :hosted_on inst:InventoryAppVM .
+inst:InventoryDatabase :hosted_on inst:InventoryDBVM .
+inst:InventoryDatabase :stored_on inst:InventoryDBVolume .
+inst:InventoryDBVolume :allocated_from inst:OnPremStorageArray02 .
+inst:InventoryAnalyticsService :hosted_on inst:AnalyticsEC2Instance .
+inst:AnalyticsDataWarehouse :hosted_on inst:SnowflakeService .
+inst:IntegrationQueue :hosted_on inst:RabbitMQCloudService .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer (Hybrid Connectivity)
+# ----------------------------------------------------------------------------
+
+inst:OnPremCoreSwitch02
+  rdf:type :NetworkDevice ;
+  :name "SW-CORE-CHI-01" ;
+  :description "Cisco Catalyst core switch" ;
+  :device_type "switch" ;
+  :location "Datacenter-Chicago-Rack02" ;
+  :manufacturer "Cisco" ;
+  :model "Catalyst 9500" ;
+  :management_ip "10.2.0.10" ;
+  :lifecycle_status "active" .
+
+inst:VPNGateway
+  rdf:type :NetworkDevice ;
+  :name "VPN-GW-CHI-01" ;
+  :description "VPN gateway for hybrid connectivity" ;
+  :device_type "vpn_gateway" ;
+  :location "Datacenter-Chicago" ;
+  :manufacturer "Cisco" ;
+  :model "ASR 1000" ;
+  :management_ip "10.2.0.5" ;
+  :lifecycle_status "active" .
+
+inst:AWSTransitGateway
+  rdf:type :NetworkDevice ;
+  :name "tgw-0123456789" ;
+  :description "AWS Transit Gateway" ;
+  :device_type "gateway" ;
+  :location "us-west-2" ;
+  :management_ip "10.100.0.1" ;
+  :lifecycle_status "active" .
+
+inst:CloudLoadBalancer
+  rdf:type :LoadBalancer ;
+  :name "analytics-alb" ;
+  :description "Application Load Balancer for analytics service" ;
+  :device_type "load_balancer" ;
+  :lb_type "cloud" ;
+  :location "us-west-2" ;
+  :algorithm "least_outstanding_requests" ;
+  :lifecycle_status "active" .
+
+inst:OnPremSubnet
+  rdf:type :NetworkSegment ;
+  :name "on-prem-app-subnet" ;
+  :description "On-premises application subnet" ;
+  :segment_type "subnet" ;
+  :cidr_block "10.2.10.0/24" ;
+  :vlan_id 20 ;
+  :location "Datacenter-Chicago" ;
+  :lifecycle_status "active" .
+
+inst:CloudVPC
+  rdf:type :NetworkSegment ;
+  :name "analytics-vpc" ;
+  :description "AWS VPC for analytics services" ;
+  :segment_type "vpc" ;
+  :cidr_block "10.100.0.0/16" ;
+  :location "us-west-2" ;
+  :lifecycle_status "active" .
+
+inst:CloudSubnet
+  rdf:type :NetworkSegment ;
+  :name "analytics-subnet" ;
+  :description "Subnet for analytics services" ;
+  :segment_type "subnet" ;
+  :cidr_block "10.100.1.0/24" ;
+  :location "us-west-2" ;
+  :lifecycle_status "active" .
+
+inst:HybridCommPath01
+  rdf:type :CommunicationPath ;
+  :name "OnPrem-to-Cloud-Integration" ;
+  :description "VPN tunnel from on-prem to cloud" ;
+  :protocol "amqp" ;
+  :path_type "vpn" ;
+  :destination_port 5672 ;
+  :encrypted true ;
+  :bandwidth_mbps 1000.0 ;
+  :lifecycle_status "active" .
+
+inst:HybridCommPath02
+  rdf:type :CommunicationPath ;
+  :name "Cloud-to-Snowflake" ;
+  :description "Communication from analytics service to Snowflake" ;
+  :protocol "https" ;
+  :path_type "internet" ;
+  :destination_port 443 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+inst:OnPremCommPath
+  rdf:type :CommunicationPath ;
+  :name "App-to-DB-OnPrem" ;
+  :description "On-premises app to database communication" ;
+  :protocol "sql" ;
+  :path_type "direct" ;
+  :destination_port 1433 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:VPNGateway :connected_to inst:OnPremCoreSwitch02 .
+inst:VPNGateway :connected_to inst:AWSTransitGateway .
+inst:CoreInventoryApp :communicates_via inst:OnPremCommPath .
+inst:CoreInventoryApp :communicates_via inst:HybridCommPath01 .
+inst:InventoryAnalyticsService :communicates_via inst:HybridCommPath01 .
+inst:InventoryAnalyticsService :communicates_via inst:HybridCommPath02 .
+inst:InventoryAnalyticsService :exposes_via inst:CloudLoadBalancer .
+inst:HybridCommPath01 :routes_through inst:VPNGateway .
+inst:HybridCommPath01 :routes_through inst:AWSTransitGateway .
+inst:HybridCommPath02 :routes_through inst:CloudLoadBalancer .
+inst:OnPremCommPath :routes_through inst:OnPremCoreSwitch02 .
+inst:CloudLoadBalancer :balances_to inst:AnalyticsEC2Instance .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer (Hybrid Security)
+# ----------------------------------------------------------------------------
+
+inst:OnPremFirewall02
+  rdf:type :Firewall ;
+  :name "FW-CHI-01" ;
+  :description "Fortinet firewall for Chicago datacenter" ;
+  :security_type "firewall" ;
+  :firewall_type "next_gen" ;
+  :location "Datacenter-Chicago" ;
+  :management_ip "10.2.0.3" ;
+  :lifecycle_status "active" .
+
+inst:CloudSecurityGroup03
+  rdf:type :Firewall ;
+  :name "sg-analytics-service" ;
+  :description "Security group for analytics service" ;
+  :security_type "firewall" ;
+  :firewall_type "cloud" ;
+  :location "us-west-2" ;
+  :lifecycle_status "active" .
+
+inst:HybridCertificate
+  rdf:type :Certificate ;
+  :name "*.inventory.example.com" ;
+  :description "Wildcard certificate for inventory services" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=*.inventory.example.com, O=Example Corp, C=US" ;
+  :issuer "CN=DigiCert Global CA, O=DigiCert Inc, C=US" ;
+  :common_name "*.inventory.example.com" ;
+  :valid_from "2024-01-01T00:00:00Z"^^xsd:dateTime ;
+  :valid_to "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :expiration_date "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :lifecycle_status "active" .
+
+inst:DigiCertCA
+  rdf:type :CertificateAuthority ;
+  :name "DigiCert Global CA" ;
+  :description "DigiCert certificate authority" ;
+  :security_type "certificate" ;
+  :ca_type "root_ca" ;
+  :subject "CN=DigiCert Global CA, O=DigiCert Inc, C=US" ;
+  :issuer "CN=DigiCert Global Root CA, O=DigiCert Inc, C=US" ;
+  :trust_level "trusted" ;
+  :lifecycle_status "active" .
+
+inst:HybridSecurityPolicy
+  rdf:type :SecurityPolicy ;
+  :name "Hybrid Infrastructure Security Policy" ;
+  :description "Security policy for hybrid deployments" ;
+  :security_type "policy" ;
+  :policy_type "network" ;
+  :policy_framework "NIST SP 800-53" ;
+  :enforcement_mode "enforcing" ;
+  :lifecycle_status "active" .
+
+inst:AzureAD_IdP
+  rdf:type :IdentityProvider ;
+  :name "Azure Active Directory" ;
+  :description "Azure AD for unified identity" ;
+  :security_type "iam" ;
+  :idp_type "saml" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+inst:OnPremZone
+  rdf:type :SecurityZone ;
+  :name "On-Premises Trusted Zone" ;
+  :description "Trusted zone for on-premises resources" ;
+  :security_type "security_zone" ;
+  :zone_type "internal" ;
+  :trust_level "trusted" ;
+  :security_classification "confidential" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+inst:CloudZone
+  rdf:type :SecurityZone ;
+  :name "Cloud Analytics Zone" ;
+  :description "Zone for cloud analytics services" ;
+  :security_type "security_zone" ;
+  :zone_type "external" ;
+  :trust_level "semi_trusted" ;
+  :security_classification "internal" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+inst:DMZZone
+  rdf:type :SecurityZone ;
+  :name "Hybrid DMZ Zone" ;
+  :description "DMZ for hybrid connectivity" ;
+  :security_type "security_zone" ;
+  :zone_type "dmz" ;
+  :trust_level "semi_trusted" ;
+  :security_classification "internal" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:HybridCertificate :issued_by inst:DigiCertCA .
+inst:CloudLoadBalancer :uses_certificate inst:HybridCertificate .
+inst:VPNGateway :uses_certificate inst:HybridCertificate .
+inst:OnPremFirewall02 :enforces inst:HybridSecurityPolicy .
+inst:CloudSecurityGroup03 :enforces inst:HybridSecurityPolicy .
+inst:CoreInventoryApp :protected_by inst:OnPremFirewall02 .
+inst:InventoryDatabase :protected_by inst:OnPremFirewall02 .
+inst:InventoryAnalyticsService :protected_by inst:CloudSecurityGroup03 .
+inst:CoreInventoryApp :secured_by inst:HybridSecurityPolicy .
+inst:InventoryAnalyticsService :secured_by inst:HybridSecurityPolicy .
+inst:CoreInventoryApp :authenticated_by inst:AzureAD_IdP .
+inst:InventoryAnalyticsService :authenticated_by inst:AzureAD_IdP .
+inst:InventoryAppVM :belongs_to_zone inst:OnPremZone .
+inst:InventoryDBVM :belongs_to_zone inst:OnPremZone .
+inst:OnPremSubnet :belongs_to_zone inst:OnPremZone .
+inst:AnalyticsEC2Instance :belongs_to_zone inst:CloudZone .
+inst:CloudSubnet :belongs_to_zone inst:CloudZone .
+inst:VPNGateway :belongs_to_zone inst:DMZZone .
+inst:AWSTransitGateway :belongs_to_zone inst:DMZZone .

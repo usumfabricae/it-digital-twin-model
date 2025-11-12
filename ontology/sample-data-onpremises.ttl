@@ -1,0 +1,393 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix inst: <http://example.org/instances#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# Sample Instance Data: On-Premises Infrastructure
+# ============================================================================
+# Scenario: Legacy ERP system running on WebSphere application server
+# with Oracle database on physical infrastructure
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer
+# ----------------------------------------------------------------------------
+
+inst:OrderFulfillmentProcess
+  rdf:type :BusinessProcess ;
+  :name "Order Fulfillment Process" ;
+  :description "End-to-end process for fulfilling customer orders" ;
+  :owner "Operations Manager" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :sla_target "99.9% availability" .
+
+inst:OrderManagementCapability
+  rdf:type :BusinessCapability ;
+  :name "Order Management" ;
+  :description "Capability to manage customer orders" ;
+  :owner "VP of Operations" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :capability_level 2 ;
+  :maturity_level "optimized" .
+
+inst:ERPProduct
+  rdf:type :Product ;
+  :name "Enterprise Resource Planning System" ;
+  :description "Integrated ERP solution for business operations" ;
+  :owner "CIO" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :product_type "software" ;
+  :launch_date "2015-01-15"^^xsd:date .
+
+# Relationships
+inst:OrderFulfillmentProcess :part_of inst:OrderManagementCapability .
+inst:OrderFulfillmentProcess :delivers inst:ERPProduct .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer
+# ----------------------------------------------------------------------------
+
+inst:ERPApplication
+  rdf:type :Application ;
+  :name "ERP Application" ;
+  :description "Enterprise Resource Planning application" ;
+  :version "12.2.1" ;
+  :application_type "monolithic" ;
+  :deployment_model "vm_based" ;
+  :runtime_environment "WebSphere 9.0" ;
+  :technology_stack "Java EE" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" .
+
+inst:OrderModule
+  rdf:type :ApplicationComponent ;
+  :name "Order Management Module" ;
+  :description "Order processing component" ;
+  :version "12.2.1" ;
+  :lifecycle_status "production" .
+
+inst:WebSphereAppServer
+  rdf:type :ApplicationServer ;
+  :name "WebSphere Application Server" ;
+  :description "IBM WebSphere 9.0 instance" ;
+  :version "9.0.5.10" ;
+  :application_type "legacy" ;
+  :deployment_model "vm_based" ;
+  :runtime_environment "WebSphere 9.0" ;
+  :port 9080 ;
+  :lifecycle_status "production" .
+
+inst:ERPDatabase
+  rdf:type :Database ;
+  :name "ERP Production Database" ;
+  :description "Oracle database for ERP system" ;
+  :version "19c" ;
+  :database_type "relational" ;
+  :database_product "Oracle Database" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "active" .
+
+inst:ERPDatabaseInstance
+  rdf:type :DatabaseInstance ;
+  :name "ERPDB01" ;
+  :description "Primary ERP database instance" ;
+  :version "19c" ;
+  :port 1521 ;
+  :lifecycle_status "active" .
+
+inst:OrdersTable
+  rdf:type :DataObject ;
+  :name "ORDERS" ;
+  :description "Customer orders table" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "active" .
+
+inst:ERPFileStorage
+  rdf:type :FileStorageService ;
+  :name "ERP Document Storage" ;
+  :description "NFS share for ERP documents" ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:OrderFulfillmentProcess :realized_by inst:ERPApplication .
+inst:ERPProduct :requires inst:ERPApplication .
+inst:ERPApplication :contains inst:OrderModule .
+inst:OrderModule :deployed_on inst:WebSphereAppServer .
+inst:ERPApplication :uses inst:ERPDatabase .
+inst:ERPApplication :uses inst:ERPFileStorage .
+inst:ERPDatabase :contains inst:ERPDatabaseInstance .
+inst:ERPDatabaseInstance :contains inst:OrdersTable .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer (Layer 3 bypassed for legacy)
+# ----------------------------------------------------------------------------
+
+inst:PhysicalServer01
+  rdf:type :PhysicalServer ;
+  :name "SRV-RACK01-SLOT05" ;
+  :description "Dell PowerEdge R740 server" ;
+  :resource_type "physical" ;
+  :location "Datacenter-NYC-Rack01-Slot05" ;
+  :manufacturer "Dell" ;
+  :model "PowerEdge R740" ;
+  :serial_number "SN123456789" ;
+  :cpu_count 2 ;
+  :memory_gb 128.0 ;
+  :operating_system "VMware ESXi 7.0" ;
+  :ip_address "10.1.1.10" ;
+  :lifecycle_status "active" .
+
+inst:Hypervisor01
+  rdf:type :Hypervisor ;
+  :name "ESXi-Host-01" ;
+  :description "VMware ESXi hypervisor" ;
+  :version "7.0 U3" ;
+  :hypervisor_type "vmware_esxi" ;
+  :location "Datacenter-NYC" ;
+  :lifecycle_status "active" .
+
+inst:ERPVM01
+  rdf:type :VirtualMachine ;
+  :name "ERP-APP-VM-01" ;
+  :description "Virtual machine for ERP application server" ;
+  :resource_type "virtual" ;
+  :location "Datacenter-NYC" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :ip_address "10.1.10.50" ;
+  :lifecycle_status "running" .
+
+inst:ERPVM02
+  rdf:type :VirtualMachine ;
+  :name "ERP-DB-VM-01" ;
+  :description "Virtual machine for ERP database" ;
+  :resource_type "virtual" ;
+  :location "Datacenter-NYC" ;
+  :vcpu_count 16 ;
+  :memory_gb 64.0 ;
+  :operating_system "Oracle Linux 8.4" ;
+  :ip_address "10.1.10.51" ;
+  :lifecycle_status "running" .
+
+inst:StorageArray01
+  rdf:type :StorageArray ;
+  :name "NetApp-SAN-01" ;
+  :description "NetApp FAS8200 storage array" ;
+  :location "Datacenter-NYC" ;
+  :manufacturer "NetApp" ;
+  :model "FAS8200" ;
+  :serial_number "SN987654321" ;
+  :total_capacity_tb 50.0 ;
+  :lifecycle_status "active" .
+
+inst:StorageVolume01
+  rdf:type :StorageVolume ;
+  :name "LUN-ERP-DB-01" ;
+  :description "Storage volume for ERP database" ;
+  :volume_type "lun" ;
+  :capacity_gb 500.0 ;
+  :encrypted true ;
+  :lifecycle_status "in_use" .
+
+inst:StorageVolume02
+  rdf:type :StorageVolume ;
+  :name "LUN-ERP-FILES-01" ;
+  :description "Storage volume for ERP file storage" ;
+  :volume_type "lun" ;
+  :capacity_gb 1000.0 ;
+  :encrypted true ;
+  :lifecycle_status "in_use" .
+
+inst:FileSystem01
+  rdf:type :FileSystem ;
+  :name "/mnt/erp-data" ;
+  :description "Filesystem for ERP database files" ;
+  :filesystem_type "ext4" ;
+  :capacity_gb 500.0 ;
+  :lifecycle_status "active" .
+
+inst:FileSystem02
+  rdf:type :FileSystem ;
+  :name "/mnt/erp-docs" ;
+  :description "NFS filesystem for ERP documents" ;
+  :filesystem_type "nfs" ;
+  :capacity_gb 1000.0 ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:Hypervisor01 :runs_on inst:PhysicalServer01 .
+inst:ERPVM01 :runs_on inst:Hypervisor01 .
+inst:ERPVM02 :runs_on inst:Hypervisor01 .
+inst:WebSphereAppServer :hosted_on inst:ERPVM01 .
+inst:ERPDatabase :hosted_on inst:ERPVM02 .
+inst:ERPDatabaseInstance :stored_on inst:FileSystem01 .
+inst:ERPFileStorage :stored_on inst:FileSystem02 .
+inst:FileSystem01 :mounted_from inst:StorageVolume01 .
+inst:FileSystem02 :mounted_from inst:StorageVolume02 .
+inst:StorageVolume01 :allocated_from inst:StorageArray01 .
+inst:StorageVolume02 :allocated_from inst:StorageArray01 .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer
+# ----------------------------------------------------------------------------
+
+inst:CoreSwitch01
+  rdf:type :NetworkDevice ;
+  :name "SW-CORE-01" ;
+  :description "Cisco Nexus 9000 core switch" ;
+  :device_type "switch" ;
+  :location "Datacenter-NYC-Rack01" ;
+  :manufacturer "Cisco" ;
+  :model "Nexus 9000" ;
+  :management_ip "10.1.0.10" ;
+  :lifecycle_status "active" .
+
+inst:LoadBalancer01
+  rdf:type :LoadBalancer ;
+  :name "LB-ERP-01" ;
+  :description "F5 BIG-IP load balancer for ERP" ;
+  :lb_type "hardware" ;
+  :location "Datacenter-NYC" ;
+  :algorithm "round-robin" ;
+  :lifecycle_status "active" .
+
+inst:NetworkInterface01
+  rdf:type :NetworkInterface ;
+  :name "eth0" ;
+  :description "Primary network interface for ERP app VM" ;
+  :interface_type "virtual" ;
+  :ip_address "10.1.10.50" ;
+  :mac_address "00:50:56:12:34:56" ;
+  :subnet_mask "255.255.255.0" ;
+  :lifecycle_status "active" .
+
+inst:NetworkInterface02
+  rdf:type :NetworkInterface ;
+  :name "eth0" ;
+  :description "Primary network interface for ERP DB VM" ;
+  :interface_type "virtual" ;
+  :ip_address "10.1.10.51" ;
+  :mac_address "00:50:56:12:34:57" ;
+  :subnet_mask "255.255.255.0" ;
+  :lifecycle_status "active" .
+
+inst:AppSubnet
+  rdf:type :NetworkSegment ;
+  :name "Application Subnet" ;
+  :description "Subnet for application servers" ;
+  :segment_type "subnet" ;
+  :cidr_block "10.1.10.0/24" ;
+  :vlan_id 10 ;
+  :location "Datacenter-NYC" ;
+  :lifecycle_status "active" .
+
+inst:CommPath01
+  rdf:type :CommunicationPath ;
+  :name "ERP-App-to-DB" ;
+  :description "Communication path from ERP app to database" ;
+  :protocol "sql" ;
+  :path_type "direct" ;
+  :destination_port 1521 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+inst:CommPath02
+  rdf:type :CommunicationPath ;
+  :name "Client-to-ERP" ;
+  :description "Communication path from clients to ERP application" ;
+  :protocol "https" ;
+  :path_type "routed" ;
+  :destination_port 9443 ;
+  :encrypted true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:NetworkInterface01 :attached_to inst:ERPVM01 .
+inst:NetworkInterface02 :attached_to inst:ERPVM02 .
+inst:NetworkInterface01 :part_of_segment inst:AppSubnet .
+inst:NetworkInterface02 :part_of_segment inst:AppSubnet .
+inst:ERPApplication :communicates_via inst:CommPath01 .
+inst:ERPApplication :communicates_via inst:CommPath02 .
+inst:ERPApplication :exposes_via inst:LoadBalancer01 .
+inst:CommPath01 :routes_through inst:CoreSwitch01 .
+inst:CommPath02 :routes_through inst:CoreSwitch01 .
+inst:LoadBalancer01 :balances_to inst:ERPVM01 .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer
+# ----------------------------------------------------------------------------
+
+inst:DatacenterFirewall
+  rdf:type :Firewall ;
+  :name "FW-DC-NYC-01" ;
+  :description "Palo Alto firewall for datacenter" ;
+  :security_type "firewall" ;
+  :firewall_type "next_gen" ;
+  :location "Datacenter-NYC" ;
+  :management_ip "10.1.0.5" ;
+  :lifecycle_status "active" .
+
+inst:ERPCertificate
+  rdf:type :Certificate ;
+  :name "erp.example.com" ;
+  :description "SSL certificate for ERP application" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=erp.example.com, O=Example Corp, C=US" ;
+  :issuer "CN=Example Corp CA, O=Example Corp, C=US" ;
+  :common_name "erp.example.com" ;
+  :valid_from "2024-01-01T00:00:00Z"^^xsd:dateTime ;
+  :valid_to "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :expiration_date "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+  :lifecycle_status "active" .
+
+inst:CorporateCA
+  rdf:type :CertificateAuthority ;
+  :name "Example Corp Certificate Authority" ;
+  :description "Internal certificate authority" ;
+  :security_type "certificate" ;
+  :ca_type "intermediate_ca" ;
+  :subject "CN=Example Corp CA, O=Example Corp, C=US" ;
+  :issuer "CN=Example Root CA, O=Example Corp, C=US" ;
+  :trust_level "trusted" ;
+  :lifecycle_status "active" .
+
+inst:DataProtectionPolicy
+  rdf:type :SecurityPolicy ;
+  :name "Data Protection Policy" ;
+  :description "Policy for protecting sensitive data" ;
+  :security_type "policy" ;
+  :policy_type "data_protection" ;
+  :policy_framework "NIST SP 800-53" ;
+  :enforcement_mode "enforcing" ;
+  :lifecycle_status "active" .
+
+inst:InternalZone
+  rdf:type :SecurityZone ;
+  :name "Internal Network Zone" ;
+  :description "Trusted internal network zone" ;
+  :security_type "security_zone" ;
+  :zone_type "internal" ;
+  :trust_level "trusted" ;
+  :security_classification "confidential" ;
+  :mfa_enabled true ;
+  :lifecycle_status "active" .
+
+# Relationships
+inst:ERPCertificate :issued_by inst:CorporateCA .
+inst:LoadBalancer01 :uses_certificate inst:ERPCertificate .
+inst:DatacenterFirewall :enforces inst:DataProtectionPolicy .
+inst:ERPApplication :protected_by inst:DatacenterFirewall .
+inst:ERPDatabase :protected_by inst:DatacenterFirewall .
+inst:ERPApplication :secured_by inst:DataProtectionPolicy .
+inst:ERPDatabase :secured_by inst:DataProtectionPolicy .
+inst:ERPVM01 :belongs_to_zone inst:InternalZone .
+inst:ERPVM02 :belongs_to_zone inst:InternalZone .
+inst:AppSubnet :belongs_to_zone inst:InternalZone .
