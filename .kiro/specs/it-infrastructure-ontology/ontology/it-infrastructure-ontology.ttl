@@ -1195,3 +1195,744 @@
   rdfs:domain :InfrastructureEntity ;
   rdfs:range xsd:string ;
   dcterms:source "CIM" .
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer Data Properties
+# ----------------------------------------------------------------------------
+
+:process_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "process type" ;
+  rdfs:comment "Classification of process role" ;
+  rdfs:domain :BusinessProcess ;
+  rdfs:range xsd:string ;
+  dcterms:source "ArchiMate" .
+
+:frequency
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "frequency" ;
+  rdfs:comment "How often the process executes" ;
+  rdfs:domain :BusinessProcess ;
+  rdfs:range xsd:string ;
+  dcterms:source "ITIL" .
+
+:sla_target
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "SLA target" ;
+  rdfs:comment "Service level agreement target" ;
+  rdfs:domain [ owl:unionOf ( :BusinessProcess :BusinessService ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "ITIL" .
+
+:maturity_level
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "maturity level" ;
+  rdfs:comment "Capability maturity assessment" ;
+  rdfs:domain :BusinessCapability ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF" .
+
+:capability_level
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "capability level" ;
+  rdfs:comment "Hierarchical level (1=strategic, 2=tactical, 3=operational)" ;
+  rdfs:domain :BusinessCapability ;
+  rdfs:range xsd:integer ;
+  dcterms:source "ArchiMate" .
+
+:service_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "service type" ;
+  rdfs:comment "Type of service" ;
+  rdfs:domain [ owl:unionOf ( :BusinessService :Service ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "ArchiMate, TOGAF" .
+
+:product_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "product type" ;
+  rdfs:comment "Nature of the product" ;
+  rdfs:domain :Product ;
+  rdfs:range xsd:string ;
+  dcterms:source "ArchiMate" .
+
+:launch_date
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "launch date" ;
+  rdfs:comment "Product launch or go-live date" ;
+  rdfs:domain :Product ;
+  rdfs:range xsd:date ;
+  dcterms:source "TOGAF" .
+
+:retirement_date
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "retirement date" ;
+  rdfs:comment "Planned or actual retirement date" ;
+  rdfs:domain :Product ;
+  rdfs:range xsd:date ;
+  dcterms:source "TOGAF" .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer Data Properties
+# ----------------------------------------------------------------------------
+
+:application_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "application type" ;
+  rdfs:comment "Architecture pattern" ;
+  rdfs:domain :Application ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF" .
+
+:deployment_model
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "deployment model" ;
+  rdfs:comment "How the application is deployed" ;
+  rdfs:domain :Application ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:runtime_environment
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "runtime environment" ;
+  rdfs:comment "Runtime platform" ;
+  rdfs:domain :Application ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:technology_stack
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "technology stack" ;
+  rdfs:comment "Primary technologies used" ;
+  rdfs:domain :Application ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF" .
+
+:data_classification
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "data classification" ;
+  rdfs:comment "Data sensitivity level" ;
+  rdfs:domain [ owl:unionOf ( :Application :Database :DataObject ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "ITIL, NIST" .
+
+:database_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "database type" ;
+  rdfs:comment "Type of database" ;
+  rdfs:domain :Database ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:database_product
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "database product" ;
+  rdfs:comment "Database product name" ;
+  rdfs:domain :Database ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:api_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "API type" ;
+  rdfs:comment "Type of API" ;
+  rdfs:domain :API ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF" .
+
+:endpoint_url
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "endpoint URL" ;
+  rdfs:comment "Service or API endpoint URL" ;
+  rdfs:domain [ owl:unionOf ( :Service :API ) ] ;
+  rdfs:range xsd:anyURI ;
+  dcterms:source "TOGAF" .
+
+:protocol
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "protocol" ;
+  rdfs:comment "Communication protocol" ;
+  rdfs:domain [ owl:unionOf ( :Service :API :CommunicationPath :MessageQueue ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "TOGAF, IETF" .
+
+:port
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "port" ;
+  rdfs:comment "Network port number" ;
+  rdfs:domain [ owl:unionOf ( :ApplicationServer :DatabaseInstance :CommunicationPath ) ] ;
+  rdfs:range xsd:integer ;
+  dcterms:source "CIM" .
+
+# ----------------------------------------------------------------------------
+# Layer 3: Container Layer Data Properties
+# ----------------------------------------------------------------------------
+
+:image_name
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "image name" ;
+  rdfs:comment "Container image reference" ;
+  rdfs:domain :Container ;
+  rdfs:range xsd:string ;
+  dcterms:source "Kubernetes API" .
+
+:orchestration_platform
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "orchestration platform" ;
+  rdfs:comment "Container orchestration platform type" ;
+  rdfs:domain [ owl:unionOf ( :Container :Cluster ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "Kubernetes API, OpenShift API" .
+
+:replica_count
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "replica count" ;
+  rdfs:comment "Number of replicas" ;
+  rdfs:domain :Deployment ;
+  rdfs:range xsd:integer ;
+  dcterms:source "Kubernetes API" .
+
+:namespace
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "namespace" ;
+  rdfs:comment "Kubernetes namespace" ;
+  rdfs:domain [ owl:unionOf ( :Pod :Deployment :KubernetesService ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "Kubernetes API" .
+
+:pod_ip
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "pod IP" ;
+  rdfs:comment "IP address allocated to pod" ;
+  rdfs:domain :Pod ;
+  rdfs:range xsd:string ;
+  dcterms:source "Kubernetes API" .
+
+:external_hostname
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "external hostname" ;
+  rdfs:comment "External hostname for route" ;
+  rdfs:domain :Route ;
+  rdfs:range xsd:string ;
+  dcterms:source "OpenShift API" .
+
+:tls_termination
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "TLS termination" ;
+  rdfs:comment "TLS termination type" ;
+  rdfs:domain :Route ;
+  rdfs:range xsd:string ;
+  dcterms:source "OpenShift API" .
+
+:api_endpoint
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "API endpoint" ;
+  rdfs:comment "API server endpoint URL" ;
+  rdfs:domain :Cluster ;
+  rdfs:range xsd:anyURI ;
+  dcterms:source "Kubernetes API" .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer Data Properties
+# ----------------------------------------------------------------------------
+
+:resource_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "resource type" ;
+  rdfs:comment "Deployment model (physical, virtual, cloud)" ;
+  rdfs:domain :PhysicalInfrastructureLayer ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:serial_number
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "serial number" ;
+  rdfs:comment "Hardware serial number" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :StorageArray ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:manufacturer
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "manufacturer" ;
+  rdfs:comment "Hardware manufacturer" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :StorageArray :NetworkDevice ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:model
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "model" ;
+  rdfs:comment "Hardware model number" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :StorageArray :NetworkDevice ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:cpu_count
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "CPU count" ;
+  rdfs:comment "Number of CPUs" ;
+  rdfs:domain :PhysicalServer ;
+  rdfs:range xsd:integer ;
+  dcterms:source "CIM" .
+
+:vcpu_count
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "vCPU count" ;
+  rdfs:comment "Number of virtual CPUs" ;
+  rdfs:domain [ owl:unionOf ( :VirtualMachine :CloudInstance ) ] ;
+  rdfs:range xsd:integer ;
+  dcterms:source "CIM, Cloud APIs" .
+
+:memory_gb
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "memory GB" ;
+  rdfs:comment "Memory in gigabytes" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance ) ] ;
+  rdfs:range xsd:decimal ;
+  dcterms:source "CIM, Cloud APIs" .
+
+:operating_system
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "operating system" ;
+  rdfs:comment "Operating system name and version" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:ip_address
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "IP address" ;
+  rdfs:comment "IP address" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :NetworkInterface ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:hypervisor_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "hypervisor type" ;
+  rdfs:comment "Hypervisor platform type" ;
+  rdfs:domain :Hypervisor ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:cloud_provider
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "cloud provider" ;
+  rdfs:comment "Cloud service provider" ;
+  rdfs:domain [ owl:unionOf ( :CloudInstance :CloudService :CloudStorageService ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "Cloud APIs" .
+
+:instance_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "instance type" ;
+  rdfs:comment "Cloud instance type or size" ;
+  rdfs:domain :CloudInstance ;
+  rdfs:range xsd:string ;
+  dcterms:source "AWS API, Azure API, GCP API" .
+
+:region
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "region" ;
+  rdfs:comment "Cloud region or datacenter location" ;
+  rdfs:domain [ owl:unionOf ( :CloudInstance :CloudService :Cluster ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "Cloud APIs" .
+
+:capacity_gb
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "capacity GB" ;
+  rdfs:comment "Storage capacity in gigabytes" ;
+  rdfs:domain [ owl:unionOf ( :StorageVolume :FileSystem ) ] ;
+  rdfs:range xsd:decimal ;
+  dcterms:source "CIM" .
+
+:total_capacity_tb
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "total capacity TB" ;
+  rdfs:comment "Total capacity in terabytes" ;
+  rdfs:domain [ owl:unionOf ( :StorageArray :StoragePool ) ] ;
+  rdfs:range xsd:decimal ;
+  dcterms:source "CIM" .
+
+:volume_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "volume type" ;
+  rdfs:comment "Type of storage volume" ;
+  rdfs:domain :StorageVolume ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:filesystem_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "filesystem type" ;
+  rdfs:comment "Type of filesystem" ;
+  rdfs:domain :FileSystem ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer Data Properties
+# ----------------------------------------------------------------------------
+
+:device_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "device type" ;
+  rdfs:comment "Type of network device" ;
+  rdfs:domain :NetworkDevice ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:management_ip
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "management IP" ;
+  rdfs:comment "Management IP address" ;
+  rdfs:domain [ owl:unionOf ( :NetworkDevice :Firewall ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:mac_address
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "MAC address" ;
+  rdfs:comment "MAC address" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:interface_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "interface type" ;
+  rdfs:comment "Type of network interface" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:subnet_mask
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "subnet mask" ;
+  rdfs:comment "Subnet mask" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:cidr_block
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "CIDR block" ;
+  rdfs:comment "CIDR notation for network segment" ;
+  rdfs:domain :NetworkSegment ;
+  rdfs:range xsd:string ;
+  dcterms:source "IETF" .
+
+:vlan_id
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "VLAN ID" ;
+  rdfs:comment "VLAN identifier" ;
+  rdfs:domain [ owl:unionOf ( :NetworkSegment :NetworkInterface ) ] ;
+  rdfs:range xsd:integer ;
+  dcterms:source "CIM" .
+
+:segment_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "segment type" ;
+  rdfs:comment "Type of network segment" ;
+  rdfs:domain :NetworkSegment ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:path_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "path type" ;
+  rdfs:comment "Type of communication path" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:source_port
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "source port" ;
+  rdfs:comment "Source port number" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range xsd:integer ;
+  dcterms:source "IETF" .
+
+:destination_port
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "destination port" ;
+  rdfs:comment "Destination port number" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range xsd:integer ;
+  dcterms:source "IETF" .
+
+:bandwidth_mbps
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "bandwidth Mbps" ;
+  rdfs:comment "Bandwidth in megabits per second" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range xsd:decimal ;
+  dcterms:source "CIM" .
+
+:encrypted
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "encrypted" ;
+  rdfs:comment "Whether communication is encrypted" ;
+  rdfs:domain [ owl:unionOf ( :CommunicationPath :StorageVolume ) ] ;
+  rdfs:range xsd:boolean ;
+  dcterms:source "CIM, NIST" .
+
+:lb_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "load balancer type" ;
+  rdfs:comment "Type of load balancer" ;
+  rdfs:domain :LoadBalancer ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:algorithm
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "algorithm" ;
+  rdfs:comment "Load balancing algorithm" ;
+  rdfs:domain :LoadBalancer ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer Data Properties
+# ----------------------------------------------------------------------------
+
+:security_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "security type" ;
+  rdfs:comment "Type of security component" ;
+  rdfs:domain :SecurityLayer ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM, NIST" .
+
+:firewall_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "firewall type" ;
+  rdfs:comment "Type of firewall" ;
+  rdfs:domain :Firewall ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:waf_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "WAF type" ;
+  rdfs:comment "Type of web application firewall" ;
+  rdfs:domain :WAF ;
+  rdfs:range xsd:string ;
+  dcterms:source "CIM" .
+
+:certificate_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "certificate type" ;
+  rdfs:comment "Type of certificate" ;
+  rdfs:domain :Certificate ;
+  rdfs:range xsd:string ;
+  dcterms:source "X.509, PKI" .
+
+:subject
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "subject" ;
+  rdfs:comment "Certificate subject distinguished name" ;
+  rdfs:domain [ owl:unionOf ( :Certificate :CertificateAuthority ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "X.509" .
+
+:issuer
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "issuer" ;
+  rdfs:comment "Certificate issuer distinguished name" ;
+  rdfs:domain [ owl:unionOf ( :Certificate :CertificateAuthority ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "X.509" .
+
+:serial_number_cert
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "serial number" ;
+  rdfs:comment "Certificate serial number" ;
+  rdfs:domain :Certificate ;
+  rdfs:range xsd:string ;
+  dcterms:source "X.509" .
+
+:common_name
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "common name" ;
+  rdfs:comment "Certificate common name" ;
+  rdfs:domain :Certificate ;
+  rdfs:range xsd:string ;
+  dcterms:source "X.509" .
+
+:valid_from
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "valid from" ;
+  rdfs:comment "Certificate validity start date" ;
+  rdfs:domain [ owl:unionOf ( :Certificate :CertificateAuthority ) ] ;
+  rdfs:range xsd:dateTime ;
+  dcterms:source "X.509" .
+
+:valid_to
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "valid to" ;
+  rdfs:comment "Certificate expiration date" ;
+  rdfs:domain [ owl:unionOf ( :Certificate :CertificateAuthority ) ] ;
+  rdfs:range xsd:dateTime ;
+  dcterms:source "X.509" .
+
+:expiration_date
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "expiration date" ;
+  rdfs:comment "Certificate expiration date" ;
+  rdfs:domain :Certificate ;
+  rdfs:range xsd:dateTime ;
+  dcterms:source "X.509" .
+
+:ca_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "CA type" ;
+  rdfs:comment "Type of certificate authority" ;
+  rdfs:domain :CertificateAuthority ;
+  rdfs:range xsd:string ;
+  dcterms:source "PKI" .
+
+:trust_level
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "trust level" ;
+  rdfs:comment "Trust level or classification" ;
+  rdfs:domain [ owl:unionOf ( :CertificateAuthority :SecurityZone ) ] ;
+  rdfs:range xsd:string ;
+  dcterms:source "NIST" .
+
+:policy_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "policy type" ;
+  rdfs:comment "Type of security policy" ;
+  rdfs:domain :SecurityPolicy ;
+  rdfs:range xsd:string ;
+  dcterms:source "NIST" .
+
+:policy_framework
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "policy framework" ;
+  rdfs:comment "Security framework or standard" ;
+  rdfs:domain :SecurityPolicy ;
+  rdfs:range xsd:string ;
+  dcterms:source "NIST" .
+
+:enforcement_mode
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "enforcement mode" ;
+  rdfs:comment "Policy enforcement mode" ;
+  rdfs:domain :SecurityPolicy ;
+  rdfs:range xsd:string ;
+  dcterms:source "NIST" .
+
+:idp_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "IdP type" ;
+  rdfs:comment "Type of identity provider" ;
+  rdfs:domain :IdentityProvider ;
+  rdfs:range xsd:string ;
+  dcterms:source "SAML, OAuth2, OpenID Connect" .
+
+:mfa_enabled
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "MFA enabled" ;
+  rdfs:comment "Whether multi-factor authentication is enabled" ;
+  rdfs:domain [ owl:unionOf ( :IdentityProvider :SecurityZone ) ] ;
+  rdfs:range xsd:boolean ;
+  dcterms:source "NIST" .
+
+:zone_type
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "zone type" ;
+  rdfs:comment "Type of security zone" ;
+  rdfs:domain :SecurityZone ;
+  rdfs:range xsd:string ;
+  dcterms:source "NIST" .
+
+:security_classification
+  rdf:type owl:DatatypeProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "security classification" ;
+  rdfs:comment "Data security classification" ;
+  rdfs:domain :SecurityZone ;
+  rdfs:range xsd:string ;
+  dcterms:source "NIST" .

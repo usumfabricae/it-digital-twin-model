@@ -1,0 +1,782 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# SHACL Validation Shapes for IT Infrastructure Ontology
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Layer 1: Business Process Layer Shapes
+# ----------------------------------------------------------------------------
+
+:BusinessProcessShape
+  a sh:NodeShape ;
+  sh:targetClass :BusinessProcess ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+    sh:message "BusinessProcess must have exactly one non-empty name" ;
+  ] ;
+  sh:property [
+    sh:path :owner ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "BusinessProcess must have exactly one owner" ;
+  ] ;
+  sh:property [
+    sh:path :criticality ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "critical" "high" "medium" "low" ) ;
+    sh:message "BusinessProcess must have criticality: critical, high, medium, or low" ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "planned" "active" "deprecated" "retired" ) ;
+    sh:message "BusinessProcess must have lifecycle_status: planned, active, deprecated, or retired" ;
+  ] ;
+  sh:property [
+    sh:path :process_type ;
+    sh:maxCount 1 ;
+    sh:in ( "core" "supporting" "management" ) ;
+  ] ;
+  sh:property [
+    sh:path :frequency ;
+    sh:maxCount 1 ;
+    sh:in ( "real-time" "hourly" "daily" "weekly" "monthly" "quarterly" "annual" "on-demand" ) ;
+  ] .
+
+:BusinessCapabilityShape
+  a sh:NodeShape ;
+  sh:targetClass :BusinessCapability ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:minLength 1 ;
+  ] ;
+  sh:property [
+    sh:path :owner ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :criticality ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "critical" "high" "medium" "low" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "planned" "active" "deprecated" "retired" ) ;
+  ] ;
+  sh:property [
+    sh:path :capability_level ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:integer ;
+    sh:minInclusive 1 ;
+    sh:maxInclusive 3 ;
+  ] .
+
+:BusinessServiceShape
+  a sh:NodeShape ;
+  sh:targetClass :BusinessService ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :owner ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :criticality ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "critical" "high" "medium" "low" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "planned" "active" "deprecated" "retired" ) ;
+  ] .
+
+:ProductShape
+  a sh:NodeShape ;
+  sh:targetClass :Product ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :owner ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :criticality ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "critical" "high" "medium" "low" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "planned" "active" "deprecated" "retired" ) ;
+  ] ;
+  sh:property [
+    sh:path :launch_date ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:date ;
+  ] ;
+  sh:property [
+    sh:path :retirement_date ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:date ;
+  ] .
+
+# ----------------------------------------------------------------------------
+# Layer 2: Application Layer Shapes
+# ----------------------------------------------------------------------------
+
+:ApplicationShape
+  a sh:NodeShape ;
+  sh:targetClass :Application ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :application_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "monolithic" "SOA_service" "microservice" "batch" "legacy" "mobile_app" "web_app" ) ;
+  ] ;
+  sh:property [
+    sh:path :deployment_model ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "containerized" "vm_based" "bare_metal" "serverless" "cloud_managed" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "development" "testing" "staging" "production" "deprecated" "retired" ) ;
+  ] .
+
+:DatabaseShape
+  a sh:NodeShape ;
+  sh:targetClass :Database ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :database_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "relational" "nosql_document" "nosql_keyvalue" "nosql_graph" "nosql_columnar" "nosql_wide_column" "timeseries" "in_memory" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "maintenance" "failed" "retired" ) ;
+  ] .
+
+:APIShape
+  a sh:NodeShape ;
+  sh:targetClass :API ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :api_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "REST" "SOAP" "GraphQL" "gRPC" "WebSocket" "WebHook" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "deprecated" "retired" ) ;
+  ] .
+
+# ----------------------------------------------------------------------------
+# Layer 3: Container Layer Shapes
+# ----------------------------------------------------------------------------
+
+:ContainerShape
+  a sh:NodeShape ;
+  sh:targetClass :Container ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :image_name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "Waiting" "Running" "Terminated" "Unknown" ) ;
+  ] .
+
+:PodShape
+  a sh:NodeShape ;
+  sh:targetClass :Pod ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :namespace ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "Pending" "Running" "Succeeded" "Failed" "Unknown" ) ;
+  ] .
+
+:ClusterShape
+  a sh:NodeShape ;
+  sh:targetClass :Cluster ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :orchestration_platform ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "kubernetes" "openshift" "docker_swarm" "ecs" "aci" "nomad" "rancher" ) ;
+  ] ;
+  sh:property [
+    sh:path :version ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :api_endpoint ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:anyURI ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "degraded" "failed" "maintenance" "provisioning" ) ;
+  ] .
+
+# ----------------------------------------------------------------------------
+# Layer 4: Physical Infrastructure Layer Shapes
+# ----------------------------------------------------------------------------
+
+:PhysicalServerShape
+  a sh:NodeShape ;
+  sh:targetClass :PhysicalServer ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :resource_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "physical" ;
+  ] ;
+  sh:property [
+    sh:path :location ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "maintenance" "failed" "decommissioned" "provisioning" ) ;
+  ] .
+
+:VirtualMachineShape
+  a sh:NodeShape ;
+  sh:targetClass :VirtualMachine ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :resource_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "virtual" ;
+  ] ;
+  sh:property [
+    sh:path :location ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "running" "stopped" "suspended" "failed" "terminated" "provisioning" ) ;
+  ] .
+
+:CloudInstanceShape
+  a sh:NodeShape ;
+  sh:targetClass :CloudInstance ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :resource_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "cloud_iaas" ;
+  ] ;
+  sh:property [
+    sh:path :cloud_provider ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "aws" "azure" "gcp" "alibaba" "oracle" "ibm" ) ;
+  ] ;
+  sh:property [
+    sh:path :instance_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :region ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "pending" "running" "stopping" "stopped" "terminated" "shutting_down" ) ;
+  ] .
+
+:StorageVolumeShape
+  a sh:NodeShape ;
+  sh:targetClass :StorageVolume ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :volume_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "lun" "logical_volume" "block_volume" "persistent_volume" ) ;
+  ] ;
+  sh:property [
+    sh:path :capacity_gb ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:decimal ;
+    sh:minExclusive 0 ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "available" "in_use" "creating" "deleting" "error" "attaching" "detaching" ) ;
+  ] .
+
+# ----------------------------------------------------------------------------
+# Layer 5: Network Layer Shapes
+# ----------------------------------------------------------------------------
+
+:NetworkDeviceShape
+  a sh:NodeShape ;
+  sh:targetClass :NetworkDevice ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :device_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "router" "switch" "load_balancer" "firewall" "gateway" "proxy" "vpn_gateway" ) ;
+  ] ;
+  sh:property [
+    sh:path :location ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "inactive" "degraded" "failed" "maintenance" "provisioning" ) ;
+  ] .
+
+:LoadBalancerShape
+  a sh:NodeShape ;
+  sh:targetClass :LoadBalancer ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lb_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "hardware" "software" "cloud" "virtual" ) ;
+  ] ;
+  sh:property [
+    sh:path :location ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "inactive" "degraded" "failed" "provisioning" "deleting" ) ;
+  ] .
+
+:NetworkSegmentShape
+  a sh:NodeShape ;
+  sh:targetClass :NetworkSegment ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :segment_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "subnet" "vlan" "vpc" "vnet" "security_group" ) ;
+  ] ;
+  sh:property [
+    sh:path :location ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "inactive" "creating" "deleting" "failed" ) ;
+  ] .
+
+:CommunicationPathShape
+  a sh:NodeShape ;
+  sh:targetClass :CommunicationPath ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :protocol ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "http" "https" "tcp" "udp" "grpc" "amqp" "mqtt" "kafka" "redis" "sql" ) ;
+  ] ;
+  sh:property [
+    sh:path :path_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "direct" "routed" "vpn" "internet" "private_link" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "inactive" "degraded" "failed" "establishing" ) ;
+  ] .
+
+# ----------------------------------------------------------------------------
+# Layer 6: Security Layer Shapes
+# ----------------------------------------------------------------------------
+
+:FirewallShape
+  a sh:NodeShape ;
+  sh:targetClass :Firewall ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :security_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "firewall" ;
+  ] ;
+  sh:property [
+    sh:path :firewall_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "network" "host_based" "cloud" "virtual" "next_gen" ) ;
+  ] ;
+  sh:property [
+    sh:path :location ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "inactive" "degraded" "failed" "maintenance" "provisioning" ) ;
+  ] .
+
+:CertificateShape
+  a sh:NodeShape ;
+  sh:targetClass :Certificate ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :security_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "certificate" ;
+  ] ;
+  sh:property [
+    sh:path :certificate_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "ssl_tls" "code_signing" "client_auth" "email" "root_ca" "intermediate_ca" ) ;
+  ] ;
+  sh:property [
+    sh:path :subject ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :issuer ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :valid_from ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+  ] ;
+  sh:property [
+    sh:path :valid_to ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "expired" "revoked" "pending" "renewing" "suspended" ) ;
+  ] ;
+  # Custom validation: active certificates must not be expired
+  sh:sparql [
+    sh:message "Active certificates must not be expired" ;
+    sh:select """
+      PREFIX : <http://example.org/it-infrastructure-ontology#>
+      SELECT $this
+      WHERE {
+        $this :lifecycle_status "active" .
+        $this :expiration_date ?expiry .
+        FILTER(?expiry < NOW())
+      }
+    """ ;
+  ] .
+
+:SecurityPolicyShape
+  a sh:NodeShape ;
+  sh:targetClass :SecurityPolicy ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :security_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "policy" ;
+  ] ;
+  sh:property [
+    sh:path :policy_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "access_control" "encryption" "compliance" "network" "data_protection" "authentication" "authorization" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "draft" "deprecated" "archived" "under_review" ) ;
+  ] .
+
+:SecurityZoneShape
+  a sh:NodeShape ;
+  sh:targetClass :SecurityZone ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :security_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:hasValue "security_zone" ;
+  ] ;
+  sh:property [
+    sh:path :zone_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "dmz" "internal" "external" "restricted" "public" "management" "production" "development" ) ;
+  ] ;
+  sh:property [
+    sh:path :trust_level ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "trusted" "untrusted" "semi_trusted" "restricted" "high_security" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "active" "inactive" "under_review" "deprecated" ) ;
+  ] .
+
+# ----------------------------------------------------------------------------
+# Cross-Layer Validation Rules
+# ----------------------------------------------------------------------------
+
+# Validation: NetworkInterface must be attached to exactly one compute resource
+:NetworkInterfaceAttachmentValidation
+  a sh:NodeShape ;
+  sh:targetClass :NetworkInterface ;
+  sh:property [
+    sh:path :attached_to ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "NetworkInterface must be attached to exactly one compute resource" ;
+  ] .
+
+# Validation: CommunicationPath must route through at least one network device
+:CommunicationPathRoutingValidation
+  a sh:NodeShape ;
+  sh:targetClass :CommunicationPath ;
+  sh:property [
+    sh:path :routes_through ;
+    sh:minCount 1 ;
+    sh:message "CommunicationPath must route through at least one network device" ;
+  ] .
+
+# Validation: LoadBalancer must balance to at least one target
+:LoadBalancerTargetValidation
+  a sh:NodeShape ;
+  sh:targetClass :LoadBalancer ;
+  sh:property [
+    sh:path :balances_to ;
+    sh:minCount 1 ;
+    sh:message "LoadBalancer must balance to at least one backend target" ;
+  ] .
+
+# Validation: Pod must contain at least one container
+:PodContainerValidation
+  a sh:NodeShape ;
+  sh:targetClass :Pod ;
+  sh:property [
+    sh:path :contains ;
+    sh:minCount 1 ;
+    sh:message "Pod must contain at least one container" ;
+  ] .
+
+# Validation: Certificate must be issued by a certificate authority
+:CertificateIssuerValidation
+  a sh:NodeShape ;
+  sh:targetClass :Certificate ;
+  sh:property [
+    sh:path :issued_by ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Certificate must be issued by exactly one certificate authority" ;
+  ] .
