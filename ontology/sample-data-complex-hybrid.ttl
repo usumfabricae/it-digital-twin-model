@@ -1,0 +1,1485 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix inst: <http://example.org/instances#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# COMPLEX HYBRID ARCHITECTURE
+# ============================================================================
+# Architecture Overview:
+# - 5 Applications total
+#   - 1 Legacy SOA application (on-premises)
+#   - 3 Microservices-based applications (Azure)
+#   - 1 Microservices-based application (AWS)
+# - 2 Common microservices shared across all applications
+# - Integration via MuleSoft SaaS
+# - Legacy: WebLogic cluster, Oracle RAC, Nginx, Load Balancer
+# - Modern: Kubernetes, MongoDB SaaS, VM-hosted DBs, Cloud DBs
+# ============================================================================
+
+# ============================================================================
+# LAYER 1: BUSINESS PROCESSES
+# ============================================================================
+
+inst:CustomerManagement a :BusinessProcess ;
+  :name "Customer Management" ;
+  :owner "Customer Operations VP" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :description "End-to-end customer lifecycle management" .
+
+inst:OrderProcessing a :BusinessProcess ;
+  :name "Order Processing" ;
+  :owner "Sales Operations VP" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :description "Order capture, validation, and fulfillment" .
+
+inst:InventoryManagement a :BusinessProcess ;
+  :name "Inventory Management" ;
+  :owner "Supply Chain VP" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :description "Inventory tracking and optimization" .
+
+inst:PaymentProcessing a :BusinessProcess ;
+  :name "Payment Processing" ;
+  :owner "Finance VP" ;
+  :criticality "critical" ;
+  :lifecycle_status "active" ;
+  :process_type "core" ;
+  :frequency "real-time" ;
+  :description "Payment capture and processing" .
+
+inst:Analytics a :BusinessProcess ;
+  :name "Business Analytics" ;
+  :owner "Analytics VP" ;
+  :criticality "high" ;
+  :lifecycle_status "active" ;
+  :process_type "supporting" ;
+  :frequency "daily" ;
+  :description "Business intelligence and reporting" .
+
+# ============================================================================
+# LAYER 2: APPLICATIONS - LEGACY APPLICATION
+# ============================================================================
+
+inst:LegacyERPSystem a :Application ;
+  :name "Legacy ERP System" ;
+  :version "8.5" ;
+  :application_type "SOA_service" ;
+  :deployment_model "vm_based" ;
+  :runtime_environment "WebLogic 12c" ;
+  :technology_stack "Java EE, SOA Suite" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" ;
+  :owner "IT Operations" ;
+  :description "Legacy enterprise resource planning system with SOA architecture" .
+
+# Legacy Application Components
+inst:ERPCustomerModule a :ApplicationComponent ;
+  :name "ERP Customer Module" ;
+  :component_type "web_service" ;
+  :version "8.5.1" ;
+  :lifecycle_status "production" ;
+  :description "Customer management module" .
+
+inst:ERPOrderModule a :ApplicationComponent ;
+  :name "ERP Order Module" ;
+  :component_type "web_service" ;
+  :version "8.5.2" ;
+  :lifecycle_status "production" ;
+  :description "Order processing module" .
+
+inst:ERPInventoryModule a :ApplicationComponent ;
+  :name "ERP Inventory Module" ;
+  :component_type "web_service" ;
+  :version "8.5.1" ;
+  :lifecycle_status "production" ;
+  :description "Inventory management module" .
+
+# Legacy Application Server Cluster
+inst:WebLogicCluster a :ApplicationServer ;
+  :name "WebLogic Production Cluster" ;
+  :server_type "weblogic" ;
+  :version "12.2.1.4" ;
+  :port 7001 ;
+  :lifecycle_status "running" ;
+  :description "WebLogic cluster with 3 managed servers" .
+
+inst:WebLogicNode1 a :ApplicationServer ;
+  :name "WebLogic Managed Server 1" ;
+  :server_type "weblogic" ;
+  :version "12.2.1.4" ;
+  :port 7003 ;
+  :lifecycle_status "running" .
+
+inst:WebLogicNode2 a :ApplicationServer ;
+  :name "WebLogic Managed Server 2" ;
+  :server_type "weblogic" ;
+  :version "12.2.1.4" ;
+  :port 7003 ;
+  :lifecycle_status "running" .
+
+inst:WebLogicNode3 a :ApplicationServer ;
+  :name "WebLogic Managed Server 3" ;
+  :server_type "weblogic" ;
+  :version "12.2.1.4" ;
+  :port 7003 ;
+  :lifecycle_status "running" .
+
+# Legacy Web Server
+inst:NginxWebServer a :ApplicationServer ;
+  :name "Nginx Web Server" ;
+  :server_type "nginx" ;
+  :version "1.20.2" ;
+  :port 80 ;
+  :lifecycle_status "running" ;
+  :description "Nginx reverse proxy for legacy ERP" .
+
+# Legacy Database - Oracle RAC
+inst:OracleRACDatabase a :Database ;
+  :name "Oracle RAC Production" ;
+  :database_type "relational" ;
+  :database_engine "Oracle Database" ;
+  :version "19c" ;
+  :port 1521 ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" ;
+  :description "Oracle Real Application Cluster for high availability" .
+
+inst:OracleRACNode1 a :DatabaseInstance ;
+  :name "Oracle RAC Instance 1" ;
+  :instance_id "ERPDB1" ;
+  :size_gb 500.0 ;
+  :lifecycle_status "production" .
+
+inst:OracleRACNode2 a :DatabaseInstance ;
+  :name "Oracle RAC Instance 2" ;
+  :instance_id "ERPDB2" ;
+  :size_gb 500.0 ;
+  :lifecycle_status "production" .
+
+# Legacy SOA APIs
+inst:ERPCustomerAPI a :API ;
+  :name "ERP Customer API" ;
+  :api_type "soap" ;
+  :endpoint_url "http://erp.example.com/services/customer"^^xsd:anyURI ;
+  :version "2.0" ;
+  :authentication_type "basic" ;
+  :lifecycle_status "production" ;
+  :description "SOAP/XML API for customer operations - synchronous" .
+
+inst:ERPOrderAPI a :API ;
+  :name "ERP Order API" ;
+  :api_type "soap" ;
+  :endpoint_url "http://erp.example.com/services/order"^^xsd:anyURI ;
+  :version "2.0" ;
+  :authentication_type "basic" ;
+  :lifecycle_status "production" ;
+  :description "SOAP/XML API for order operations - synchronous" .
+
+inst:ERPInventoryQueue a :MessageQueue ;
+  :name "ERP Inventory Queue" ;
+  :queue_type "point_to_point" ;
+  :queue_engine "Oracle Advanced Queuing" ;
+  :lifecycle_status "production" ;
+  :description "Asynchronous messaging for inventory updates" .
+
+
+# ============================================================================
+# LAYER 2: APPLICATIONS - MICROSERVICES (AZURE)
+# ============================================================================
+
+# Application 1: Customer Service (Azure)
+inst:CustomerServiceApp a :Application ;
+  :name "Customer Service Application" ;
+  :version "3.2.0" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :runtime_environment "Kubernetes" ;
+  :technology_stack "Node.js, Express" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" ;
+  :owner "Customer Experience Team" ;
+  :description "Modern customer service microservices on Azure" .
+
+inst:CustomerProfileService a :Service ;
+  :name "Customer Profile Service" ;
+  :service_type "rest" ;
+  :endpoint_url "https://api.customer.azure.example.com/profile"^^xsd:anyURI ;
+  :version "3.2.0" ;
+  :lifecycle_status "production" ;
+  :description "Customer profile management microservice" .
+
+inst:CustomerProfileAPI a :API ;
+  :name "Customer Profile API" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api.customer.azure.example.com/profile/v1"^^xsd:anyURI ;
+  :version "1.0" ;
+  :authentication_type "oauth2" ;
+  :lifecycle_status "production" .
+
+# Application 2: Order Management (Azure)
+inst:OrderManagementApp a :Application ;
+  :name "Order Management Application" ;
+  :version "2.5.1" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :runtime_environment "Kubernetes" ;
+  :technology_stack "Java Spring Boot" ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" ;
+  :owner "Order Operations Team" ;
+  :description "Modern order management microservices on Azure" .
+
+inst:OrderProcessingService a :Service ;
+  :name "Order Processing Service" ;
+  :service_type "rest" ;
+  :endpoint_url "https://api.orders.azure.example.com/processing"^^xsd:anyURI ;
+  :version "2.5.1" ;
+  :lifecycle_status "production" ;
+  :description "Order processing microservice" .
+
+inst:OrderProcessingAPI a :API ;
+  :name "Order Processing API" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api.orders.azure.example.com/v1"^^xsd:anyURI ;
+  :version "1.0" ;
+  :authentication_type "oauth2" ;
+  :lifecycle_status "production" .
+
+# Application 3: Inventory Service (Azure)
+inst:InventoryServiceApp a :Application ;
+  :name "Inventory Service Application" ;
+  :version "1.8.3" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :runtime_environment "Kubernetes" ;
+  :technology_stack "Python FastAPI" ;
+  :data_classification "internal" ;
+  :lifecycle_status "production" ;
+  :owner "Supply Chain Team" ;
+  :description "Modern inventory management microservices on Azure" .
+
+inst:InventoryTrackingService a :Service ;
+  :name "Inventory Tracking Service" ;
+  :service_type "rest" ;
+  :endpoint_url "https://api.inventory.azure.example.com/tracking"^^xsd:anyURI ;
+  :version "1.8.3" ;
+  :lifecycle_status "production" ;
+  :description "Real-time inventory tracking microservice" .
+
+inst:InventoryTrackingAPI a :API ;
+  :name "Inventory Tracking API" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api.inventory.azure.example.com/v1"^^xsd:anyURI ;
+  :version "1.0" ;
+  :authentication_type "api_key" ;
+  :lifecycle_status "production" .
+
+# ============================================================================
+# LAYER 2: APPLICATIONS - MICROSERVICES (AWS)
+# ============================================================================
+
+# Application 4: Payment Service (AWS)
+inst:PaymentServiceApp a :Application ;
+  :name "Payment Service Application" ;
+  :version "4.1.0" ;
+  :application_type "microservice" ;
+  :deployment_model "containerized" ;
+  :runtime_environment "Kubernetes" ;
+  :technology_stack "Go, Gin Framework" ;
+  :data_classification "restricted" ;
+  :lifecycle_status "production" ;
+  :owner "Finance Team" ;
+  :description "Payment processing microservices on AWS" .
+
+inst:PaymentProcessingService a :Service ;
+  :name "Payment Processing Service" ;
+  :service_type "rest" ;
+  :endpoint_url "https://api.payments.aws.example.com/process"^^xsd:anyURI ;
+  :version "4.1.0" ;
+  :lifecycle_status "production" ;
+  :description "Secure payment processing microservice" .
+
+inst:PaymentProcessingAPI a :API ;
+  :name "Payment Processing API" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api.payments.aws.example.com/v1"^^xsd:anyURI ;
+  :version "1.0" ;
+  :authentication_type "oauth2" ;
+  :lifecycle_status "production" .
+
+# ============================================================================
+# LAYER 2: COMMON MICROSERVICES (Shared across all applications)
+# ============================================================================
+
+# Common Service 1: Authentication Service (Azure)
+inst:AuthenticationService a :Service ;
+  :name "Authentication Service" ;
+  :service_type "rest" ;
+  :endpoint_url "https://api.auth.azure.example.com/v1"^^xsd:anyURI ;
+  :version "2.0.0" ;
+  :lifecycle_status "production" ;
+  :description "Centralized authentication and authorization service - shared by all applications" .
+
+inst:AuthenticationAPI a :API ;
+  :name "Authentication API" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api.auth.azure.example.com/v1/auth"^^xsd:anyURI ;
+  :version "1.0" ;
+  :authentication_type "oauth2" ;
+  :lifecycle_status "production" .
+
+# Common Service 2: Notification Service (AWS)
+inst:NotificationService a :Service ;
+  :name "Notification Service" ;
+  :service_type "rest" ;
+  :endpoint_url "https://api.notifications.aws.example.com/v1"^^xsd:anyURI ;
+  :version "1.5.0" ;
+  :lifecycle_status "production" ;
+  :description "Centralized notification service (email, SMS, push) - shared by all applications" .
+
+inst:NotificationAPI a :API ;
+  :name "Notification API" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api.notifications.aws.example.com/v1/notify"^^xsd:anyURI ;
+  :version "1.0" ;
+  :authentication_type "api_key" ;
+  :lifecycle_status "production" .
+
+# ============================================================================
+# LAYER 2: INTEGRATION MIDDLEWARE - MULESOFT (SaaS)
+# ============================================================================
+
+inst:MuleSoftESB a :Service ;
+  :name "MuleSoft Anypoint Platform" ;
+  :service_type "rest" ;
+  :endpoint_url "https://anypoint.mulesoft.com/api"^^xsd:anyURI ;
+  :version "4.4" ;
+  :lifecycle_status "production" ;
+  :description "MuleSoft ESB as SaaS - Integration middleware between legacy and modern applications" .
+
+inst:MuleSoftLegacyAdapter a :Service ;
+  :name "MuleSoft Legacy Adapter" ;
+  :service_type "soap" ;
+  :endpoint_url "https://anypoint.mulesoft.com/api/legacy-adapter"^^xsd:anyURI ;
+  :version "1.0" ;
+  :lifecycle_status "production" ;
+  :description "Adapter for SOAP/XML to REST transformation" .
+
+inst:MuleSoftAPIGateway a :API ;
+  :name "MuleSoft API Gateway" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api-gateway.mulesoft.example.com"^^xsd:anyURI ;
+  :version "4.4" ;
+  :authentication_type "oauth2" ;
+  :lifecycle_status "production" ;
+  :description "API Gateway for routing between legacy and microservices" .
+
+# ============================================================================
+# LAYER 2: API GATEWAY (for legacy to invoke microservices)
+# ============================================================================
+
+inst:EnterpriseAPIGateway a :API ;
+  :name "Enterprise API Gateway" ;
+  :api_type "rest" ;
+  :endpoint_url "https://api-gw.example.com"^^xsd:anyURI ;
+  :version "3.0" ;
+  :authentication_type "oauth2" ;
+  :lifecycle_status "production" ;
+  :description "API Gateway exposing microservices REST APIs to legacy application" .
+
+# ============================================================================
+# LAYER 2: DATABASES
+# ============================================================================
+
+# MongoDB SaaS (for Customer Service - Azure)
+inst:MongoDBAtlas a :Database ;
+  :name "MongoDB Atlas Cluster" ;
+  :database_type "nosql_document" ;
+  :database_engine "MongoDB" ;
+  :version "6.0" ;
+  :port 27017 ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" ;
+  :description "MongoDB Atlas SaaS for customer data" .
+
+# PostgreSQL on VM (for Order Management - Azure)
+inst:PostgreSQLOrderDB a :Database ;
+  :name "PostgreSQL Order Database" ;
+  :database_type "relational" ;
+  :database_engine "PostgreSQL" ;
+  :version "14.5" ;
+  :port 5432 ;
+  :data_classification "confidential" ;
+  :lifecycle_status "production" ;
+  :description "PostgreSQL database on Azure VM for order data" .
+
+# Azure SQL Database (for Inventory - Azure)
+inst:AzureSQLInventoryDB a :Database ;
+  :name "Azure SQL Inventory Database" ;
+  :database_type "relational" ;
+  :database_engine "Azure SQL Database" ;
+  :version "12.0" ;
+  :port 1433 ;
+  :data_classification "internal" ;
+  :lifecycle_status "production" ;
+  :description "Azure SQL Database managed service for inventory data" .
+
+# AWS RDS PostgreSQL (for Payment - AWS)
+inst:RDSPaymentDB a :Database ;
+  :name "RDS Payment Database" ;
+  :database_type "relational" ;
+  :database_engine "PostgreSQL" ;
+  :version "14.7" ;
+  :port 5432 ;
+  :data_classification "restricted" ;
+  :lifecycle_status "production" ;
+  :description "AWS RDS PostgreSQL for payment data" .
+
+# Redis Cache (Shared - Azure)
+inst:RedisCacheService a :CacheService ;
+  :name "Azure Redis Cache" ;
+  :cache_type "distributed" ;
+  :cache_engine "Redis" ;
+  :lifecycle_status "production" ;
+  :description "Shared Redis cache for all Azure microservices" .
+
+
+# ============================================================================
+# LAYER 3: CONTAINER & ORCHESTRATION - AZURE AKS
+# ============================================================================
+
+# Azure Kubernetes Cluster
+inst:AzureAKSCluster a :Cluster ;
+  :name "Azure AKS Production Cluster" ;
+  :cluster_id "aks-prod-eastus" ;
+  :orchestration_platform "kubernetes" ;
+  :version "1.26.3" ;
+  :node_count 6 ;
+  :lifecycle_status "active" ;
+  :description "Azure Kubernetes Service cluster for microservices" .
+
+# Namespaces
+inst:CustomerNamespace a :Namespace ;
+  :name "customer-service" ;
+  :namespace_id "ns-customer" ;
+  :resource_quota_cpu "16000m" ;
+  :resource_quota_memory "32Gi" ;
+  :lifecycle_status "active" .
+
+inst:OrderNamespace a :Namespace ;
+  :name "order-service" ;
+  :namespace_id "ns-order" ;
+  :resource_quota_cpu "16000m" ;
+  :resource_quota_memory "32Gi" ;
+  :lifecycle_status "active" .
+
+inst:InventoryNamespace a :Namespace ;
+  :name "inventory-service" ;
+  :namespace_id "ns-inventory" ;
+  :resource_quota_cpu "8000m" ;
+  :resource_quota_memory "16Gi" ;
+  :lifecycle_status "active" .
+
+inst:SharedNamespace a :Namespace ;
+  :name "shared-services" ;
+  :namespace_id "ns-shared" ;
+  :resource_quota_cpu "8000m" ;
+  :resource_quota_memory "16Gi" ;
+  :lifecycle_status "active" ;
+  :description "Namespace for shared services (auth, notifications)" .
+
+# Pods - Customer Service
+inst:CustomerProfilePod a :Pod ;
+  :name "customer-profile-pod" ;
+  :pod_id "customer-profile-abc123" ;
+  :replica_count 3 ;
+  :restart_policy "always" ;
+  :lifecycle_status "running" .
+
+# Pods - Order Service
+inst:OrderProcessingPod a :Pod ;
+  :name "order-processing-pod" ;
+  :pod_id "order-processing-def456" ;
+  :replica_count 3 ;
+  :restart_policy "always" ;
+  :lifecycle_status "running" .
+
+# Pods - Inventory Service
+inst:InventoryTrackingPod a :Pod ;
+  :name "inventory-tracking-pod" ;
+  :pod_id "inventory-tracking-ghi789" ;
+  :replica_count 2 ;
+  :restart_policy "always" ;
+  :lifecycle_status "running" .
+
+# Pods - Authentication Service
+inst:AuthenticationPod a :Pod ;
+  :name "authentication-pod" ;
+  :pod_id "auth-jkl012" ;
+  :replica_count 3 ;
+  :restart_policy "always" ;
+  :lifecycle_status "running" .
+
+# Kubernetes Services
+inst:CustomerK8sService a :KubernetesService ;
+  :name "customer-service-k8s" ;
+  :service_id "svc-customer" ;
+  :service_type "load_balancer" ;
+  :port 443 ;
+  :target_port 8080 ;
+  :lifecycle_status "active" .
+
+inst:OrderK8sService a :KubernetesService ;
+  :name "order-service-k8s" ;
+  :service_id "svc-order" ;
+  :service_type "load_balancer" ;
+  :port 443 ;
+  :target_port 8080 ;
+  :lifecycle_status "active" .
+
+inst:InventoryK8sService a :KubernetesService ;
+  :name "inventory-service-k8s" ;
+  :service_id "svc-inventory" ;
+  :service_type "load_balancer" ;
+  :port 443 ;
+  :target_port 8080 ;
+  :lifecycle_status "active" .
+
+inst:AuthK8sService a :KubernetesService ;
+  :name "auth-service-k8s" ;
+  :service_id "svc-auth" ;
+  :service_type "cluster_ip" ;
+  :port 8080 ;
+  :target_port 8080 ;
+  :lifecycle_status "active" .
+
+# ============================================================================
+# LAYER 3: CONTAINER & ORCHESTRATION - AWS EKS
+# ============================================================================
+
+# AWS EKS Cluster
+inst:AWSEKSCluster a :Cluster ;
+  :name "AWS EKS Production Cluster" ;
+  :cluster_id "eks-prod-us-east-1" ;
+  :orchestration_platform "kubernetes" ;
+  :version "1.26.2" ;
+  :node_count 4 ;
+  :lifecycle_status "active" ;
+  :description "AWS Elastic Kubernetes Service cluster for payment services" .
+
+# Namespaces
+inst:PaymentNamespace a :Namespace ;
+  :name "payment-service" ;
+  :namespace_id "ns-payment" ;
+  :resource_quota_cpu "16000m" ;
+  :resource_quota_memory "32Gi" ;
+  :lifecycle_status "active" .
+
+inst:NotificationNamespace a :Namespace ;
+  :name "notification-service" ;
+  :namespace_id "ns-notification" ;
+  :resource_quota_cpu "4000m" ;
+  :resource_quota_memory "8Gi" ;
+  :lifecycle_status "active" .
+
+# Pods - Payment Service
+inst:PaymentProcessingPod a :Pod ;
+  :name "payment-processing-pod" ;
+  :pod_id "payment-processing-mno345" ;
+  :replica_count 4 ;
+  :restart_policy "always" ;
+  :lifecycle_status "running" .
+
+# Pods - Notification Service
+inst:NotificationPod a :Pod ;
+  :name "notification-pod" ;
+  :pod_id "notification-pqr678" ;
+  :replica_count 2 ;
+  :restart_policy "always" ;
+  :lifecycle_status "running" .
+
+# Kubernetes Services
+inst:PaymentK8sService a :KubernetesService ;
+  :name "payment-service-k8s" ;
+  :service_id "svc-payment" ;
+  :service_type "load_balancer" ;
+  :port 443 ;
+  :target_port 8080 ;
+  :lifecycle_status "active" .
+
+inst:NotificationK8sService a :KubernetesService ;
+  :name "notification-service-k8s" ;
+  :service_id "svc-notification" ;
+  :service_type "cluster_ip" ;
+  :port 8080 ;
+  :target_port 8080 ;
+  :lifecycle_status "active" .
+
+# ============================================================================
+# LAYER 4: PHYSICAL INFRASTRUCTURE - ON-PREMISES
+# ============================================================================
+
+# Physical Servers for Legacy Application
+inst:OnPremServer01 a :PhysicalServer ;
+  :name "OnPrem-Server-01" ;
+  :server_id "srv-onprem-01" ;
+  :resource_type "physical" ;
+  :manufacturer "Dell" ;
+  :model "PowerEdge R740" ;
+  :cpu_count 2 ;
+  :cpu_cores 32 ;
+  :memory_gb 256.0 ;
+  :location "Datacenter-East-Rack-05-Slot-01" ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :lifecycle_status "running" .
+
+inst:OnPremServer02 a :PhysicalServer ;
+  :name "OnPrem-Server-02" ;
+  :server_id "srv-onprem-02" ;
+  :resource_type "physical" ;
+  :manufacturer "Dell" ;
+  :model "PowerEdge R740" ;
+  :cpu_count 2 ;
+  :cpu_cores 32 ;
+  :memory_gb 256.0 ;
+  :location "Datacenter-East-Rack-05-Slot-02" ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :lifecycle_status "running" .
+
+inst:OnPremServer03 a :PhysicalServer ;
+  :name "OnPrem-Server-03" ;
+  :server_id "srv-onprem-03" ;
+  :resource_type "physical" ;
+  :manufacturer "Dell" ;
+  :model "PowerEdge R740" ;
+  :cpu_count 2 ;
+  :cpu_cores 32 ;
+  :memory_gb 256.0 ;
+  :location "Datacenter-East-Rack-05-Slot-03" ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :lifecycle_status "running" .
+
+# Virtual Machines for WebLogic Cluster
+inst:WebLogicVM1 a :VirtualMachine ;
+  :name "WebLogic-VM-01" ;
+  :vm_id "vm-wls-01" ;
+  :resource_type "virtual" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :disk_gb 200.0 ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "running" .
+
+inst:WebLogicVM2 a :VirtualMachine ;
+  :name "WebLogic-VM-02" ;
+  :vm_id "vm-wls-02" ;
+  :resource_type "virtual" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :disk_gb 200.0 ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "running" .
+
+inst:WebLogicVM3 a :VirtualMachine ;
+  :name "WebLogic-VM-03" ;
+  :vm_id "vm-wls-03" ;
+  :resource_type "virtual" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :disk_gb 200.0 ;
+  :operating_system "Red Hat Enterprise Linux 8.5" ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "running" .
+
+# VM for Nginx
+inst:NginxVM a :VirtualMachine ;
+  :name "Nginx-VM" ;
+  :vm_id "vm-nginx-01" ;
+  :resource_type "virtual" ;
+  :vcpu_count 4 ;
+  :memory_gb 16.0 ;
+  :disk_gb 100.0 ;
+  :operating_system "Ubuntu 22.04 LTS" ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "running" .
+
+# VMs for Oracle RAC
+inst:OracleRACVM1 a :VirtualMachine ;
+  :name "Oracle-RAC-VM-01" ;
+  :vm_id "vm-oracle-01" ;
+  :resource_type "virtual" ;
+  :vcpu_count 16 ;
+  :memory_gb 128.0 ;
+  :disk_gb 500.0 ;
+  :operating_system "Oracle Linux 8.5" ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "running" .
+
+inst:OracleRACVM2 a :VirtualMachine ;
+  :name "Oracle-RAC-VM-02" ;
+  :vm_id "vm-oracle-02" ;
+  :resource_type "virtual" ;
+  :vcpu_count 16 ;
+  :memory_gb 128.0 ;
+  :disk_gb 500.0 ;
+  :operating_system "Oracle Linux 8.5" ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "running" .
+
+# Hypervisor
+inst:VMwareESXi a :Hypervisor ;
+  :name "VMware ESXi Cluster" ;
+  :hypervisor_type "vmware_esxi" ;
+  :version "7.0 U3" ;
+  :lifecycle_status "running" .
+
+# Storage for Legacy
+inst:NetAppSAN a :StorageArray ;
+  :name "NetApp SAN Array" ;
+  :array_id "netapp-san-01" ;
+  :storage_type "san" ;
+  :manufacturer "NetApp" ;
+  :model "FAS8300" ;
+  :capacity_tb 50.0 ;
+  :location "Datacenter-East-Storage-Room" ;
+  :lifecycle_status "active" .
+
+inst:OracleStorageVolume a :StorageVolume ;
+  :name "Oracle RAC Storage Volume" ;
+  :volume_id "vol-oracle-rac" ;
+  :capacity_gb 2000.0 ;
+  :volume_type "block" ;
+  :raid_level "RAID 10" ;
+  :lifecycle_status "active" .
+
+
+# ============================================================================
+# LAYER 4: PHYSICAL INFRASTRUCTURE - AZURE
+# ============================================================================
+
+# Azure AKS Node VMs
+inst:AzureAKSNode1 a :CloudInstance ;
+  :name "AKS Node 1" ;
+  :instance_id "aks-node-1-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_D8s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-1" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Ubuntu 20.04 LTS" ;
+  :lifecycle_status "running" .
+
+inst:AzureAKSNode2 a :CloudInstance ;
+  :name "AKS Node 2" ;
+  :instance_id "aks-node-2-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_D8s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-2" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Ubuntu 20.04 LTS" ;
+  :lifecycle_status "running" .
+
+inst:AzureAKSNode3 a :CloudInstance ;
+  :name "AKS Node 3" ;
+  :instance_id "aks-node-3-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_D8s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-1" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Ubuntu 20.04 LTS" ;
+  :lifecycle_status "running" .
+
+inst:AzureAKSNode4 a :CloudInstance ;
+  :name "AKS Node 4" ;
+  :instance_id "aks-node-4-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_D8s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-2" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Ubuntu 20.04 LTS" ;
+  :lifecycle_status "running" .
+
+inst:AzureAKSNode5 a :CloudInstance ;
+  :name "AKS Node 5" ;
+  :instance_id "aks-node-5-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_D8s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-1" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Ubuntu 20.04 LTS" ;
+  :lifecycle_status "running" .
+
+inst:AzureAKSNode6 a :CloudInstance ;
+  :name "AKS Node 6" ;
+  :instance_id "aks-node-6-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_D8s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-2" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Ubuntu 20.04 LTS" ;
+  :lifecycle_status "running" .
+
+# Azure VM for PostgreSQL
+inst:AzurePostgreSQLVM a :CloudInstance ;
+  :name "Azure PostgreSQL VM" ;
+  :instance_id "vm-postgres-eastus" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "azure" ;
+  :instance_type "Standard_E16s_v3" ;
+  :region "East US" ;
+  :availability_zone "eastus-1" ;
+  :vcpu_count 16 ;
+  :memory_gb 128.0 ;
+  :operating_system "Ubuntu 22.04 LTS" ;
+  :lifecycle_status "running" .
+
+# Azure SQL Database (Managed Service)
+inst:AzureSQLService a :CloudService ;
+  :name "Azure SQL Database Service" ;
+  :service_id "sql-inventory-eastus" ;
+  :resource_type "cloud_paas" ;
+  :cloud_provider "azure" ;
+  :service_type "Azure SQL Database" ;
+  :region "East US" ;
+  :lifecycle_status "running" .
+
+# MongoDB Atlas (SaaS)
+inst:MongoDBAtlasService a :CloudService ;
+  :name "MongoDB Atlas Service" ;
+  :service_id "mongodb-atlas-cluster-0" ;
+  :resource_type "cloud_saas" ;
+  :cloud_provider "azure" ;
+  :service_type "MongoDB Atlas" ;
+  :region "East US" ;
+  :lifecycle_status "running" .
+
+# Azure Redis Cache (Managed Service)
+inst:AzureRedisService a :CloudService ;
+  :name "Azure Redis Cache Service" ;
+  :service_id "redis-cache-eastus" ;
+  :resource_type "cloud_paas" ;
+  :cloud_provider "azure" ;
+  :service_type "Azure Cache for Redis" ;
+  :region "East US" ;
+  :lifecycle_status "running" .
+
+# ============================================================================
+# LAYER 4: PHYSICAL INFRASTRUCTURE - AWS
+# ============================================================================
+
+# AWS EKS Node VMs
+inst:AWSEKSNode1 a :CloudInstance ;
+  :name "EKS Node 1" ;
+  :instance_id "i-eks-node-1-useast1" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "m5.2xlarge" ;
+  :region "us-east-1" ;
+  :availability_zone "us-east-1a" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Amazon Linux 2" ;
+  :lifecycle_status "running" .
+
+inst:AWSEKSNode2 a :CloudInstance ;
+  :name "EKS Node 2" ;
+  :instance_id "i-eks-node-2-useast1" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "m5.2xlarge" ;
+  :region "us-east-1" ;
+  :availability_zone "us-east-1b" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Amazon Linux 2" ;
+  :lifecycle_status "running" .
+
+inst:AWSEKSNode3 a :CloudInstance ;
+  :name "EKS Node 3" ;
+  :instance_id "i-eks-node-3-useast1" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "m5.2xlarge" ;
+  :region "us-east-1" ;
+  :availability_zone "us-east-1a" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Amazon Linux 2" ;
+  :lifecycle_status "running" .
+
+inst:AWSEKSNode4 a :CloudInstance ;
+  :name "EKS Node 4" ;
+  :instance_id "i-eks-node-4-useast1" ;
+  :resource_type "cloud_iaas" ;
+  :cloud_provider "aws" ;
+  :instance_type "m5.2xlarge" ;
+  :region "us-east-1" ;
+  :availability_zone "us-east-1b" ;
+  :vcpu_count 8 ;
+  :memory_gb 32.0 ;
+  :operating_system "Amazon Linux 2" ;
+  :lifecycle_status "running" .
+
+# AWS RDS PostgreSQL (Managed Service)
+inst:AWSRDSService a :CloudService ;
+  :name "AWS RDS PostgreSQL Service" ;
+  :service_id "rds-payment-useast1" ;
+  :resource_type "cloud_paas" ;
+  :cloud_provider "aws" ;
+  :service_type "RDS PostgreSQL" ;
+  :region "us-east-1" ;
+  :lifecycle_status "running" .
+
+# ============================================================================
+# LAYER 5: NETWORK TOPOLOGY AND COMMUNICATION
+# ============================================================================
+
+# On-Premises Load Balancer
+inst:OnPremLoadBalancer a :LoadBalancer ;
+  :name "On-Premises F5 Load Balancer" ;
+  :lb_id "lb-f5-onprem-01" ;
+  :lb_type "hardware" ;
+  :algorithm "round_robin" ;
+  :port 443 ;
+  :protocol "https" ;
+  :lifecycle_status "active" ;
+  :description "F5 BIG-IP load balancer for legacy ERP" .
+
+# Azure Load Balancers
+inst:AzureAKSLoadBalancer a :LoadBalancer ;
+  :name "Azure AKS Load Balancer" ;
+  :lb_id "lb-aks-eastus" ;
+  :lb_type "cloud_managed" ;
+  :algorithm "least_connections" ;
+  :port 443 ;
+  :protocol "https" ;
+  :lifecycle_status "active" ;
+  :description "Azure Load Balancer for AKS services" .
+
+# AWS Load Balancers
+inst:AWSEKSLoadBalancer a :LoadBalancer ;
+  :name "AWS EKS Application Load Balancer" ;
+  :lb_id "alb-eks-useast1" ;
+  :lb_type "cloud_managed" ;
+  :algorithm "round_robin" ;
+  :port 443 ;
+  :protocol "https" ;
+  :lifecycle_status "active" ;
+  :description "AWS ALB for EKS services" .
+
+# Network Segments
+inst:OnPremNetworkSegment a :NetworkSegment ;
+  :name "On-Premises Production Network" ;
+  :segment_id "seg-onprem-prod" ;
+  :segment_type "vlan" ;
+  :cidr_block "10.0.0.0/16" ;
+  :vlan_id 100 ;
+  :gateway_ip "10.0.0.1" ;
+  :lifecycle_status "active" .
+
+inst:AzureVNetSegment a :NetworkSegment ;
+  :name "Azure VNet Production Subnet" ;
+  :segment_id "seg-azure-prod" ;
+  :segment_type "vnet" ;
+  :cidr_block "172.16.0.0/16" ;
+  :gateway_ip "172.16.0.1" ;
+  :lifecycle_status "active" .
+
+inst:AWSVPCSegment a :NetworkSegment ;
+  :name "AWS VPC Production Subnet" ;
+  :segment_id "seg-aws-prod" ;
+  :segment_type "vpc" ;
+  :cidr_block "192.168.0.0/16" ;
+  :gateway_ip "192.168.0.1" ;
+  :lifecycle_status "active" .
+
+# Communication Paths
+inst:LegacyToMuleSoftPath a :CommunicationPath ;
+  :name "Legacy ERP to MuleSoft Path" ;
+  :path_id "path-legacy-mulesoft" ;
+  :protocol "https" ;
+  :source_port 443 ;
+  :destination_port 443 ;
+  :bandwidth_mbps 1000 ;
+  :lifecycle_status "active" .
+
+inst:MuleSoftToMicroservicesPath a :CommunicationPath ;
+  :name "MuleSoft to Microservices Path" ;
+  :path_id "path-mulesoft-micro" ;
+  :protocol "https" ;
+  :source_port 443 ;
+  :destination_port 443 ;
+  :bandwidth_mbps 1000 ;
+  :lifecycle_status "active" .
+
+inst:LegacyToAPIGatewayPath a :CommunicationPath ;
+  :name "Legacy to API Gateway Path" ;
+  :path_id "path-legacy-apigw" ;
+  :protocol "https" ;
+  :source_port 443 ;
+  :destination_port 443 ;
+  :bandwidth_mbps 500 ;
+  :lifecycle_status "active" .
+
+# VPN Gateway for Hybrid Connectivity
+inst:AzureVPNGateway a :NetworkDevice ;
+  :name "Azure VPN Gateway" ;
+  :device_id "vpn-gw-azure-01" ;
+  :device_type "vpn_gateway" ;
+  :manufacturer "Microsoft" ;
+  :management_ip "172.16.255.1" ;
+  :location "Azure East US" ;
+  :is_virtual true ;
+  :lifecycle_status "active" .
+
+inst:OnPremVPNGateway a :NetworkDevice ;
+  :name "On-Premises VPN Gateway" ;
+  :device_id "vpn-gw-onprem-01" ;
+  :device_type "vpn_gateway" ;
+  :manufacturer "Cisco" ;
+  :model "ASA 5525-X" ;
+  :management_ip "10.0.255.1" ;
+  :location "Datacenter-East" ;
+  :is_virtual false ;
+  :lifecycle_status "active" .
+
+inst:AWSVPNGateway a :NetworkDevice ;
+  :name "AWS VPN Gateway" ;
+  :device_id "vpn-gw-aws-01" ;
+  :device_type "vpn_gateway" ;
+  :manufacturer "Amazon" ;
+  :management_ip "192.168.255.1" ;
+  :location "AWS us-east-1" ;
+  :is_virtual true ;
+  :lifecycle_status "active" .
+
+
+# ============================================================================
+# LAYER 6: SECURITY INFRASTRUCTURE
+# ============================================================================
+
+# Firewalls
+inst:OnPremFirewall a :Firewall ;
+  :name "On-Premises Datacenter Firewall" ;
+  :firewall_id "fw-onprem-01" ;
+  :security_type "firewall" ;
+  :firewall_type "network" ;
+  :rule_count 250 ;
+  :location "Datacenter-East" ;
+  :lifecycle_status "active" .
+
+inst:AzureNetworkSecurityGroup a :Firewall ;
+  :name "Azure Network Security Group" ;
+  :firewall_id "nsg-azure-prod" ;
+  :security_type "firewall" ;
+  :firewall_type "cloud_managed" ;
+  :rule_count 50 ;
+  :location "Azure East US" ;
+  :lifecycle_status "active" .
+
+inst:AWSSecurityGroup a :Firewall ;
+  :name "AWS Security Group" ;
+  :firewall_id "sg-aws-prod" ;
+  :security_type "firewall" ;
+  :firewall_type "cloud_managed" ;
+  :rule_count 40 ;
+  :location "AWS us-east-1" ;
+  :lifecycle_status "active" .
+
+# Web Application Firewalls
+inst:AzureWAF a :WAF ;
+  :name "Azure Web Application Firewall" ;
+  :waf_id "waf-azure-01" ;
+  :security_type "waf" ;
+  :waf_type "cloud_managed" ;
+  :rule_set "OWASP 3.2" ;
+  :lifecycle_status "active" .
+
+inst:AWSWAF a :WAF ;
+  :name "AWS Web Application Firewall" ;
+  :waf_id "waf-aws-01" ;
+  :security_type "waf" ;
+  :waf_type "cloud_managed" ;
+  :rule_set "OWASP 3.2" ;
+  :lifecycle_status "active" .
+
+# SSL/TLS Certificates
+inst:LegacyERPCertificate a :Certificate ;
+  :name "erp.example.com" ;
+  :certificate_id "cert-erp-01" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=erp.example.com, O=Example Corp" ;
+  :issuer "CN=Example Internal CA, O=Example Corp" ;
+  :valid_from "2024-01-01"^^xsd:date ;
+  :valid_to "2025-01-01"^^xsd:date ;
+  :key_size 2048 ;
+  :lifecycle_status "active" .
+
+inst:AzureAPICertificate a :Certificate ;
+  :name "*.azure.example.com" ;
+  :certificate_id "cert-azure-wildcard" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=*.azure.example.com, O=Example Corp" ;
+  :issuer "CN=DigiCert, O=DigiCert Inc" ;
+  :valid_from "2024-01-01"^^xsd:date ;
+  :valid_to "2025-01-01"^^xsd:date ;
+  :key_size 2048 ;
+  :lifecycle_status "active" .
+
+inst:AWSAPICertificate a :Certificate ;
+  :name "*.aws.example.com" ;
+  :certificate_id "cert-aws-wildcard" ;
+  :security_type "certificate" ;
+  :certificate_type "ssl_tls" ;
+  :subject "CN=*.aws.example.com, O=Example Corp" ;
+  :issuer "CN=Amazon Trust Services, O=Amazon" ;
+  :valid_from "2024-01-01"^^xsd:date ;
+  :valid_to "2025-01-01"^^xsd:date ;
+  :key_size 2048 ;
+  :lifecycle_status "active" .
+
+# Certificate Authority
+inst:InternalCA a :CertificateAuthority ;
+  :name "Example Internal Certificate Authority" ;
+  :ca_id "ca-internal-01" ;
+  :security_type "certificate" ;
+  :ca_type "intermediate" ;
+  :lifecycle_status "active" .
+
+# Identity Providers
+inst:AzureAD a :IdentityProvider ;
+  :name "Azure Active Directory" ;
+  :idp_id "aad-tenant-01" ;
+  :security_type "iam" ;
+  :idp_type "oauth2" ;
+  :endpoint_url "https://login.microsoftonline.com/tenant-id"^^xsd:anyURI ;
+  :lifecycle_status "active" ;
+  :description "Azure AD for authentication and authorization" .
+
+inst:AWSCognito a :IdentityProvider ;
+  :name "AWS Cognito" ;
+  :idp_id "cognito-pool-01" ;
+  :security_type "iam" ;
+  :idp_type "oauth2" ;
+  :endpoint_url "https://cognito-idp.us-east-1.amazonaws.com"^^xsd:anyURI ;
+  :lifecycle_status "active" ;
+  :description "AWS Cognito for user authentication" .
+
+# Security Zones
+inst:DMZZone a :SecurityZone ;
+  :name "DMZ Security Zone" ;
+  :zone_id "zone-dmz" ;
+  :security_type "policy" ;
+  :trust_level "dmz" ;
+  :zone_type "dmz" ;
+  :lifecycle_status "active" ;
+  :description "Demilitarized zone for external-facing services" .
+
+inst:InternalZone a :SecurityZone ;
+  :name "Internal Security Zone" ;
+  :zone_id "zone-internal" ;
+  :security_type "policy" ;
+  :trust_level "trusted" ;
+  :zone_type "internal" ;
+  :lifecycle_status "active" ;
+  :description "Internal trusted zone for backend services" .
+
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 1 TO LAYER 2 (Business to Application)
+# ============================================================================
+
+inst:CustomerManagement :realized_by inst:LegacyERPSystem .
+inst:CustomerManagement :realized_by inst:CustomerServiceApp .
+
+inst:OrderProcessing :realized_by inst:LegacyERPSystem .
+inst:OrderProcessing :realized_by inst:OrderManagementApp .
+
+inst:InventoryManagement :realized_by inst:LegacyERPSystem .
+inst:InventoryManagement :realized_by inst:InventoryServiceApp .
+
+inst:PaymentProcessing :realized_by inst:PaymentServiceApp .
+
+inst:Analytics :realized_by inst:CustomerServiceApp .
+inst:Analytics :realized_by inst:OrderManagementApp .
+inst:Analytics :realized_by inst:InventoryServiceApp .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 2 (Application Layer)
+# ============================================================================
+
+# Legacy Application Structure
+inst:LegacyERPSystem :contains inst:ERPCustomerModule .
+inst:LegacyERPSystem :contains inst:ERPOrderModule .
+inst:LegacyERPSystem :contains inst:ERPInventoryModule .
+
+inst:ERPCustomerModule :deployed_on inst:WebLogicCluster .
+inst:ERPOrderModule :deployed_on inst:WebLogicCluster .
+inst:ERPInventoryModule :deployed_on inst:WebLogicCluster .
+
+# Legacy uses its own database
+inst:LegacyERPSystem :uses inst:OracleRACDatabase .
+inst:OracleRACDatabase :contains inst:OracleRACNode1 .
+inst:OracleRACDatabase :contains inst:OracleRACNode2 .
+
+# Legacy exposes APIs
+inst:LegacyERPSystem :contains inst:ERPCustomerAPI .
+inst:LegacyERPSystem :contains inst:ERPOrderAPI .
+inst:LegacyERPSystem :uses inst:ERPInventoryQueue .
+
+# Modern Applications - Azure
+inst:CustomerServiceApp :contains inst:CustomerProfileService .
+inst:CustomerProfileService :contains inst:CustomerProfileAPI .
+inst:CustomerServiceApp :uses inst:MongoDBAtlas .
+inst:CustomerServiceApp :uses inst:RedisCacheService .
+
+inst:OrderManagementApp :contains inst:OrderProcessingService .
+inst:OrderProcessingService :contains inst:OrderProcessingAPI .
+inst:OrderManagementApp :uses inst:PostgreSQLOrderDB .
+inst:OrderManagementApp :uses inst:RedisCacheService .
+
+inst:InventoryServiceApp :contains inst:InventoryTrackingService .
+inst:InventoryTrackingService :contains inst:InventoryTrackingAPI .
+inst:InventoryServiceApp :uses inst:AzureSQLInventoryDB .
+
+# Modern Application - AWS
+inst:PaymentServiceApp :contains inst:PaymentProcessingService .
+inst:PaymentProcessingService :contains inst:PaymentProcessingAPI .
+inst:PaymentServiceApp :uses inst:RDSPaymentDB .
+
+# All applications use common services
+inst:LegacyERPSystem :uses inst:AuthenticationService .
+inst:CustomerServiceApp :uses inst:AuthenticationService .
+inst:OrderManagementApp :uses inst:AuthenticationService .
+inst:InventoryServiceApp :uses inst:AuthenticationService .
+inst:PaymentServiceApp :uses inst:AuthenticationService .
+
+inst:LegacyERPSystem :uses inst:NotificationService .
+inst:CustomerServiceApp :uses inst:NotificationService .
+inst:OrderManagementApp :uses inst:NotificationService .
+inst:InventoryServiceApp :uses inst:NotificationService .
+inst:PaymentServiceApp :uses inst:NotificationService .
+
+# Integration via MuleSoft
+inst:LegacyERPSystem :calls inst:MuleSoftESB .
+inst:MuleSoftESB :calls inst:CustomerProfileService .
+inst:MuleSoftESB :calls inst:OrderProcessingService .
+inst:MuleSoftESB :calls inst:InventoryTrackingService .
+inst:MuleSoftESB :calls inst:PaymentProcessingService .
+
+# Legacy invokes microservices via API Gateway
+inst:LegacyERPSystem :calls inst:EnterpriseAPIGateway .
+inst:EnterpriseAPIGateway :calls inst:CustomerProfileAPI .
+inst:EnterpriseAPIGateway :calls inst:OrderProcessingAPI .
+inst:EnterpriseAPIGateway :calls inst:PaymentProcessingAPI .
+
+# Microservices call each other
+inst:OrderProcessingService :calls inst:CustomerProfileService .
+inst:OrderProcessingService :calls inst:InventoryTrackingService .
+inst:OrderProcessingService :calls inst:PaymentProcessingService .
+inst:PaymentProcessingService :calls inst:NotificationService .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 2 TO LAYER 3 (Application to Container)
+# ============================================================================
+
+# Azure Microservices
+inst:CustomerServiceApp :deployed_as inst:CustomerProfilePod .
+inst:OrderManagementApp :deployed_as inst:OrderProcessingPod .
+inst:InventoryServiceApp :deployed_as inst:InventoryTrackingPod .
+inst:AuthenticationService :deployed_as inst:AuthenticationPod .
+
+# AWS Microservices
+inst:PaymentServiceApp :deployed_as inst:PaymentProcessingPod .
+inst:NotificationService :deployed_as inst:NotificationPod .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 3 (Container Layer)
+# ============================================================================
+
+# Azure AKS - Namespace relationships
+inst:CustomerProfilePod :runs_in inst:CustomerNamespace .
+inst:OrderProcessingPod :runs_in inst:OrderNamespace .
+inst:InventoryTrackingPod :runs_in inst:InventoryNamespace .
+inst:AuthenticationPod :runs_in inst:SharedNamespace .
+
+inst:CustomerNamespace :part_of inst:AzureAKSCluster .
+inst:OrderNamespace :part_of inst:AzureAKSCluster .
+inst:InventoryNamespace :part_of inst:AzureAKSCluster .
+inst:SharedNamespace :part_of inst:AzureAKSCluster .
+
+# Azure AKS - Service relationships
+inst:CustomerK8sService :exposes inst:CustomerProfilePod .
+inst:OrderK8sService :exposes inst:OrderProcessingPod .
+inst:InventoryK8sService :exposes inst:InventoryTrackingPod .
+inst:AuthK8sService :exposes inst:AuthenticationPod .
+
+# AWS EKS - Namespace relationships
+inst:PaymentProcessingPod :runs_in inst:PaymentNamespace .
+inst:NotificationPod :runs_in inst:NotificationNamespace .
+
+inst:PaymentNamespace :part_of inst:AWSEKSCluster .
+inst:NotificationNamespace :part_of inst:AWSEKSCluster .
+
+# AWS EKS - Service relationships
+inst:PaymentK8sService :exposes inst:PaymentProcessingPod .
+inst:NotificationK8sService :exposes inst:NotificationPod .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 3 TO LAYER 4 (Container to Infrastructure)
+# ============================================================================
+
+# Azure AKS Pods run on Azure VMs
+inst:CustomerProfilePod :runs_on inst:AzureAKSNode1 .
+inst:CustomerProfilePod :runs_on inst:AzureAKSNode2 .
+inst:OrderProcessingPod :runs_on inst:AzureAKSNode3 .
+inst:OrderProcessingPod :runs_on inst:AzureAKSNode4 .
+inst:InventoryTrackingPod :runs_on inst:AzureAKSNode5 .
+inst:AuthenticationPod :runs_on inst:AzureAKSNode6 .
+
+# AWS EKS Pods run on AWS VMs
+inst:PaymentProcessingPod :runs_on inst:AWSEKSNode1 .
+inst:PaymentProcessingPod :runs_on inst:AWSEKSNode2 .
+inst:NotificationPod :runs_on inst:AWSEKSNode3 .
+inst:NotificationPod :runs_on inst:AWSEKSNode4 .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 2 TO LAYER 4 (Application to Infrastructure - Legacy)
+# ============================================================================
+
+# Legacy Application Servers
+inst:WebLogicNode1 :runs_on inst:WebLogicVM1 .
+inst:WebLogicNode2 :runs_on inst:WebLogicVM2 .
+inst:WebLogicNode3 :runs_on inst:WebLogicVM3 .
+inst:NginxWebServer :runs_on inst:NginxVM .
+
+# Legacy VMs run on Hypervisor
+inst:WebLogicVM1 :runs_on inst:VMwareESXi .
+inst:WebLogicVM2 :runs_on inst:VMwareESXi .
+inst:WebLogicVM3 :runs_on inst:VMwareESXi .
+inst:NginxVM :runs_on inst:VMwareESXi .
+inst:OracleRACVM1 :runs_on inst:VMwareESXi .
+inst:OracleRACVM2 :runs_on inst:VMwareESXi .
+
+# Hypervisor runs on Physical Servers
+inst:VMwareESXi :runs_on inst:OnPremServer01 .
+inst:VMwareESXi :runs_on inst:OnPremServer02 .
+inst:VMwareESXi :runs_on inst:OnPremServer03 .
+
+# Legacy Database on VMs
+inst:OracleRACNode1 :hosted_on inst:OracleRACVM1 .
+inst:OracleRACNode2 :hosted_on inst:OracleRACVM2 .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 2 TO LAYER 4 (Database to Infrastructure)
+# ============================================================================
+
+# Azure Databases
+inst:MongoDBAtlas :hosted_on inst:MongoDBAtlasService .
+inst:PostgreSQLOrderDB :hosted_on inst:AzurePostgreSQLVM .
+inst:AzureSQLInventoryDB :hosted_on inst:AzureSQLService .
+inst:RedisCacheService :hosted_on inst:AzureRedisService .
+
+# AWS Databases
+inst:RDSPaymentDB :hosted_on inst:AWSRDSService .
+
+# Legacy Database Storage
+inst:OracleRACDatabase :stored_on inst:OracleStorageVolume .
+inst:OracleStorageVolume :allocated_from inst:NetAppSAN .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 2/3 TO LAYER 5 (Communication Paths)
+# ============================================================================
+
+# Legacy communicates via load balancer
+inst:LegacyERPSystem :communicates_via inst:OnPremLoadBalancer .
+inst:NginxWebServer :communicates_via inst:OnPremLoadBalancer .
+
+# Azure services communicate via load balancer
+inst:CustomerServiceApp :communicates_via inst:AzureAKSLoadBalancer .
+inst:OrderManagementApp :communicates_via inst:AzureAKSLoadBalancer .
+inst:InventoryServiceApp :communicates_via inst:AzureAKSLoadBalancer .
+
+# AWS services communicate via load balancer
+inst:PaymentServiceApp :communicates_via inst:AWSEKSLoadBalancer .
+
+# Communication paths routing
+inst:LegacyToMuleSoftPath :routes_through inst:OnPremVPNGateway .
+inst:LegacyToMuleSoftPath :routes_through inst:AzureVPNGateway .
+inst:MuleSoftToMicroservicesPath :routes_through inst:AzureAKSLoadBalancer .
+inst:LegacyToAPIGatewayPath :routes_through inst:OnPremVPNGateway .
+inst:LegacyToAPIGatewayPath :routes_through inst:AzureVPNGateway .
+
+# ============================================================================
+# RELATIONSHIPS - LAYER 6 (Security)
+# ============================================================================
+
+# Firewalls protect applications
+inst:LegacyERPSystem :protected_by inst:OnPremFirewall .
+inst:CustomerServiceApp :protected_by inst:AzureNetworkSecurityGroup .
+inst:CustomerServiceApp :protected_by inst:AzureWAF .
+inst:OrderManagementApp :protected_by inst:AzureNetworkSecurityGroup .
+inst:OrderManagementApp :protected_by inst:AzureWAF .
+inst:InventoryServiceApp :protected_by inst:AzureNetworkSecurityGroup .
+inst:PaymentServiceApp :protected_by inst:AWSSecurityGroup .
+inst:PaymentServiceApp :protected_by inst:AWSWAF .
+
+# Certificates secure APIs
+inst:ERPCustomerAPI :secured_by inst:LegacyERPCertificate .
+inst:ERPOrderAPI :secured_by inst:LegacyERPCertificate .
+inst:CustomerProfileAPI :secured_by inst:AzureAPICertificate .
+inst:OrderProcessingAPI :secured_by inst:AzureAPICertificate .
+inst:InventoryTrackingAPI :secured_by inst:AzureAPICertificate .
+inst:PaymentProcessingAPI :secured_by inst:AWSAPICertificate .
+
+# Certificate issuance
+inst:LegacyERPCertificate :issued_by inst:InternalCA .
+
+# Identity providers
+inst:CustomerServiceApp :secured_by inst:AzureAD .
+inst:OrderManagementApp :secured_by inst:AzureAD .
+inst:InventoryServiceApp :secured_by inst:AzureAD .
+inst:PaymentServiceApp :secured_by inst:AWSCognito .
+
+# Security zones
+inst:NginxWebServer :belongs_to inst:DMZZone .
+inst:OnPremLoadBalancer :belongs_to inst:DMZZone .
+inst:WebLogicCluster :belongs_to inst:InternalZone .
+inst:OracleRACDatabase :belongs_to inst:InternalZone .
+
+# ============================================================================
+# END OF COMPLEX HYBRID ARCHITECTURE
+# ============================================================================
+

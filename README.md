@@ -307,4 +307,116 @@ This ontology addresses all requirements defined in the [requirements document](
 - ✓ Dependency relationships with directionality and cardinality
 - ✓ Impact analysis support through transitive relationships
 - ✓ TOGAF and CIM framework alignment
-- ✓ On-premises and cloud infrastru
+- ✓ On-premises and cloud infrastruc
+ture support
+- ✓ SOA and microservices patterns
+- ✓ Minimal, non-overlapping attributes with framework sources
+- ✓ Root cause analysis support
+- ✓ Integration, security, network, and container support
+- ✓ Formal OWL specification with SHACL validation
+- ✓ Cross-layer decomposition and CMDB mapping
+
+## License
+
+[Specify your license here]
+
+## Citation
+
+If you use this ontology in your research or projects, please cite:
+
+```bibtex
+@misc{it-infrastructure-ontology,
+  title={IT Infrastructure and Application Dependency Ontology},
+  author={IT Infrastructure Ontology Working Group},
+  year={2024},
+  version={1.0.0},
+  url={[repository-url]}
+}
+```
+
+## Support and Contact
+
+- **Documentation**: See the `ontology/` and `layer-specifications/` directories
+- **Issues**: [GitHub Issues or contact information]
+- **Discussions**: [Community forum or mailing list]
+
+## Acknowledgments
+
+This ontology integrates concepts from:
+
+- **TOGAF** - The Open Group Architecture Framework
+- **CIM** - Common Information Model (DMTF)
+- **ITIL** - IT Infrastructure Library
+- **ArchiMate** - Enterprise Architecture Modeling Language
+- **Kubernetes** - Container Orchestration Platform
+- **OpenShift** - Enterprise Kubernetes Platform
+- **AWS, Azure, GCP** - Cloud Provider APIs
+- **NIST Cybersecurity Framework** - Security Controls
+- **X.509/PKI Standards** - Certificate Management
+
+## Roadmap
+
+### Version 1.x (Current)
+- ✓ Core ontology with 50+ entity types
+- ✓ Six-layer architecture
+- ✓ SHACL validation shapes
+- ✓ Framework mappings
+- ✓ Comprehensive documentation
+
+### Version 2.0 (Planned)
+- [ ] Enhanced IoT and Edge Computing support
+- [ ] Serverless and FaaS entity types
+- [ ] AI/ML infrastructure components
+- [ ] Extended multi-cloud support
+- [ ] Performance optimization patterns
+- [ ] Additional framework integrations (COBIT, SABSA)
+
+## FAQ
+
+### Q: Can I use this ontology with my existing CMDB?
+
+Yes! The ontology is designed to integrate with CMDB systems. See the [Usage Guide](ontology/USAGE_GUIDE.md#cmdb-integration) for ServiceNow integration examples and mapping guidelines.
+
+### Q: How do I model legacy applications that don't use containers?
+
+Legacy applications skip Layer 3 (Container & Orchestration) and connect directly from Layer 2 (Application) to Layer 4 (Physical Infrastructure). See [deployment-patterns.md](deployment-patterns.md) for examples.
+
+### Q: Can I add custom attributes specific to my organization?
+
+Yes! Use a separate namespace for custom attributes. See the [Extension Guide](ontology/EXTENSION_GUIDE.md#adding-custom-attributes) for detailed instructions.
+
+### Q: Which graph database should I use?
+
+The ontology works with any RDF-compatible graph database (Amazon Neptune, Stardog, GraphDB) or property graph databases like Neo4j with RDF plugins. For small datasets, in-memory RDFLib is sufficient.
+
+### Q: How do I validate my data?
+
+Use SHACL validation with pySHACL (Python) or Apache Jena SHACL (Java). See the [Usage Guide](ontology/USAGE_GUIDE.md#validating-data) for examples.
+
+### Q: Is this ontology suitable for multi-cloud environments?
+
+Yes! The ontology supports AWS, Azure, GCP, Alibaba Cloud, Oracle Cloud, and IBM Cloud. See [Layer 4 specification](layer-specifications/layer4-physical-infrastructure.md) for cloud-specific entity types.
+
+## Getting Help
+
+1. **Read the documentation**: Start with the [Usage Guide](ontology/USAGE_GUIDE.md)
+2. **Check examples**: Review [sample data files](ontology/) and [query patterns](query-patterns.md)
+3. **Validate your data**: Use SHACL validation to catch errors early
+4. **Review layer specifications**: Understand entity types and relationships
+5. **Ask for help**: [Contact information or community forum]
+
+## Related Projects
+
+- **TOGAF**: https://www.opengroup.org/togaf
+- **CIM**: https://www.dmtf.org/standards/cim
+- **ArchiMate**: https://www.opengroup.org/archimate-forum
+- **Kubernetes**: https://kubernetes.io/
+- **OpenShift**: https://www.openshift.com/
+
+---
+
+**Version**: 1.0.0  
+**Last Updated**: 2024-01-15  
+**Status**: Production Ready  
+**Maintainers**: IT Infrastructure Ontology Working Group
+

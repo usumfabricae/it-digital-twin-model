@@ -1,0 +1,322 @@
+@prefix : <http://example.org/it-infrastructure-ontology#> .
+@prefix inst: <http://example.org/instances#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+inst:AWSEKSNode1 a :CloudInstance ;
+    :availability_zone "us-east-1a" ;
+    :cloud_provider "aws" ;
+    :instance_id "i-eks-node-1-useast1" ;
+    :instance_type "m5.2xlarge" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "EKS Node 1" ;
+    :operating_system "Amazon Linux 2" ;
+    :region "us-east-1" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AWSEKSNode2 a :CloudInstance ;
+    :availability_zone "us-east-1b" ;
+    :cloud_provider "aws" ;
+    :instance_id "i-eks-node-2-useast1" ;
+    :instance_type "m5.2xlarge" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "EKS Node 2" ;
+    :operating_system "Amazon Linux 2" ;
+    :region "us-east-1" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AWSEKSNode3 a :CloudInstance ;
+    :availability_zone "us-east-1a" ;
+    :cloud_provider "aws" ;
+    :instance_id "i-eks-node-3-useast1" ;
+    :instance_type "m5.2xlarge" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "EKS Node 3" ;
+    :operating_system "Amazon Linux 2" ;
+    :region "us-east-1" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AWSEKSNode4 a :CloudInstance ;
+    :availability_zone "us-east-1b" ;
+    :cloud_provider "aws" ;
+    :instance_id "i-eks-node-4-useast1" ;
+    :instance_type "m5.2xlarge" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "EKS Node 4" ;
+    :operating_system "Amazon Linux 2" ;
+    :region "us-east-1" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AWSRDSService a :CloudService ;
+    :cloud_provider "aws" ;
+    :lifecycle_status "running" ;
+    :name "AWS RDS PostgreSQL Service" ;
+    :region "us-east-1" ;
+    :resource_type "cloud_paas" ;
+    :service_id "rds-payment-useast1" ;
+    :service_type "RDS PostgreSQL" .
+
+inst:AzureAKSNode1 a :CloudInstance ;
+    :availability_zone "eastus-1" ;
+    :cloud_provider "azure" ;
+    :instance_id "aks-node-1-eastus" ;
+    :instance_type "Standard_D8s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "AKS Node 1" ;
+    :operating_system "Ubuntu 20.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AzureAKSNode2 a :CloudInstance ;
+    :availability_zone "eastus-2" ;
+    :cloud_provider "azure" ;
+    :instance_id "aks-node-2-eastus" ;
+    :instance_type "Standard_D8s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "AKS Node 2" ;
+    :operating_system "Ubuntu 20.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AzureAKSNode3 a :CloudInstance ;
+    :availability_zone "eastus-1" ;
+    :cloud_provider "azure" ;
+    :instance_id "aks-node-3-eastus" ;
+    :instance_type "Standard_D8s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "AKS Node 3" ;
+    :operating_system "Ubuntu 20.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AzureAKSNode4 a :CloudInstance ;
+    :availability_zone "eastus-2" ;
+    :cloud_provider "azure" ;
+    :instance_id "aks-node-4-eastus" ;
+    :instance_type "Standard_D8s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "AKS Node 4" ;
+    :operating_system "Ubuntu 20.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AzureAKSNode5 a :CloudInstance ;
+    :availability_zone "eastus-1" ;
+    :cloud_provider "azure" ;
+    :instance_id "aks-node-5-eastus" ;
+    :instance_type "Standard_D8s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "AKS Node 5" ;
+    :operating_system "Ubuntu 20.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AzureAKSNode6 a :CloudInstance ;
+    :availability_zone "eastus-2" ;
+    :cloud_provider "azure" ;
+    :instance_id "aks-node-6-eastus" ;
+    :instance_type "Standard_D8s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 32.0 ;
+    :name "AKS Node 6" ;
+    :operating_system "Ubuntu 20.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 8 .
+
+inst:AzurePostgreSQLVM a :CloudInstance ;
+    :availability_zone "eastus-1" ;
+    :cloud_provider "azure" ;
+    :instance_id "vm-postgres-eastus" ;
+    :instance_type "Standard_E16s_v3" ;
+    :lifecycle_status "running" ;
+    :memory_gb 128.0 ;
+    :name "Azure PostgreSQL VM" ;
+    :operating_system "Ubuntu 22.04 LTS" ;
+    :region "East US" ;
+    :resource_type "cloud_iaas" ;
+    :vcpu_count 16 .
+
+inst:AzureRedisService a :CloudService ;
+    :cloud_provider "azure" ;
+    :lifecycle_status "running" ;
+    :name "Azure Redis Cache Service" ;
+    :region "East US" ;
+    :resource_type "cloud_paas" ;
+    :service_id "redis-cache-eastus" ;
+    :service_type "Azure Cache for Redis" .
+
+inst:AzureSQLService a :CloudService ;
+    :cloud_provider "azure" ;
+    :lifecycle_status "running" ;
+    :name "Azure SQL Database Service" ;
+    :region "East US" ;
+    :resource_type "cloud_paas" ;
+    :service_id "sql-inventory-eastus" ;
+    :service_type "Azure SQL Database" .
+
+inst:MongoDBAtlasService a :CloudService ;
+    :cloud_provider "azure" ;
+    :lifecycle_status "running" ;
+    :name "MongoDB Atlas Service" ;
+    :region "East US" ;
+    :resource_type "cloud_saas" ;
+    :service_id "mongodb-atlas-cluster-0" ;
+    :service_type "MongoDB Atlas" .
+
+inst:NginxVM a :VirtualMachine ;
+    :disk_gb 100.0 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East" ;
+    :memory_gb 16.0 ;
+    :name "Nginx-VM" ;
+    :operating_system "Ubuntu 22.04 LTS" ;
+    :resource_type "virtual" ;
+    :runs_on inst:VMwareESXi ;
+    :vcpu_count 4 ;
+    :vm_id "vm-nginx-01" .
+
+inst:OracleRACVM1 a :VirtualMachine ;
+    :disk_gb 500.0 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East" ;
+    :memory_gb 128.0 ;
+    :name "Oracle-RAC-VM-01" ;
+    :operating_system "Oracle Linux 8.5" ;
+    :resource_type "virtual" ;
+    :runs_on inst:VMwareESXi ;
+    :vcpu_count 16 ;
+    :vm_id "vm-oracle-01" .
+
+inst:OracleRACVM2 a :VirtualMachine ;
+    :disk_gb 500.0 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East" ;
+    :memory_gb 128.0 ;
+    :name "Oracle-RAC-VM-02" ;
+    :operating_system "Oracle Linux 8.5" ;
+    :resource_type "virtual" ;
+    :runs_on inst:VMwareESXi ;
+    :vcpu_count 16 ;
+    :vm_id "vm-oracle-02" .
+
+inst:OracleStorageVolume a :StorageVolume ;
+    :allocated_from inst:NetAppSAN ;
+    :capacity_gb 2000.0 ;
+    :lifecycle_status "active" ;
+    :name "Oracle RAC Storage Volume" ;
+    :raid_level "RAID 10" ;
+    :volume_id "vol-oracle-rac" ;
+    :volume_type "block" .
+
+inst:WebLogicVM1 a :VirtualMachine ;
+    :disk_gb 200.0 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East" ;
+    :memory_gb 32.0 ;
+    :name "WebLogic-VM-01" ;
+    :operating_system "Red Hat Enterprise Linux 8.5" ;
+    :resource_type "virtual" ;
+    :runs_on inst:VMwareESXi ;
+    :vcpu_count 8 ;
+    :vm_id "vm-wls-01" .
+
+inst:WebLogicVM2 a :VirtualMachine ;
+    :disk_gb 200.0 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East" ;
+    :memory_gb 32.0 ;
+    :name "WebLogic-VM-02" ;
+    :operating_system "Red Hat Enterprise Linux 8.5" ;
+    :resource_type "virtual" ;
+    :runs_on inst:VMwareESXi ;
+    :vcpu_count 8 ;
+    :vm_id "vm-wls-02" .
+
+inst:WebLogicVM3 a :VirtualMachine ;
+    :disk_gb 200.0 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East" ;
+    :memory_gb 32.0 ;
+    :name "WebLogic-VM-03" ;
+    :operating_system "Red Hat Enterprise Linux 8.5" ;
+    :resource_type "virtual" ;
+    :runs_on inst:VMwareESXi ;
+    :vcpu_count 8 ;
+    :vm_id "vm-wls-03" .
+
+inst:NetAppSAN a :StorageArray ;
+    :array_id "netapp-san-01" ;
+    :capacity_tb 50.0 ;
+    :lifecycle_status "active" ;
+    :location "Datacenter-East-Storage-Room" ;
+    :manufacturer "NetApp" ;
+    :model "FAS8300" ;
+    :name "NetApp SAN Array" ;
+    :storage_type "san" .
+
+inst:OnPremServer01 a :PhysicalServer ;
+    :cpu_cores 32 ;
+    :cpu_count 2 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East-Rack-05-Slot-01" ;
+    :manufacturer "Dell" ;
+    :memory_gb 256.0 ;
+    :model "PowerEdge R740" ;
+    :name "OnPrem-Server-01" ;
+    :operating_system "Red Hat Enterprise Linux 8.5" ;
+    :resource_type "physical" ;
+    :server_id "srv-onprem-01" .
+
+inst:OnPremServer02 a :PhysicalServer ;
+    :cpu_cores 32 ;
+    :cpu_count 2 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East-Rack-05-Slot-02" ;
+    :manufacturer "Dell" ;
+    :memory_gb 256.0 ;
+    :model "PowerEdge R740" ;
+    :name "OnPrem-Server-02" ;
+    :operating_system "Red Hat Enterprise Linux 8.5" ;
+    :resource_type "physical" ;
+    :server_id "srv-onprem-02" .
+
+inst:OnPremServer03 a :PhysicalServer ;
+    :cpu_cores 32 ;
+    :cpu_count 2 ;
+    :lifecycle_status "running" ;
+    :location "Datacenter-East-Rack-05-Slot-03" ;
+    :manufacturer "Dell" ;
+    :memory_gb 256.0 ;
+    :model "PowerEdge R740" ;
+    :name "OnPrem-Server-03" ;
+    :operating_system "Red Hat Enterprise Linux 8.5" ;
+    :resource_type "physical" ;
+    :server_id "srv-onprem-03" .
+
+inst:VMwareESXi a :Hypervisor ;
+    :hypervisor_type "vmware_esxi" ;
+    :lifecycle_status "running" ;
+    :name "VMware ESXi Cluster" ;
+    :runs_on inst:OnPremServer01,
+        inst:OnPremServer02,
+        inst:OnPremServer03 ;
+    :version "7.0 U3" .
+
