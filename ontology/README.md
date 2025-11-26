@@ -34,7 +34,7 @@ The ontology is organized into six disjoint layers, ensuring each entity belongs
    - BusinessProcess, BusinessCapability, BusinessService, Product
 
 2. **Layer 2: Application Layer**
-   - Application, ApplicationComponent, ApplicationServer, Service, API
+   - Application, ApplicationComponent, Service, API
    - Database, DatabaseInstance, DataObject
    - FileStorageService, ObjectStorageService, CacheService, MessageQueue
 
@@ -44,6 +44,7 @@ The ontology is organized into six disjoint layers, ensuring each entity belongs
 
 4. **Layer 4: Physical Infrastructure Layer**
    - PhysicalServer, VirtualMachine, Hypervisor, CloudInstance, CloudService
+   - ApplicationServer (runtime infrastructure for hosting applications)
    - StorageArray, StorageVolume, FileSystem, StoragePool
    - CloudStorageService, ObjectStorageBucket
 

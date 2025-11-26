@@ -144,11 +144,11 @@
 
 :ApplicationServer
   rdf:type owl:Class ;
-  rdfs:subClassOf :ApplicationLayer ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
   rdfs:label "Application Server" ;
-  rdfs:comment "A runtime environment for hosting applications" ;
-  skos:definition "An application server provides runtime services and infrastructure for executing applications" ;
-  skos:example "WebSphere, WebLogic, JBoss, Tomcat, IIS" ;
+  rdfs:comment "Runtime infrastructure that hosts and manages applications" ;
+  skos:definition "An application server is runtime infrastructure that provides services for hosting, managing, and executing applications, similar to how a hypervisor manages virtual machines or a container orchestrator manages containers" ;
+  skos:example "WebSphere, WebLogic, JBoss, Tomcat, IIS, Nginx, Apache" ;
   dcterms:source "CIM ApplicationSystem" .
 
 :Service
@@ -625,6 +625,9 @@
   rdfs:label "hosts component" ;
   rdfs:comment "Application server hosts component" ;
   owl:inverseOf :deployed_on .
+
+# Note: ApplicationServer now uses hosted_on relationship to connect to infrastructure
+# :ApplicationServer :runs_on :VirtualMachine | :PhysicalServer | :CloudInstance
 
 :uses
   rdf:type owl:ObjectProperty ;

@@ -154,63 +154,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 3. ApplicationServer
-
-**Definition**: A runtime environment that hosts and executes applications (e.g., WebSphere, WebLogic, JBoss, Tomcat, IIS).
-
-**OWL Class Definition**:
-```turtle
-:ApplicationServer
-  rdf:type owl:Class ;
-  rdfs:subClassOf :ApplicationLayer ;
-  rdfs:label "Application Server" ;
-  rdfs:comment "A runtime environment for hosting applications" ;
-  skos:definition "An application server provides runtime services and infrastructure for executing applications" .
-```
-
-**Attributes**:
-
-| Attribute | Data Type | Cardinality | Constraint | Framework Source | Description |
-|-----------|-----------|-------------|------------|------------------|-------------|
-| name | xsd:string | 1..1 | mandatory | CIM | Server instance name |
-| server_type | xsd:string | 1..1 | enum | CIM | Server product: websphere, weblogic, jboss, tomcat, iis, nginx, apache |
-| version | xsd:string | 0..1 | optional | CIM | Server version (e.g., "9.0.5", "8.5") |
-| configuration | xsd:string | 0..1 | optional | CIM | Configuration profile or settings |
-| port | xsd:integer | 0..* | optional | CIM | Listening ports |
-| lifecycle_status | xsd:string | 1..1 | enum | ITIL | Current state: running, stopped, failed, maintenance |
-
-**Enumeration Values**:
-- **server_type**: `websphere`, `weblogic`, `jboss`, `wildfly`, `tomcat`, `iis`, `nginx`, `apache`, `node`, `gunicorn`, `uvicorn`
-- **lifecycle_status**: `running`, `stopped`, `failed`, `maintenance`, `starting`, `stopping`
-
-**SHACL Validation Shape**:
-```turtle
-:ApplicationServerShape
-  a sh:NodeShape ;
-  sh:targetClass :ApplicationServer ;
-  sh:property [
-    sh:path :name ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:datatype xsd:string ;
-  ] ;
-  sh:property [
-    sh:path :server_type ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:in ( "websphere" "weblogic" "jboss" "wildfly" "tomcat" "iis" "nginx" "apache" "node" "gunicorn" "uvicorn" ) ;
-  ] ;
-  sh:property [
-    sh:path :lifecycle_status ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:in ( "running" "stopped" "failed" "maintenance" "starting" "stopping" ) ;
-  ] .
-```
-
----
-
-### 4. Service
+### 3. Service
 
 **Definition**: A service in SOA or microservices architecture that provides specific business or technical capabilities.
 
@@ -275,7 +219,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 5. API
+### 4. API
 
 **Definition**: An application programming interface that defines how software components interact.
 
@@ -338,7 +282,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ## Storage Entity Type Specifications
 
-### 6. Database
+### 5. Database
 
 **Definition**: A logical database system that stores and manages structured or unstructured data.
 
@@ -399,7 +343,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 7. DatabaseInstance
+### 6. DatabaseInstance
 
 **Definition**: A specific database instance or schema within a database system.
 
@@ -447,7 +391,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 8. DataObject
+### 7. DataObject
 
 **Definition**: A logical data entity or schema element (tables, collections, documents, views).
 
@@ -496,7 +440,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 9. FileStorageService
+### 8. FileStorageService
 
 **Definition**: A logical file storage service providing hierarchical file system access (NFS, CIFS, mounted paths).
 
@@ -554,7 +498,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 10. ObjectStorageService
+### 9. ObjectStorageService
 
 **Definition**: A logical object storage service providing key-value access to objects (S3 buckets, Azure Blob containers, GCS buckets).
 
@@ -608,7 +552,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 11. CacheService
+### 10. CacheService
 
 **Definition**: A caching layer that provides high-speed data access (Redis, Memcached, etc.).
 
@@ -665,7 +609,7 @@ This document provides the complete formal specification for Layer 2 (Applicatio
 
 ---
 
-### 12. MessageQueue
+### 11. MessageQueue
 
 **Definition**: A message-oriented middleware component for asynchronous communication (MQ, RabbitMQ, Kafka).
 

@@ -347,6 +347,33 @@
     sh:in ( "active" "maintenance" "failed" "decommissioned" "provisioning" ) ;
   ] .
 
+:ApplicationServerShape
+  a sh:NodeShape ;
+  sh:targetClass :ApplicationServer ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :server_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "websphere" "weblogic" "jboss" "wildfly" "tomcat" "iis" "nginx" "apache" "node" "gunicorn" "uvicorn" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "running" "stopped" "failed" "maintenance" "starting" "stopping" ) ;
+  ] ;
+  sh:property [
+    sh:path :runs_on ;
+    sh:minCount 1 ;
+    sh:message "ApplicationServer must run on infrastructure (VM, PhysicalServer, or CloudInstance)" ;
+  ] .
+
 :VirtualMachineShape
   a sh:NodeShape ;
   sh:targetClass :VirtualMachine ;

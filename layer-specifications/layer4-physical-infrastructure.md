@@ -426,9 +426,88 @@ This document provides the complete formal specification for Layer 4 (Physical I
 
 ---
 
+### 6. ApplicationServer
+
+**Definition**: Runtime infrastructure that hosts and manages applications, similar to how a hypervisor manages virtual machines or a container orchestrator manages containers.
+
+**OWL Class Definition**:
+```turtle
+:ApplicationServer
+  rdf:type owl:Class ;
+  rdfs:subClassOf :PhysicalInfrastructureLayer ;
+  rdfs:label "Application Server" ;
+  rdfs:comment "Runtime infrastructure that hosts and manages applications" ;
+  skos:definition "An application server is runtime infrastructure that provides services for hosting, managing, and executing applications" .
+```
+
+**Attributes**:
+
+| Attribute | Data Type | Cardinality | Constraint | Framework Source | Description |
+|-----------|-----------|-------------|------------|------------------|-------------|
+| name | xsd:string | 1..1 | mandatory | CIM | Server instance name |
+| server_type | xsd:string | 1..1 | enum | CIM | Server product: websphere, weblogic, jboss, tomcat, iis, nginx, apache |
+| version | xsd:string | 0..1 | optional | CIM | Server version (e.g., "9.0.5", "8.5") |
+| configuration | xsd:string | 0..1 | optional | CIM | Configuration profile or settings |
+| port | xsd:integer | 0..* | optional | CIM | Listening ports |
+| resource_type | xsd:string | 1..1 | enum | CIM | Always "virtual" for ApplicationServer (it's runtime infrastructure) |
+| location | xsd:string | 1..1 | mandatory | CIM | Physical or cloud location |
+| lifecycle_status | xsd:string | 1..1 | enum | ITIL | Current state: running, stopped, failed, maintenance |
+
+**Enumeration Values**:
+- **server_type**: `websphere`, `weblogic`, `jboss`, `wildfly`, `tomcat`, `iis`, `nginx`, `apache`, `node`, `gunicorn`, `uvicorn`
+- **resource_type**: `virtual` (fixed value - ApplicationServer is runtime infrastructure)
+- **lifecycle_status**: `running`, `stopped`, `failed`, `maintenance`, `starting`, `stopping`
+
+**SHACL Validation Shape**:
+```turtle
+:ApplicationServerShape
+  a sh:NodeShape ;
+  sh:targetClass :ApplicationServer ;
+  sh:property [
+    sh:path :name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+  ] ;
+  sh:property [
+    sh:path :server_type ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "websphere" "weblogic" "jboss" "wildfly" "tomcat" "iis" "nginx" "apache" "node" "gunicorn" "uvicorn" ) ;
+  ] ;
+  sh:property [
+    sh:path :lifecycle_status ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:in ( "running" "stopped" "failed" "maintenance" "starting" "stopping" ) ;
+  ] ;
+  sh:property [
+    sh:path :runs_on ;
+    sh:minCount 1 ;
+    sh:message "ApplicationServer must run on infrastructure (VM, PhysicalServer, or CloudInstance)" ;
+  ] .
+```
+
+**Design Rationale**:
+
+ApplicationServer is placed in Layer 4 (Physical Infrastructure) rather than Layer 2 (Application) because:
+
+1. **Runtime Management**: Like Hypervisor and Cluster, ApplicationServer manages application lifecycle (start, stop, restart)
+2. **Resource Orchestration**: Provides resource allocation, health monitoring, and deployment orchestration
+3. **Infrastructure Role**: Acts as infrastructure that hosts applications, not as an application itself
+4. **Consistency**: Aligns with how container orchestrators (Kubernetes) are modeled in Layer 3
+5. **Clear Decomposition**: Enables clean traversal: Application → ApplicationServer → VM → PhysicalServer
+
+**Relationships**:
+- Applications are `hosted_on` ApplicationServer (cross-layer: Layer 2 → Layer 4)
+- ApplicationServer `runs_on` VirtualMachine, PhysicalServer, or CloudInstance (intra-layer: Layer 4)
+- ApplicationComponents are `deployed_on` ApplicationServer (cross-layer: Layer 2 → Layer 4)
+
+---
+
 ## Storage Infrastructure Entity Types
 
-### 6. StorageArray
+### 7. StorageArray
 
 **Definition**: A physical storage system (SAN, NAS) providing storage capacity.
 
@@ -504,7 +583,7 @@ This document provides the complete formal specification for Layer 4 (Physical I
 
 ---
 
-### 7. StorageVolume
+### 8. StorageVolume
 
 **Definition**: A logical storage volume or LUN allocated from a storage array.
 
@@ -580,7 +659,7 @@ This document provides the complete formal specification for Layer 4 (Physical I
 
 ---
 
-### 8. FileSystem
+### 9. FileSystem
 
 **Definition**: A mounted file system (NFS, CIFS, ext4, NTFS).
 
@@ -647,7 +726,7 @@ This document provides the complete formal specification for Layer 4 (Physical I
 
 ---
 
-### 9. StoragePool
+### 10. StoragePool
 
 **Definition**: A logical grouping of storage resources.
 
@@ -715,7 +794,7 @@ This document provides the complete formal specification for Layer 4 (Physical I
 
 ---
 
-### 10. CloudStorageService
+### 11. CloudStorageService
 
 **Definition**: A managed cloud storage service (RDS, EBS, Azure Disk, Cloud SQL).
 
@@ -804,7 +883,7 @@ This document provides the complete formal specification for Layer 4 (Physical I
 
 ---
 
-### 11. ObjectStorageBucket
+### 12. ObjectStorageBucket
 
 **Definition**: A physical object storage bucket (S3, Azure Blob, GCS).
 

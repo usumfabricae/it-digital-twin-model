@@ -34,7 +34,6 @@ graph TB
     subgraph Layer2["Layer 2: Application Layer"]
         APP[Application]
         AC[ApplicationComponent]
-        AS[ApplicationServer]
         SVC[Service]
         API[API]
         DB[Database]
@@ -58,6 +57,7 @@ graph TB
         PS[PhysicalServer]
         VM[VirtualMachine]
         HV[Hypervisor]
+        AS[ApplicationServer]
         CINST[CloudInstance]
         SA[StorageArray]
         SV[StorageVolume]
@@ -84,6 +84,8 @@ graph TB
     
     BP -->|realized_by| APP
     APP -->|deployed_as| POD
+    APP -->|hosted_on| AS
+    AS -->|runs_on| VM
     POD -->|runs_on| VM
     VM -->|runs_on| PS
     APP -->|communicates_via| CP
@@ -168,14 +170,6 @@ classDiagram
         +lifecycle_status: enum
     }
     
-    class ApplicationServer {
-        +name: string
-        +server_type: enum
-        +version: string
-        +port: integer
-        +lifecycle_status: enum
-    }
-    
     class Service {
         +name: string
         +service_type: enum
@@ -202,13 +196,11 @@ classDiagram
     
     Application --|> ApplicationLayer
     ApplicationComponent --|> ApplicationLayer
-    ApplicationServer --|> ApplicationLayer
     Service --|> ApplicationLayer
     API --|> ApplicationLayer
     Database --|> ApplicationLayer
     
     Application "1" *-- "*" ApplicationComponent : contains
-    ApplicationComponent "*" -- "1" ApplicationServer : deployed_on
     Application "*" -- "*" Database : uses
     Application "*" -- "*" API : uses
     Service "*" -- "*" Service : calls
@@ -336,6 +328,15 @@ classDiagram
         +lifecycle_status: enum
     }
     
+    class ApplicationServer {
+        +name: string
+        +server_type: enum
+        +version: string
+        +port: integer
+        +resource_type: enum
+        +lifecycle_status: enum
+    }
+    
     class StorageArray {
         +name: string
         +storage_type: enum
@@ -363,12 +364,16 @@ classDiagram
     VirtualMachine --|> PhysicalInfrastructureLayer
     Hypervisor --|> PhysicalInfrastructureLayer
     CloudInstance --|> PhysicalInfrastructureLayer
+    ApplicationServer --|> PhysicalInfrastructureLayer
     StorageArray --|> PhysicalInfrastructureLayer
     StorageVolume --|> PhysicalInfrastructureLayer
     FileSystem --|> PhysicalInfrastructureLayer
     
     VirtualMachine "*" -- "1" Hypervisor : runs_on
     Hypervisor "*" -- "1" PhysicalServer : runs_on
+    ApplicationServer "*" -- "1" VirtualMachine : runs_on
+    ApplicationServer "*" -- "1" PhysicalServer : runs_on
+    ApplicationServer "*" -- "1" CloudInstance : runs_on
     StorageVolume "*" -- "1" StorageArray : allocated_from
     FileSystem "*" -- "1" StorageVolume : mounted_from
 ```
@@ -602,11 +607,11 @@ graph TD
     subgraph "Layer 2: Application"
         APP[Application<br/>CRM Application]
         AC[ApplicationComponent<br/>CustomerServlet]
-        AS[ApplicationServer<br/>WebSphere 9.0]
         DB[Database<br/>CRM_DB]
     end
     
     subgraph "Layer 4: Infrastructure"
+        AS[ApplicationServer<br/>WebSphere 9.0]
         VM[VirtualMachine<br/>crm-app-vm-01]
         DBVM[VirtualMachine<br/>crm-db-vm-01]
         PS1[PhysicalServer<br/>server-rack-03]
@@ -618,6 +623,7 @@ graph TD
     BP -->|realized_by| APP
     APP -->|contains| AC
     AC -->|deployed_on| AS
+    APP -->|hosted_on| AS
     AS -->|runs_on| VM
     VM -->|runs_on| PS1
     APP -->|uses| DB
@@ -629,8 +635,8 @@ graph TD
     style BP fill:#e1f5ff
     style APP fill:#fff4e1
     style AC fill:#fff4e1
-    style AS fill:#fff4e1
     style DB fill:#fff4e1
+    style AS fill:#fce4ec
     style VM fill:#fce4ec
     style DBVM fill:#fce4ec
     style PS1 fill:#fce4ec
@@ -712,7 +718,6 @@ graph TB
     subgraph "Datacenter East"
         subgraph "Application Tier"
             APP1[Application<br/>ERP System]
-            AS1[ApplicationServer<br/>WebSphere]
         end
         
         subgraph "Database Tier"
@@ -720,6 +725,7 @@ graph TB
         end
         
         subgraph "Compute Infrastructure"
+            AS1[ApplicationServer<br/>WebSphere]
             VM1[VirtualMachine<br/>erp-app-vm-01]
             VM2[VirtualMachine<br/>erp-db-vm-01]
             HV1[Hypervisor<br/>VMware ESXi]
@@ -738,7 +744,7 @@ graph TB
         end
     end
     
-    APP1 -->|contains| AS1
+    APP1 -->|hosted_on| AS1
     AS1 -->|runs_on| VM1
     APP1 -->|uses| DB1
     DB1 -->|hosted_on| VM2
@@ -813,11 +819,11 @@ graph TB
     subgraph "On-Premises Datacenter"
         subgraph "Legacy Systems"
             APP3[Application<br/>Inventory System]
-            AS3[ApplicationServer<br/>WebLogic]
             DB3[Database<br/>Inventory_DB]
         end
         
         subgraph "On-Prem Infrastructure"
+            AS3[ApplicationServer<br/>WebLogic]
             VM3[VirtualMachine<br/>inventory-vm]
             PS3[PhysicalServer<br/>server-01]
         end
@@ -841,7 +847,7 @@ graph TB
         CP4[CommunicationPath<br/>VPN Tunnel]
     end
     
-    APP3 -->|contains| AS3
+    APP3 -->|hosted_on| AS3
     AS3 -->|runs_on| VM3
     VM3 -->|runs_on| PS3
     APP3 -->|uses| DB3
@@ -960,7 +966,6 @@ classDiagram
     
     ApplicationLayer <|-- Application
     ApplicationLayer <|-- ApplicationComponent
-    ApplicationLayer <|-- ApplicationServer
     ApplicationLayer <|-- Service
     ApplicationLayer <|-- API
     ApplicationLayer <|-- Database
@@ -984,6 +989,7 @@ classDiagram
     PhysicalInfrastructureLayer <|-- PhysicalServer
     PhysicalInfrastructureLayer <|-- VirtualMachine
     PhysicalInfrastructureLayer <|-- Hypervisor
+    PhysicalInfrastructureLayer <|-- ApplicationServer
     PhysicalInfrastructureLayer <|-- CloudInstance
     PhysicalInfrastructureLayer <|-- CloudService
     PhysicalInfrastructureLayer <|-- StorageArray
@@ -1145,6 +1151,715 @@ graph TD
     style L4 fill:#fff9c4
     style L5 fill:#e1f5ff
     style L6 fill:#fff4e1
+```
+
+---
+
+## Component Relationship Diagrams
+
+This section provides detailed relationship diagrams for each major component, showing all connections to neighboring components across layers.
+
+### Application Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 1: Business"
+        BP[BusinessProcess]
+        BC[BusinessCapability]
+        BS[BusinessService]
+        P[Product]
+    end
+    
+    subgraph "Layer 2: Application - Focus"
+        APP[Application<br/><b>FOCUS COMPONENT</b>]
+        AC[ApplicationComponent]
+        SVC[Service]
+        API[API]
+        DB[Database]
+        MQ[MessageQueue]
+        CACHE[CacheService]
+    end
+    
+    subgraph "Layer 3: Container"
+        POD[Pod]
+        CONT[Container]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        AS[ApplicationServer]
+        VM[VirtualMachine]
+        CI[CloudInstance]
+    end
+    
+    subgraph "Layer 5: Network"
+        CP[CommunicationPath]
+        LB[LoadBalancer]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        WAF[WAF]
+        CERT[Certificate]
+        IDP[IdentityProvider]
+        SZ[SecurityZone]
+    end
+    
+    %% Upward relationships (to Business)
+    BP -->|realized_by| APP
+    BC -->|realized_by| APP
+    BS -->|realized_by| APP
+    P -->|requires| APP
+    
+    %% Intra-layer relationships
+    APP -->|contains| AC
+    APP -->|contains| SVC
+    APP -->|exposes| API
+    APP -->|uses| DB
+    APP -->|uses| MQ
+    APP -->|uses| CACHE
+    SVC -->|calls| SVC
+    
+    %% Downward relationships (to Container)
+    APP -->|deployed_as| POD
+    APP -->|packaged_in| CONT
+    
+    %% Downward relationships (to Infrastructure)
+    APP -->|hosted_on| AS
+    APP -->|hosted_on| VM
+    APP -->|hosted_on| CI
+    
+    %% Cross-layer (to Network)
+    APP -->|communicates_via| CP
+    APP -->|exposes_via| LB
+    
+    %% Cross-layer (to Security)
+    APP -->|protected_by| FW
+    APP -->|protected_by| WAF
+    APP -->|uses_certificate| CERT
+    APP -->|authenticated_by| IDP
+    APP -->|belongs_to_zone| SZ
+    
+    style APP fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style BP fill:#e1f5ff
+    style BC fill:#e1f5ff
+    style BS fill:#e1f5ff
+    style P fill:#e1f5ff
+    style AC fill:#fff4e1
+    style SVC fill:#fff4e1
+    style API fill:#fff4e1
+    style DB fill:#fff4e1
+    style MQ fill:#fff4e1
+    style CACHE fill:#fff4e1
+    style POD fill:#e8f5e9
+    style CONT fill:#e8f5e9
+    style AS fill:#fce4ec
+    style VM fill:#fce4ec
+    style CI fill:#fce4ec
+    style CP fill:#f3e5f5
+    style LB fill:#f3e5f5
+    style FW fill:#fff9c4
+    style WAF fill:#fff9c4
+    style CERT fill:#fff9c4
+    style IDP fill:#fff9c4
+    style SZ fill:#fff9c4
+```
+
+### ApplicationServer Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        APP[Application]
+        AC[ApplicationComponent]
+        DB[Database]
+    end
+    
+    subgraph "Layer 4: Infrastructure - Focus"
+        AS[ApplicationServer<br/><b>FOCUS COMPONENT</b>]
+        VM[VirtualMachine]
+        PS[PhysicalServer]
+        CI[CloudInstance]
+        HV[Hypervisor]
+    end
+    
+    subgraph "Layer 5: Network"
+        NI[NetworkInterface]
+        NSG[NetworkSegment]
+        LB[LoadBalancer]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        CERT[Certificate]
+        SP[SecurityPolicy]
+    end
+    
+    %% Upward relationships (from Application)
+    APP -->|hosted_on| AS
+    AC -->|deployed_on| AS
+    
+    %% Intra-layer relationships (Infrastructure)
+    AS -->|runs_on| VM
+    AS -->|runs_on| PS
+    AS -->|runs_on| CI
+    VM -->|runs_on| HV
+    HV -->|runs_on| PS
+    
+    %% Cross-layer (to Network)
+    AS -->|has_interface| NI
+    NI -->|part_of_segment| NSG
+    AS -->|balanced_by| LB
+    
+    %% Cross-layer (to Security)
+    AS -->|protected_by| FW
+    AS -->|uses_certificate| CERT
+    AS -->|secured_by| SP
+    
+    style AS fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style APP fill:#fff4e1
+    style AC fill:#fff4e1
+    style DB fill:#fff4e1
+    style VM fill:#fce4ec
+    style PS fill:#fce4ec
+    style CI fill:#fce4ec
+    style HV fill:#fce4ec
+    style NI fill:#f3e5f5
+    style NSG fill:#f3e5f5
+    style LB fill:#f3e5f5
+    style FW fill:#fff9c4
+    style CERT fill:#fff9c4
+    style SP fill:#fff9c4
+```
+
+### Database Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application - Focus"
+        DB[Database<br/><b>FOCUS COMPONENT</b>]
+        DBI[DatabaseInstance]
+        DO[DataObject]
+        APP[Application]
+        SVC[Service]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        VM[VirtualMachine]
+        CI[CloudInstance]
+        CS[CloudService]
+        SV[StorageVolume]
+        FS[FileSystem]
+        CSS[CloudStorageService]
+    end
+    
+    subgraph "Layer 5: Network"
+        CP[CommunicationPath]
+        NSG[NetworkSegment]
+        NI[NetworkInterface]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        SP[SecurityPolicy]
+        SZ[SecurityZone]
+    end
+    
+    %% Intra-layer relationships
+    DB -->|contains| DBI
+    DB -->|contains| DO
+    APP -->|uses| DB
+    SVC -->|uses| DB
+    
+    %% Downward relationships (to Infrastructure)
+    DB -->|hosted_on| VM
+    DB -->|hosted_on| CI
+    DB -->|hosted_on| CS
+    DB -->|stored_on| SV
+    DB -->|stored_on| FS
+    DB -->|stored_on| CSS
+    
+    %% Cross-layer (to Network)
+    DB -->|communicates_via| CP
+    DB -->|has_interface| NI
+    NI -->|part_of_segment| NSG
+    
+    %% Cross-layer (to Security)
+    DB -->|protected_by| FW
+    DB -->|secured_by| SP
+    DB -->|belongs_to_zone| SZ
+    
+    style DB fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style DBI fill:#fff4e1
+    style DO fill:#fff4e1
+    style APP fill:#fff4e1
+    style SVC fill:#fff4e1
+    style VM fill:#fce4ec
+    style CI fill:#fce4ec
+    style CS fill:#fce4ec
+    style SV fill:#fce4ec
+    style FS fill:#fce4ec
+    style CSS fill:#fce4ec
+    style CP fill:#f3e5f5
+    style NSG fill:#f3e5f5
+    style NI fill:#f3e5f5
+    style FW fill:#fff9c4
+    style SP fill:#fff9c4
+    style SZ fill:#fff9c4
+```
+
+### Container/Pod Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        APP[Application]
+        SVC[Service]
+    end
+    
+    subgraph "Layer 3: Container - Focus"
+        POD[Pod<br/><b>FOCUS COMPONENT</b>]
+        CONT[Container]
+        IMG[ContainerImage]
+        DEP[Deployment]
+        K8S[KubernetesService]
+        RT[Route]
+        NS[Namespace]
+        CL[Cluster]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        VM[VirtualMachine]
+        CI[CloudInstance]
+        PS[PhysicalServer]
+        SV[StorageVolume]
+    end
+    
+    subgraph "Layer 5: Network"
+        LB[LoadBalancer]
+        NI[NetworkInterface]
+        NSG[NetworkSegment]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        SP[SecurityPolicy]
+        SZ[SecurityZone]
+    end
+    
+    %% Upward relationships (from Application)
+    APP -->|deployed_as| POD
+    SVC -->|deployed_as| POD
+    
+    %% Intra-layer relationships
+    POD -->|contains| CONT
+    CONT -->|uses_image| IMG
+    POD -->|part_of| DEP
+    POD -->|runs_in| NS
+    NS -->|part_of| CL
+    K8S -->|exposes| POD
+    RT -->|routes_to| K8S
+    
+    %% Downward relationships (to Infrastructure)
+    POD -->|runs_on| VM
+    POD -->|runs_on| CI
+    VM -->|runs_on| PS
+    POD -->|uses| SV
+    
+    %% Cross-layer (to Network)
+    POD -->|balanced_by| LB
+    POD -->|has_interface| NI
+    NI -->|part_of_segment| NSG
+    
+    %% Cross-layer (to Security)
+    POD -->|protected_by| FW
+    POD -->|secured_by| SP
+    POD -->|belongs_to_zone| SZ
+    
+    style POD fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style APP fill:#fff4e1
+    style SVC fill:#fff4e1
+    style CONT fill:#e8f5e9
+    style IMG fill:#e8f5e9
+    style DEP fill:#e8f5e9
+    style K8S fill:#e8f5e9
+    style RT fill:#e8f5e9
+    style NS fill:#e8f5e9
+    style CL fill:#e8f5e9
+    style VM fill:#fce4ec
+    style CI fill:#fce4ec
+    style PS fill:#fce4ec
+    style SV fill:#fce4ec
+    style LB fill:#f3e5f5
+    style NI fill:#f3e5f5
+    style NSG fill:#f3e5f5
+    style FW fill:#fff9c4
+    style SP fill:#fff9c4
+    style SZ fill:#fff9c4
+```
+
+### VirtualMachine Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        APP[Application]
+        DB[Database]
+    end
+    
+    subgraph "Layer 3: Container"
+        POD[Pod]
+        CL[Cluster]
+    end
+    
+    subgraph "Layer 4: Infrastructure - Focus"
+        VM[VirtualMachine<br/><b>FOCUS COMPONENT</b>]
+        AS[ApplicationServer]
+        HV[Hypervisor]
+        PS[PhysicalServer]
+        SV[StorageVolume]
+        FS[FileSystem]
+    end
+    
+    subgraph "Layer 5: Network"
+        NI[NetworkInterface]
+        NSG[NetworkSegment]
+        LB[LoadBalancer]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        SP[SecurityPolicy]
+        SZ[SecurityZone]
+    end
+    
+    %% Upward relationships (from Application & Container)
+    APP -->|hosted_on| VM
+    DB -->|hosted_on| VM
+    POD -->|runs_on| VM
+    AS -->|runs_on| VM
+    CL -->|uses| VM
+    
+    %% Intra-layer relationships
+    VM -->|runs_on| HV
+    HV -->|runs_on| PS
+    VM -->|uses| SV
+    VM -->|uses| FS
+    
+    %% Cross-layer (to Network)
+    VM -->|has_interface| NI
+    NI -->|part_of_segment| NSG
+    VM -->|balanced_by| LB
+    
+    %% Cross-layer (to Security)
+    VM -->|protected_by| FW
+    VM -->|secured_by| SP
+    VM -->|belongs_to_zone| SZ
+    
+    style VM fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style APP fill:#fff4e1
+    style DB fill:#fff4e1
+    style POD fill:#e8f5e9
+    style CL fill:#e8f5e9
+    style AS fill:#fce4ec
+    style HV fill:#fce4ec
+    style PS fill:#fce4ec
+    style SV fill:#fce4ec
+    style FS fill:#fce4ec
+    style NI fill:#f3e5f5
+    style NSG fill:#f3e5f5
+    style LB fill:#f3e5f5
+    style FW fill:#fff9c4
+    style SP fill:#fff9c4
+    style SZ fill:#fff9c4
+```
+
+### LoadBalancer Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        APP[Application]
+        SVC[Service]
+        API[API]
+    end
+    
+    subgraph "Layer 3: Container"
+        POD[Pod]
+        K8S[KubernetesService]
+        RT[Route]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        VM[VirtualMachine]
+        CI[CloudInstance]
+        AS[ApplicationServer]
+    end
+    
+    subgraph "Layer 5: Network - Focus"
+        LB[LoadBalancer<br/><b>FOCUS COMPONENT</b>]
+        ND[NetworkDevice]
+        NSG[NetworkSegment]
+        CP[CommunicationPath]
+        NI[NetworkInterface]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        CERT[Certificate]
+        SP[SecurityPolicy]
+    end
+    
+    %% Upward relationships (from Application & Container)
+    APP -->|exposes_via| LB
+    SVC -->|exposes_via| LB
+    API -->|exposes_via| LB
+    RT -->|routes_to| LB
+    
+    %% Intra-layer relationships
+    LB -->|connected_to| ND
+    LB -->|part_of_segment| NSG
+    LB -->|routes_through| CP
+    LB -->|has_interface| NI
+    
+    %% Downward relationships (to Infrastructure)
+    LB -->|balances_to| VM
+    LB -->|balances_to| CI
+    LB -->|balances_to| AS
+    LB -->|balances_to| POD
+    
+    %% Cross-layer (to Security)
+    LB -->|protected_by| FW
+    LB -->|uses_certificate| CERT
+    LB -->|secured_by| SP
+    
+    style LB fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style APP fill:#fff4e1
+    style SVC fill:#fff4e1
+    style API fill:#fff4e1
+    style POD fill:#e8f5e9
+    style K8S fill:#e8f5e9
+    style RT fill:#e8f5e9
+    style VM fill:#fce4ec
+    style CI fill:#fce4ec
+    style AS fill:#fce4ec
+    style ND fill:#f3e5f5
+    style NSG fill:#f3e5f5
+    style CP fill:#f3e5f5
+    style NI fill:#f3e5f5
+    style FW fill:#fff9c4
+    style CERT fill:#fff9c4
+    style SP fill:#fff9c4
+```
+
+### Certificate Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        APP[Application]
+        API[API]
+        SVC[Service]
+    end
+    
+    subgraph "Layer 3: Container"
+        RT[Route]
+        IG[IngressController]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        AS[ApplicationServer]
+    end
+    
+    subgraph "Layer 5: Network"
+        LB[LoadBalancer]
+    end
+    
+    subgraph "Layer 6: Security - Focus"
+        CERT[Certificate<br/><b>FOCUS COMPONENT</b>]
+        CA[CertificateAuthority]
+        SP[SecurityPolicy]
+        IDP[IdentityProvider]
+    end
+    
+    %% Upward relationships (from all layers)
+    APP -->|uses_certificate| CERT
+    API -->|uses_certificate| CERT
+    SVC -->|uses_certificate| CERT
+    RT -->|uses_certificate| CERT
+    IG -->|uses_certificate| CERT
+    AS -->|uses_certificate| CERT
+    LB -->|uses_certificate| CERT
+    
+    %% Intra-layer relationships
+    CERT -->|issued_by| CA
+    CA -->|trusts| CA
+    CERT -->|governed_by| SP
+    IDP -->|uses_certificate| CERT
+    
+    style CERT fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style APP fill:#fff4e1
+    style API fill:#fff4e1
+    style SVC fill:#fff4e1
+    style RT fill:#e8f5e9
+    style IG fill:#e8f5e9
+    style AS fill:#fce4ec
+    style LB fill:#f3e5f5
+    style CA fill:#fff9c4
+    style SP fill:#fff9c4
+    style IDP fill:#fff9c4
+```
+
+### StorageVolume Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        DB[Database]
+        FS_APP[FileStorageService]
+    end
+    
+    subgraph "Layer 3: Container"
+        POD[Pod]
+        CONT[Container]
+    end
+    
+    subgraph "Layer 4: Infrastructure - Focus"
+        SV[StorageVolume<br/><b>FOCUS COMPONENT</b>]
+        SA[StorageArray]
+        SP_STOR[StoragePool]
+        FS[FileSystem]
+        VM[VirtualMachine]
+        PS[PhysicalServer]
+    end
+    
+    subgraph "Layer 5: Network"
+        NSG[NetworkSegment]
+        CP[CommunicationPath]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        SP_SEC[SecurityPolicy]
+        SZ[SecurityZone]
+    end
+    
+    %% Upward relationships (from Application & Container)
+    DB -->|stored_on| SV
+    FS_APP -->|uses| SV
+    POD -->|uses| SV
+    CONT -->|uses| SV
+    
+    %% Intra-layer relationships
+    SV -->|allocated_from| SA
+    SV -->|allocated_from| SP_STOR
+    FS -->|mounted_from| SV
+    SV -->|attached_to| VM
+    SV -->|attached_to| PS
+    
+    %% Cross-layer (to Network)
+    SV -->|accessed_via| NSG
+    SV -->|accessed_via| CP
+    
+    %% Cross-layer (to Security)
+    SV -->|protected_by| FW
+    SV -->|secured_by| SP_SEC
+    SV -->|belongs_to_zone| SZ
+    
+    style SV fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style DB fill:#fff4e1
+    style FS_APP fill:#fff4e1
+    style POD fill:#e8f5e9
+    style CONT fill:#e8f5e9
+    style SA fill:#fce4ec
+    style SP_STOR fill:#fce4ec
+    style FS fill:#fce4ec
+    style VM fill:#fce4ec
+    style PS fill:#fce4ec
+    style NSG fill:#f3e5f5
+    style CP fill:#f3e5f5
+    style FW fill:#fff9c4
+    style SP_SEC fill:#fff9c4
+    style SZ fill:#fff9c4
+```
+
+### Firewall Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 1: Business"
+        BP[BusinessProcess]
+    end
+    
+    subgraph "Layer 2: Application"
+        APP[Application]
+        DB[Database]
+        API[API]
+    end
+    
+    subgraph "Layer 3: Container"
+        POD[Pod]
+        CL[Cluster]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        VM[VirtualMachine]
+        AS[ApplicationServer]
+        SV[StorageVolume]
+    end
+    
+    subgraph "Layer 5: Network"
+        ND[NetworkDevice]
+        NSG[NetworkSegment]
+        CP[CommunicationPath]
+        LB[LoadBalancer]
+    end
+    
+    subgraph "Layer 6: Security - Focus"
+        FW[Firewall<br/><b>FOCUS COMPONENT</b>]
+        SP[SecurityPolicy]
+        SZ[SecurityZone]
+        WAF[WAF]
+    end
+    
+    %% Protects entities from all layers
+    FW -->|protects| BP
+    FW -->|protects| APP
+    FW -->|protects| DB
+    FW -->|protects| API
+    FW -->|protects| POD
+    FW -->|protects| CL
+    FW -->|protects| VM
+    FW -->|protects| AS
+    FW -->|protects| SV
+    
+    %% Intra-layer relationships
+    FW -->|enforces| SP
+    FW -->|protects| SZ
+    FW -->|works_with| WAF
+    
+    %% Network relationships
+    FW -->|connected_to| ND
+    FW -->|part_of_segment| NSG
+    FW -->|filters| CP
+    FW -->|protects| LB
+    
+    style FW fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style BP fill:#e1f5ff
+    style APP fill:#fff4e1
+    style DB fill:#fff4e1
+    style API fill:#fff4e1
+    style POD fill:#e8f5e9
+    style CL fill:#e8f5e9
+    style VM fill:#fce4ec
+    style AS fill:#fce4ec
+    style SV fill:#fce4ec
+    style ND fill:#f3e5f5
+    style NSG fill:#f3e5f5
+    style CP fill:#f3e5f5
+    style LB fill:#f3e5f5
+    style SP fill:#fff9c4
+    style SZ fill:#fff9c4
+    style WAF fill:#fff9c4
 ```
 
 ---
