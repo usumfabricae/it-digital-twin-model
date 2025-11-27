@@ -1559,6 +1559,11 @@ graph TB
     LB1 -->|connected_to| ND2
     LB2 -->|connected_to| ND3
     
+    %% Network interfaces connected to device ports
+    NI1 -->|connected_to_port| ND2
+    NI2 -->|connected_to_port| ND2
+    NI3 -->|connected_to_port| ND3
+    
     %% Network interfaces in segments
     NI1 -->|part_of_segment| NSG1
     NI2 -->|part_of_segment| NSG1

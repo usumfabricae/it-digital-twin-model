@@ -608,7 +608,7 @@ se**: connected_to (symmetric relationship)
 **Definition**: A network interface is attached to a compute resource.
 
 **Domain**: NetworkInterface
-**Range**: PhysicalServer | VirtualMachine | CloudInstance | Container
+**Range**: PhysicalServer | VirtualMachine | CloudInstance | Container | Pod
 **Cardinality**: many-to-one (*..1) - interface attached to one resource
 
 **Inverse**: has_interface (Compute resource has NetworkInterface)
@@ -622,7 +622,7 @@ se**: connected_to (symmetric relationship)
   rdf:type owl:ObjectProperty ;
   rdf:type owl:FunctionalProperty ;
   rdfs:domain :NetworkInterface ;
-  rdfs:range [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container ) ] ;
+  rdfs:range [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container :Pod ) ] ;
   rdfs:label "attached to" ;
   rdfs:comment "Network interface attached to compute resource" .
 
@@ -641,7 +641,55 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 6. part_of_segment
+#### 6. connected_to_port
+
+**Definition**: A network interface is physically or logically connected to a port on a network device.
+
+**Domain**: NetworkInterface
+**Range**: NetworkDevice
+**Cardinality**: many-to-one (*..1) - interface connects to one device port
+
+**Inverse**: has_connected_interface (NetworkDevice has connected interfaces)
+**Properties**:
+- port_number (string): Port identifier on the network device (e.g., "GigabitEthernet0/1", "eth0")
+- connection_type (enum): physical, virtual, trunk, access
+- port_speed_mbps (integer): Port speed in Mbps
+- vlan_mode (enum): access, trunk, hybrid
+
+**OWL Definition**:
+```turtle
+:connected_to_port
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range :NetworkDevice ;
+  rdfs:label "connected to port" ;
+  rdfs:comment "Network interface is connected to a port on a network device" ;
+  skos:definition "Represents the physical or logical connection between a network interface and a specific port on a network device (switch, router)" .
+
+:has_connected_interface
+  rdf:type owl:ObjectProperty ;
+  owl:inverseOf :connected_to_port ;
+  rdfs:domain :NetworkDevice ;
+  rdfs:range :NetworkInterface ;
+  rdfs:label "has connected interface" ;
+  rdfs:comment "Network device has network interface connected to its port" .
+```
+
+**Usage Example**:
+```turtle
+# VM's network interface connected to switch port
+:eth0_vm01 :connected_to_port :Switch_Access01 .
+:Switch_Access01 :has_connected_interface :eth0_vm01 .
+
+# Physical server NIC connected to switch
+:nic0_server01 :connected_to_port :Switch_Core01 .
+:Switch_Core01 :has_connected_interface :nic0_server01 .
+```
+
+---
+
+#### 7. part_of_segment
 
 **Definition**: A network interface or device is part of a network segment.
 
@@ -678,7 +726,7 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 7. applies_to
+#### 8. applies_to
 
 **Definition**: A network route applies to a network segment.
 
@@ -713,7 +761,7 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 8. balances_to
+#### 9. balances_to
 
 **Definition**: A load balancer distributes traffic to backend targets.
 
@@ -756,7 +804,7 @@ se**: connected_to (symmetric relationship)
 
 These relationships connect Layer 5 (Network) to other layers.
 
-#### 9. communicates_via (Application → Network)
+#### 10. communicates_via (Application → Network)
 
 **Definition**: An application communicates via a communication path.
 
@@ -793,7 +841,7 @@ These relationships connect Layer 5 (Network) to other layers.
 
 ---
 
-#### 10. exposes_via (Application → LoadBalancer)
+#### 11. exposes_via (Application → LoadBalancer)
 
 **Definition**: An application or service is exposed via a load balancer.
 
@@ -839,6 +887,7 @@ These relationships connect Layer 5 (Network) to other layers.
 | connects_to | CommunicationPath | NetworkInterface | *..1 | Intra-layer |
 | routes_through | CommunicationPath | NetworkDevice | *..* | Intra-layer |
 | attached_to | NetworkInterface | Compute | *..1 | Cross-layer |
+| connected_to_port | NetworkInterface | NetworkDevice | *..1 | Intra-layer |
 | part_of_segment | NetworkInterface/Device | NetworkSegment | *..1 | Intra-layer |
 | applies_to | NetworkRoute | NetworkSegment | *..1 | Intra-layer |
 | balances_to | LoadBalancer | Compute/Service | 1..* | Cross-layer |

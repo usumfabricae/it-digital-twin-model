@@ -880,6 +880,24 @@
   rdfs:domain :NetworkDevice ;
   rdfs:range :NetworkDevice .
 
+:connected_to_port
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "connected to port" ;
+  rdfs:comment "Network interface is connected to a port on a network device" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range :NetworkDevice ;
+  skos:definition "Represents the physical or logical connection between a network interface and a specific port on a network device (switch, router)" ;
+  owl:inverseOf :has_connected_interface .
+
+:has_connected_interface
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "has connected interface" ;
+  rdfs:comment "Network device has network interface connected to its port" ;
+  rdfs:domain :NetworkDevice ;
+  rdfs:range :NetworkInterface ;
+  owl:inverseOf :connected_to_port .
+
 :connects_from
   rdf:type owl:ObjectProperty ;
   rdf:type owl:FunctionalProperty ;
@@ -939,13 +957,15 @@
   rdfs:label "attached to" ;
   rdfs:comment "Network interface attached to compute resource" ;
   rdfs:domain :NetworkInterface ;
-  rdfs:range [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container ) ] ;
+  rdfs:range [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container :Pod ) ] ;
   owl:inverseOf :has_interface .
 
 :has_interface
   rdf:type owl:ObjectProperty ;
   rdfs:label "has interface" ;
   rdfs:comment "Compute resource has network interface" ;
+  rdfs:domain [ owl:unionOf ( :PhysicalServer :VirtualMachine :CloudInstance :Container :Pod ) ] ;
+  rdfs:range :NetworkInterface ;
   owl:inverseOf :attached_to .
 
 :part_of_segment
