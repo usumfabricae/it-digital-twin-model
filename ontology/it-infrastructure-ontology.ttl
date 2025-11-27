@@ -880,18 +880,57 @@
   rdfs:domain :NetworkDevice ;
   rdfs:range :NetworkDevice .
 
+:connects_from
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "connects from" ;
+  rdfs:comment "Communication path originates from source network interface" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range :NetworkInterface ;
+  skos:definition "Defines the source endpoint (network interface) of a communication path" ;
+  owl:inverseOf :source_of .
+
+:source_of
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "source of" ;
+  rdfs:comment "Network interface is source of communication path" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range :CommunicationPath ;
+  owl:inverseOf :connects_from .
+
+:connects_to
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:label "connects to" ;
+  rdfs:comment "Communication path terminates at destination network interface" ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range :NetworkInterface ;
+  skos:definition "Defines the destination endpoint (network interface) of a communication path" ;
+  owl:inverseOf :destination_of .
+
+:destination_of
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "destination of" ;
+  rdfs:comment "Network interface is destination of communication path" ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range :CommunicationPath ;
+  owl:inverseOf :connects_to .
+
 :routes_through
   rdf:type owl:ObjectProperty ;
   rdfs:label "routes through" ;
-  rdfs:comment "Communication path routes through network device" ;
+  rdfs:comment "Communication path routes through intermediate network device" ;
   rdfs:domain :CommunicationPath ;
   rdfs:range :NetworkDevice ;
+  skos:definition "Defines intermediate network devices (routers, switches, firewalls) that the communication path traverses" ;
   owl:inverseOf :routes .
 
 :routes
   rdf:type owl:ObjectProperty ;
   rdfs:label "routes" ;
   rdfs:comment "Network device routes communication path" ;
+  rdfs:domain :NetworkDevice ;
+  rdfs:range :CommunicationPath ;
   owl:inverseOf :routes_through .
 
 :attached_to

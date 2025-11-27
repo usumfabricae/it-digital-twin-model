@@ -487,9 +487,85 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 2. routes_through
+#### 2. connects_from
 
-**Definition**: A communication path routes through a network device.
+**Definition**: A communication path originates from a source network interface.
+
+**Domain**: CommunicationPath
+**Range**: NetworkInterface
+**Cardinality**: many-to-one (*..1) - a path has one source interface
+
+**Inverse**: source_of (NetworkInterface is source of CommunicationPath)
+**Properties**:
+- connection_established (dateTime): When connection was established
+- source_port (integer): Source port number
+
+**OWL Definition**:
+```turtle
+:connects_from
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range :NetworkInterface ;
+  rdfs:label "connects from" ;
+  rdfs:comment "Communication path originates from source network interface" .
+
+:source_of
+  rdf:type owl:ObjectProperty ;
+  owl:inverseOf :connects_from ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range :CommunicationPath .
+```
+
+**Usage Example**:
+```turtle
+:Path_App1_to_DB1 :connects_from :eth0_app_vm01 .
+:eth0_app_vm01 :source_of :Path_App1_to_DB1 .
+```
+
+---
+
+#### 3. connects_to
+
+**Definition**: A communication path terminates at a destination network interface.
+
+**Domain**: CommunicationPath
+**Range**: NetworkInterface
+**Cardinality**: many-to-one (*..1) - a path has one destination interface
+
+**Inverse**: destination_of (NetworkInterface is destination of CommunicationPath)
+**Properties**:
+- connection_established (dateTime): When connection was established
+- destination_port (integer): Destination port number
+
+**OWL Definition**:
+```turtle
+:connects_to
+  rdf:type owl:ObjectProperty ;
+  rdf:type owl:FunctionalProperty ;
+  rdfs:domain :CommunicationPath ;
+  rdfs:range :NetworkInterface ;
+  rdfs:label "connects to" ;
+  rdfs:comment "Communication path terminates at destination network interface" .
+
+:destination_of
+  rdf:type owl:ObjectProperty ;
+  owl:inverseOf :connects_to ;
+  rdfs:domain :NetworkInterface ;
+  rdfs:range :CommunicationPath .
+```
+
+**Usage Example**:
+```turtle
+:Path_App1_to_DB1 :connects_to :eth0_db_vm01 .
+:eth0_db_vm01 :destination_of :Path_App1_to_DB1 .
+```
+
+---
+
+#### 4. routes_through
+
+**Definition**: A communication path routes through intermediate network devices.
 
 **Domain**: CommunicationPath
 **Range**: NetworkDevice
@@ -507,7 +583,7 @@ se**: connected_to (symmetric relationship)
   rdfs:domain :CommunicationPath ;
   rdfs:range :NetworkDevice ;
   rdfs:label "routes through" ;
-  rdfs:comment "Communication path routes through network device" .
+  rdfs:comment "Communication path routes through intermediate network device" .
 
 :routes
   rdf:type owl:ObjectProperty ;
@@ -518,14 +594,16 @@ se**: connected_to (symmetric relationship)
 
 **Usage Example**:
 ```turtle
+:Path_App1_to_DB1 :connects_from :eth0_app_vm01 .
 :Path_App1_to_DB1 :routes_through :Router_Core01 .
 :Path_App1_to_DB1 :routes_through :Firewall_DMZ .
 :Path_App1_to_DB1 :routes_through :Switch_DB .
+:Path_App1_to_DB1 :connects_to :eth0_db_vm01 .
 ```
 
 ---
 
-#### 3. attached_to
+#### 5. attached_to
 
 **Definition**: A network interface is attached to a compute resource.
 
@@ -563,7 +641,7 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 4. part_of_segment
+#### 6. part_of_segment
 
 **Definition**: A network interface or device is part of a network segment.
 
@@ -600,7 +678,7 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 5. applies_to
+#### 7. applies_to
 
 **Definition**: A network route applies to a network segment.
 
@@ -635,7 +713,7 @@ se**: connected_to (symmetric relationship)
 
 ---
 
-#### 6. balances_to
+#### 8. balances_to
 
 **Definition**: A load balancer distributes traffic to backend targets.
 
@@ -678,7 +756,7 @@ se**: connected_to (symmetric relationship)
 
 These relationships connect Layer 5 (Network) to other layers.
 
-#### 7. communicates_via (Application → Network)
+#### 9. communicates_via (Application → Network)
 
 **Definition**: An application communicates via a communication path.
 
@@ -715,7 +793,7 @@ These relationships connect Layer 5 (Network) to other layers.
 
 ---
 
-#### 8. exposes_via (Application → LoadBalancer)
+#### 10. exposes_via (Application → LoadBalancer)
 
 **Definition**: An application or service is exposed via a load balancer.
 
@@ -757,6 +835,8 @@ These relationships connect Layer 5 (Network) to other layers.
 | Relationship | Domain | Range | Cardinality | Type |
 |--------------|--------|-------|-------------|------|
 | connected_to | NetworkDevice | NetworkDevice | *..*  | Intra-layer |
+| connects_from | CommunicationPath | NetworkInterface | *..1 | Intra-layer |
+| connects_to | CommunicationPath | NetworkInterface | *..1 | Intra-layer |
 | routes_through | CommunicationPath | NetworkDevice | *..* | Intra-layer |
 | attached_to | NetworkInterface | Compute | *..1 | Cross-layer |
 | part_of_segment | NetworkInterface/Device | NetworkSegment | *..1 | Intra-layer |
@@ -805,7 +885,9 @@ These relationships connect Layer 5 (Network) to other layers.
 
 6. **Connectivity Validation**:
    - NetworkInterface must be attached_to exactly one compute resource
-   - CommunicationPath must have at least one routes_through relationship
+   - CommunicationPath must have exactly one connects_from relationship (source interface)
+   - CommunicationPath must have exactly one connects_to relationship (destination interface)
+   - CommunicationPath may have zero or more routes_through relationships (intermediate devices)
    - LoadBalancer must have at least one balances_to relationship
 
 ### SHACL Validation Examples
@@ -826,14 +908,21 @@ These relationships connect Layer 5 (Network) to other layers.
     """ ;
   ] .
 
-# Validate CommunicationPath has routing
-:CommunicationPathRoutingValidation
+# Validate CommunicationPath has source and destination
+:CommunicationPathEndpointValidation
   a sh:NodeShape ;
   sh:targetClass :CommunicationPath ;
   sh:property [
-    sh:path :routes_through ;
+    sh:path :connects_from ;
     sh:minCount 1 ;
-    sh:message "Communication path must route through at least one network device" ;
+    sh:maxCount 1 ;
+    sh:message "Communication path must have exactly one source interface (connects_from)" ;
+  ] ;
+  sh:property [
+    sh:path :connects_to ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Communication path must have exactly one destination interface (connects_to)" ;
   ] .
 
 # Validate LoadBalancer has targets

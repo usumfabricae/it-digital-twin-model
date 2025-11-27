@@ -1564,11 +1564,16 @@ graph TB
     NI2 -->|part_of_segment| NSG1
     NI3 -->|part_of_segment| NSG2
     
-    %% Communication paths route through devices
+    %% Communication paths connect interfaces and route through devices
+    CP1 -->|connects_from| NI1
     CP1 -->|routes_through| LB1
     CP1 -->|routes_through| ND2
+    CP1 -->|connects_to| NI2
+    
+    CP2 -->|connects_from| NI2
     CP2 -->|routes_through| ND2
     CP2 -->|routes_through| ND3
+    CP2 -->|connects_to| NI3
     
     %% Routes apply to segments
     NR1 -->|applies_to| NSG1
@@ -2130,8 +2135,10 @@ graph TB
     %% Intra-layer relationships
     LB -->|connected_to| ND
     LB -->|part_of_segment| NSG
-    LB -->|routes_through| CP
+    CP -->|routes_through| LB
     LB -->|has_interface| NI
+    NI -->|source_of| CP
+    NI -->|destination_of| CP
     
     %% Downward relationships (to Infrastructure)
     LB -->|balances_to| VM
@@ -2161,6 +2168,82 @@ graph TB
     style FW fill:#fff9c4
     style CERT fill:#fff9c4
     style SP fill:#fff9c4
+```
+
+### CommunicationPath Component Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application"
+        APP[Application]
+        SVC[Service]
+        DB[Database]
+    end
+    
+    subgraph "Layer 4: Infrastructure"
+        VM1[VirtualMachine<br/>Source]
+        VM2[VirtualMachine<br/>Destination]
+    end
+    
+    subgraph "Layer 5: Network - Focus"
+        CP[CommunicationPath<br/><b>FOCUS COMPONENT</b>]
+        NI_SRC[NetworkInterface<br/>Source eth0]
+        NI_DST[NetworkInterface<br/>Destination eth0]
+        ND1[NetworkDevice<br/>Router]
+        ND2[NetworkDevice<br/>Firewall]
+        ND3[NetworkDevice<br/>Switch]
+        LB[LoadBalancer]
+        NSG1[NetworkSegment<br/>Source Subnet]
+        NSG2[NetworkSegment<br/>Destination Subnet]
+    end
+    
+    subgraph "Layer 6: Security"
+        FW[Firewall]
+        CERT[Certificate]
+    end
+    
+    %% Upward relationships (from Application)
+    APP -->|communicates_via| CP
+    SVC -->|communicates_via| CP
+    
+    %% Intra-layer relationships - ENDPOINTS
+    CP -->|connects_from| NI_SRC
+    CP -->|connects_to| NI_DST
+    NI_SRC -->|source_of| CP
+    NI_DST -->|destination_of| CP
+    
+    %% Intra-layer relationships - ROUTING
+    CP -->|routes_through| ND1
+    CP -->|routes_through| ND2
+    CP -->|routes_through| ND3
+    CP -->|routes_through| LB
+    
+    %% Network interface relationships
+    NI_SRC -->|attached_to| VM1
+    NI_DST -->|attached_to| VM2
+    NI_SRC -->|part_of_segment| NSG1
+    NI_DST -->|part_of_segment| NSG2
+    
+    %% Cross-layer (to Security)
+    CP -->|protected_by| FW
+    CP -->|secured_by| CERT
+    
+    style CP fill:#ffeb3b,stroke:#f57c00,stroke-width:4px
+    style NI_SRC fill:#ab47bc,stroke:#7b1fa2,stroke-width:3px
+    style NI_DST fill:#ab47bc,stroke:#7b1fa2,stroke-width:3px
+    style APP fill:#fff4e1
+    style SVC fill:#fff4e1
+    style DB fill:#fff4e1
+    style VM1 fill:#fce4ec
+    style VM2 fill:#fce4ec
+    style ND1 fill:#f3e5f5
+    style ND2 fill:#f3e5f5
+    style ND3 fill:#f3e5f5
+    style LB fill:#f3e5f5
+    style NSG1 fill:#f3e5f5
+    style NSG2 fill:#f3e5f5
+    style FW fill:#fff9c4
+    style CERT fill:#fff9c4
 ```
 
 ### Certificate Component Relationships
