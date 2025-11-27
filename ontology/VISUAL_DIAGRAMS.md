@@ -1155,6 +1155,518 @@ graph TD
 
 ---
 
+## Intra-Layer Relationship Diagrams
+
+This section shows the internal relationships within each layer, highlighting how entities within the same layer connect to each other.
+
+### Layer 1: Business Process Layer - Internal Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 1: Business Process Layer"
+        BC1[BusinessCapability<br/>Order Management]
+        BC2[BusinessCapability<br/>Financial Management]
+        BC3[BusinessCapability<br/>Customer Management]
+        BC4[BusinessCapability<br/>Payment Processing]
+        
+        BP1[BusinessProcess<br/>Order Fulfillment]
+        BP2[BusinessProcess<br/>Payment Processing]
+        BP3[BusinessProcess<br/>Shipping]
+        BP4[BusinessProcess<br/>Customer Onboarding]
+        BP5[BusinessProcess<br/>Invoice Generation]
+        
+        BS1[BusinessService<br/>Order Service]
+        BS2[BusinessService<br/>Payment Service]
+        BS3[BusinessService<br/>Customer Support]
+        
+        P1[Product<br/>E-commerce Platform]
+        P2[Product<br/>Premium Subscription]
+    end
+    
+    %% Capability hierarchy - capabilities contain sub-capabilities
+    BC1 -->|contains| BC4
+    BC2 -->|contains| BC4
+    
+    %% Capability enables processes
+    BC1 -->|enables| BP1
+    BC1 -->|enables| BP3
+    BC2 -->|enables| BP2
+    BC2 -->|enables| BP5
+    BC3 -->|enables| BP4
+    BC4 -->|enables| BP2
+    
+    %% Process composition - processes contain sub-processes
+    BP1 -->|contains| BP2
+    BP1 -->|contains| BP3
+    
+    %% Process dependencies
+    BP2 -->|requires| BP4
+    BP3 -->|requires| BP1
+    BP5 -->|requires| BP2
+    
+    %% Service supports processes
+    BS1 -->|supports| BP1
+    BS1 -->|supports| BP3
+    BS2 -->|supports| BP2
+    BS2 -->|supports| BP5
+    BS3 -->|supports| BP4
+    
+    %% Service supports capabilities
+    BS1 -->|supports| BC1
+    BS2 -->|supports| BC2
+    BS3 -->|supports| BC3
+    
+    %% Process delivers product
+    BP1 -->|delivers| P1
+    BP2 -->|delivers| P1
+    BP3 -->|delivers| P1
+    BP4 -->|delivers| P2
+    
+    %% Product composition
+    P1 -->|contains| P2
+    
+    style BC1 fill:#b3e5fc,stroke:#0277bd,stroke-width:3px
+    style BC2 fill:#b3e5fc,stroke:#0277bd,stroke-width:3px
+    style BC3 fill:#b3e5fc,stroke:#0277bd,stroke-width:3px
+    style BC4 fill:#b3e5fc,stroke:#0277bd,stroke-width:2px
+    style BP1 fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
+    style BP2 fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
+    style BP3 fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
+    style BP4 fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
+    style BP5 fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
+    style BS1 fill:#81d4fa,stroke:#0277bd,stroke-width:2px
+    style BS2 fill:#81d4fa,stroke:#0277bd,stroke-width:2px
+    style BS3 fill:#81d4fa,stroke:#0277bd,stroke-width:2px
+    style P1 fill:#4fc3f7,stroke:#0277bd,stroke-width:3px
+    style P2 fill:#4fc3f7,stroke:#0277bd,stroke-width:2px
+```
+
+### Layer 2: Application Layer - Internal Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 2: Application Layer"
+        APP1[Application<br/>Order Management System]
+        APP2[Application<br/>Inventory System]
+        
+        AC1[ApplicationComponent<br/>OrderServlet]
+        AC2[ApplicationComponent<br/>PaymentProcessor]
+        AC3[ApplicationComponent<br/>ShippingModule]
+        
+        SVC1[Service<br/>Order Service]
+        SVC2[Service<br/>Payment Service]
+        SVC3[Service<br/>Inventory Service]
+        
+        API1[API<br/>Order REST API]
+        API2[API<br/>Payment API]
+        API3[API<br/>Inventory API]
+        
+        DB1[Database<br/>OrderDB]
+        DB2[Database<br/>CustomerDB]
+        
+        DBI1[DatabaseInstance<br/>OrderDB_PROD]
+        DBI2[DatabaseInstance<br/>OrderDB_TEST]
+        DO1[DataObject<br/>Orders Table]
+        DO2[DataObject<br/>OrderItems Table]
+        DO3[DataObject<br/>Customers Table]
+        
+        MQ1[MessageQueue<br/>Order Queue]
+        MQ2[MessageQueue<br/>Notification Queue]
+        CACHE1[CacheService<br/>Session Cache]
+        FS1[FileStorageService<br/>Document Storage]
+        OS1[ObjectStorageService<br/>Image Storage]
+    end
+    
+    %% Application composition - contains components
+    APP1 -->|contains| AC1
+    APP1 -->|contains| AC2
+    APP1 -->|contains| AC3
+    
+    %% Application composition - contains services
+    APP1 -->|contains| SVC1
+    APP1 -->|contains| SVC2
+    APP2 -->|contains| SVC3
+    
+    %% Application exposes APIs
+    APP1 -->|exposes| API1
+    APP1 -->|exposes| API2
+    SVC1 -->|exposes| API1
+    SVC2 -->|exposes| API2
+    SVC3 -->|exposes| API3
+    
+    %% Service-to-service communication
+    SVC1 -->|calls| SVC2
+    SVC1 -->|calls| SVC3
+    SVC2 -->|calls| SVC3
+    
+    %% Application-to-application communication
+    APP1 -->|calls| APP2
+    
+    %% Application uses databases
+    APP1 -->|uses| DB1
+    APP1 -->|uses| DB2
+    SVC1 -->|uses| DB1
+    SVC2 -->|uses| DB2
+    SVC3 -->|uses| DB1
+    
+    %% Database composition - contains instances
+    DB1 -->|contains| DBI1
+    DB1 -->|contains| DBI2
+    
+    %% Database composition - contains data objects
+    DB1 -->|contains| DO1
+    DB1 -->|contains| DO2
+    DB2 -->|contains| DO3
+    
+    %% Application uses messaging
+    APP1 -->|uses| MQ1
+    APP1 -->|uses| MQ2
+    SVC1 -->|uses| MQ1
+    SVC3 -->|uses| MQ1
+    SVC2 -->|uses| MQ2
+    
+    %% Application uses caching
+    APP1 -->|uses| CACHE1
+    SVC1 -->|uses| CACHE1
+    
+    %% Application uses storage services
+    APP1 -->|uses| FS1
+    APP1 -->|uses| OS1
+    SVC1 -->|uses| FS1
+    SVC3 -->|uses| OS1
+    
+    %% API uses other APIs
+    API1 -->|calls| API2
+    API1 -->|calls| API3
+    
+    style APP1 fill:#fff4e1,stroke:#f57c00,stroke-width:3px
+    style APP2 fill:#fff4e1,stroke:#f57c00,stroke-width:3px
+    style AC1 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style AC2 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style AC3 fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style SVC1 fill:#ffcc80,stroke:#f57c00,stroke-width:2px
+    style SVC2 fill:#ffcc80,stroke:#f57c00,stroke-width:2px
+    style SVC3 fill:#ffcc80,stroke:#f57c00,stroke-width:2px
+    style API1 fill:#ffb74d,stroke:#f57c00,stroke-width:2px
+    style API2 fill:#ffb74d,stroke:#f57c00,stroke-width:2px
+    style API3 fill:#ffb74d,stroke:#f57c00,stroke-width:2px
+    style DB1 fill:#ffa726,stroke:#f57c00,stroke-width:2px
+    style DB2 fill:#ffa726,stroke:#f57c00,stroke-width:2px
+    style DBI1 fill:#ff9800,stroke:#f57c00,stroke-width:2px
+    style DBI2 fill:#ff9800,stroke:#f57c00,stroke-width:2px
+    style DO1 fill:#ff9800,stroke:#f57c00,stroke-width:2px
+    style DO2 fill:#ff9800,stroke:#f57c00,stroke-width:2px
+    style DO3 fill:#ff9800,stroke:#f57c00,stroke-width:2px
+    style MQ1 fill:#fb8c00,stroke:#f57c00,stroke-width:2px
+    style MQ2 fill:#fb8c00,stroke:#f57c00,stroke-width:2px
+    style CACHE1 fill:#f57c00,stroke:#f57c00,stroke-width:2px
+    style FS1 fill:#ef6c00,stroke:#f57c00,stroke-width:2px
+    style OS1 fill:#e65100,stroke:#f57c00,stroke-width:2px
+```
+
+### Layer 3: Container Layer - Internal Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 3: Container and Orchestration Layer"
+        CL[Cluster<br/>Production Cluster]
+        
+        NS1[Namespace<br/>production]
+        NS2[Namespace<br/>staging]
+        
+        DEP1[Deployment<br/>order-service-deploy]
+        DEP2[Deployment<br/>payment-service-deploy]
+        
+        POD1[Pod<br/>order-service-pod-1]
+        POD2[Pod<br/>order-service-pod-2]
+        POD3[Pod<br/>payment-service-pod-1]
+        
+        CONT1[Container<br/>order-app]
+        CONT2[Container<br/>order-sidecar]
+        CONT3[Container<br/>payment-app]
+        
+        IMG1[ContainerImage<br/>order-service:v1.2]
+        IMG2[ContainerImage<br/>sidecar:latest]
+        IMG3[ContainerImage<br/>payment-service:v2.0]
+        
+        K8S1[KubernetesService<br/>order-service-svc]
+        K8S2[KubernetesService<br/>payment-service-svc]
+        
+        RT1[Route<br/>order.example.com]
+        IG1[IngressController<br/>nginx-ingress]
+    end
+    
+    %% Cluster contains namespaces
+    CL -->|contains| NS1
+    CL -->|contains| NS2
+    
+    %% Namespace contains deployments
+    NS1 -->|contains| DEP1
+    NS1 -->|contains| DEP2
+    
+    %% Deployment manages pods
+    DEP1 -->|manages| POD1
+    DEP1 -->|manages| POD2
+    DEP2 -->|manages| POD3
+    
+    %% Pod contains containers
+    POD1 -->|contains| CONT1
+    POD1 -->|contains| CONT2
+    POD3 -->|contains| CONT3
+    
+    %% Container uses image
+    CONT1 -->|uses_image| IMG1
+    CONT2 -->|uses_image| IMG2
+    CONT3 -->|uses_image| IMG3
+    
+    %% Service exposes pods
+    K8S1 -->|exposes| POD1
+    K8S1 -->|exposes| POD2
+    K8S2 -->|exposes| POD3
+    
+    %% Route routes to service
+    RT1 -->|routes_to| K8S1
+    IG1 -->|manages| RT1
+    
+    style CL fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
+    style NS1 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style NS2 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style DEP1 fill:#a5d6a7,stroke:#388e3c,stroke-width:2px
+    style DEP2 fill:#a5d6a7,stroke:#388e3c,stroke-width:2px
+    style POD1 fill:#81c784,stroke:#388e3c,stroke-width:2px
+    style POD2 fill:#81c784,stroke:#388e3c,stroke-width:2px
+    style POD3 fill:#81c784,stroke:#388e3c,stroke-width:2px
+    style CONT1 fill:#66bb6a,stroke:#388e3c,stroke-width:2px
+    style CONT2 fill:#66bb6a,stroke:#388e3c,stroke-width:2px
+    style CONT3 fill:#66bb6a,stroke:#388e3c,stroke-width:2px
+    style IMG1 fill:#4caf50,stroke:#388e3c,stroke-width:2px
+    style IMG2 fill:#4caf50,stroke:#388e3c,stroke-width:2px
+    style IMG3 fill:#4caf50,stroke:#388e3c,stroke-width:2px
+    style K8S1 fill:#43a047,stroke:#388e3c,stroke-width:2px
+    style K8S2 fill:#43a047,stroke:#388e3c,stroke-width:2px
+    style RT1 fill:#388e3c,stroke:#388e3c,stroke-width:2px
+    style IG1 fill:#2e7d32,stroke:#388e3c,stroke-width:2px
+```
+
+### Layer 4: Physical Infrastructure - Internal Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 4: Physical Infrastructure Layer"
+        PS1[PhysicalServer<br/>server-rack-05]
+        PS2[PhysicalServer<br/>server-rack-06]
+        
+        HV1[Hypervisor<br/>VMware ESXi]
+        HV2[Hypervisor<br/>VMware ESXi]
+        
+        VM1[VirtualMachine<br/>app-vm-01]
+        VM2[VirtualMachine<br/>app-vm-02]
+        VM3[VirtualMachine<br/>db-vm-01]
+        
+        AS1[ApplicationServer<br/>WebSphere-01]
+        AS2[ApplicationServer<br/>Tomcat-01]
+        
+        SA1[StorageArray<br/>NetApp SAN]
+        SP1[StoragePool<br/>Production Pool]
+        
+        SV1[StorageVolume<br/>app-vol-01]
+        SV2[StorageVolume<br/>app-vol-02]
+        SV3[StorageVolume<br/>db-vol-01]
+        
+        FS1[FileSystem<br/>/mnt/app-data]
+        FS2[FileSystem<br/>/mnt/db-data]
+    end
+    
+    %% Hypervisor runs on physical server
+    HV1 -->|runs_on| PS1
+    HV2 -->|runs_on| PS2
+    
+    %% VMs run on hypervisor
+    VM1 -->|runs_on| HV1
+    VM2 -->|runs_on| HV1
+    VM3 -->|runs_on| HV2
+    
+    %% ApplicationServer runs on VMs
+    AS1 -->|runs_on| VM1
+    AS2 -->|runs_on| VM2
+    
+    %% Storage hierarchy
+    SA1 -->|contains| SP1
+    SP1 -->|allocates| SV1
+    SP1 -->|allocates| SV2
+    SP1 -->|allocates| SV3
+    
+    %% Filesystem mounted from volume
+    FS1 -->|mounted_from| SV1
+    FS2 -->|mounted_from| SV3
+    
+    %% VMs use storage
+    VM1 -->|uses| SV1
+    VM2 -->|uses| SV2
+    VM3 -->|uses| SV3
+    
+    style PS1 fill:#fce4ec,stroke:#c2185b,stroke-width:3px
+    style PS2 fill:#fce4ec,stroke:#c2185b,stroke-width:3px
+    style HV1 fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
+    style HV2 fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
+    style VM1 fill:#f48fb1,stroke:#c2185b,stroke-width:2px
+    style VM2 fill:#f48fb1,stroke:#c2185b,stroke-width:2px
+    style VM3 fill:#f48fb1,stroke:#c2185b,stroke-width:2px
+    style AS1 fill:#f06292,stroke:#c2185b,stroke-width:2px
+    style AS2 fill:#f06292,stroke:#c2185b,stroke-width:2px
+    style SA1 fill:#ec407a,stroke:#c2185b,stroke-width:2px
+    style SP1 fill:#e91e63,stroke:#c2185b,stroke-width:2px
+    style SV1 fill:#d81b60,stroke:#c2185b,stroke-width:2px
+    style SV2 fill:#d81b60,stroke:#c2185b,stroke-width:2px
+    style SV3 fill:#d81b60,stroke:#c2185b,stroke-width:2px
+    style FS1 fill:#c2185b,stroke:#c2185b,stroke-width:2px
+    style FS2 fill:#c2185b,stroke:#c2185b,stroke-width:2px
+```
+
+### Layer 5: Network Layer - Internal Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 5: Network Topology Layer"
+        ND1[NetworkDevice<br/>Core Router]
+        ND2[NetworkDevice<br/>Distribution Switch]
+        ND3[NetworkDevice<br/>Access Switch]
+        
+        LB1[LoadBalancer<br/>F5 LB]
+        LB2[LoadBalancer<br/>ALB]
+        
+        NSG1[NetworkSegment<br/>App Subnet<br/>10.1.10.0/24]
+        NSG2[NetworkSegment<br/>DB Subnet<br/>10.1.20.0/24]
+        NSG3[NetworkSegment<br/>DMZ<br/>10.1.1.0/24]
+        
+        NI1[NetworkInterface<br/>eth0 - 10.1.10.5]
+        NI2[NetworkInterface<br/>eth0 - 10.1.10.6]
+        NI3[NetworkInterface<br/>eth0 - 10.1.20.5]
+        
+        CP1[CommunicationPath<br/>HTTPS Path]
+        CP2[CommunicationPath<br/>SQL Path]
+        
+        NR1[NetworkRoute<br/>Default Gateway]
+        NR2[NetworkRoute<br/>DB Route]
+    end
+    
+    %% Network device connections
+    ND1 -->|connected_to| ND2
+    ND2 -->|connected_to| ND3
+    ND2 -->|connected_to| LB1
+    
+    %% Load balancer connections
+    LB1 -->|connected_to| ND2
+    LB2 -->|connected_to| ND3
+    
+    %% Network interfaces in segments
+    NI1 -->|part_of_segment| NSG1
+    NI2 -->|part_of_segment| NSG1
+    NI3 -->|part_of_segment| NSG2
+    
+    %% Communication paths route through devices
+    CP1 -->|routes_through| LB1
+    CP1 -->|routes_through| ND2
+    CP2 -->|routes_through| ND2
+    CP2 -->|routes_through| ND3
+    
+    %% Routes apply to segments
+    NR1 -->|applies_to| NSG1
+    NR1 -->|applies_to| NSG2
+    NR2 -->|applies_to| NSG2
+    
+    style ND1 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
+    style ND2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style ND3 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style LB1 fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    style LB2 fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    style NSG1 fill:#ce93d8,stroke:#7b1fa2,stroke-width:2px
+    style NSG2 fill:#ce93d8,stroke:#7b1fa2,stroke-width:2px
+    style NSG3 fill:#ce93d8,stroke:#7b1fa2,stroke-width:2px
+    style NI1 fill:#ba68c8,stroke:#7b1fa2,stroke-width:2px
+    style NI2 fill:#ba68c8,stroke:#7b1fa2,stroke-width:2px
+    style NI3 fill:#ba68c8,stroke:#7b1fa2,stroke-width:2px
+    style CP1 fill:#ab47bc,stroke:#7b1fa2,stroke-width:2px
+    style CP2 fill:#ab47bc,stroke:#7b1fa2,stroke-width:2px
+    style NR1 fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px
+    style NR2 fill:#9c27b0,stroke:#7b1fa2,stroke-width:2px
+```
+
+### Layer 6: Security Layer - Internal Relationships
+
+```mermaid
+graph TB
+    subgraph "Layer 6: Security Infrastructure Layer"
+        CA1[CertificateAuthority<br/>Root CA]
+        CA2[CertificateAuthority<br/>Intermediate CA]
+        
+        CERT1[Certificate<br/>*.example.com]
+        CERT2[Certificate<br/>api.example.com]
+        CERT3[Certificate<br/>db.example.com]
+        
+        FW1[Firewall<br/>Perimeter Firewall]
+        FW2[Firewall<br/>Internal Firewall]
+        WAF1[WAF<br/>Web Application Firewall]
+        
+        SP1[SecurityPolicy<br/>Network Access Policy]
+        SP2[SecurityPolicy<br/>Data Protection Policy]
+        SP3[SecurityPolicy<br/>Encryption Policy]
+        
+        IDP1[IdentityProvider<br/>Azure AD]
+        
+        SZ1[SecurityZone<br/>DMZ]
+        SZ2[SecurityZone<br/>Internal]
+        SZ3[SecurityZone<br/>Restricted]
+    end
+    
+    %% CA hierarchy
+    CA2 -->|trusts| CA1
+    
+    %% Certificates issued by CA
+    CERT1 -->|issued_by| CA2
+    CERT2 -->|issued_by| CA2
+    CERT3 -->|issued_by| CA2
+    
+    %% Firewalls enforce policies
+    FW1 -->|enforces| SP1
+    FW2 -->|enforces| SP1
+    FW2 -->|enforces| SP2
+    WAF1 -->|enforces| SP3
+    
+    %% Firewalls protect zones
+    FW1 -->|protects| SZ1
+    FW2 -->|protects| SZ2
+    FW2 -->|protects| SZ3
+    
+    %% IDP enforces policies
+    IDP1 -->|enforces| SP1
+    IDP1 -->|uses_certificate| CERT1
+    
+    %% Security zones have policies
+    SZ1 -->|governed_by| SP1
+    SZ2 -->|governed_by| SP2
+    SZ3 -->|governed_by| SP2
+    SZ3 -->|governed_by| SP3
+    
+    style CA1 fill:#fff9c4,stroke:#f57f17,stroke-width:3px
+    style CA2 fill:#fff59d,stroke:#f57f17,stroke-width:2px
+    style CERT1 fill:#fff176,stroke:#f57f17,stroke-width:2px
+    style CERT2 fill:#fff176,stroke:#f57f17,stroke-width:2px
+    style CERT3 fill:#fff176,stroke:#f57f17,stroke-width:2px
+    style FW1 fill:#ffee58,stroke:#f57f17,stroke-width:2px
+    style FW2 fill:#ffee58,stroke:#f57f17,stroke-width:2px
+    style WAF1 fill:#ffeb3b,stroke:#f57f17,stroke-width:2px
+    style SP1 fill:#fdd835,stroke:#f57f17,stroke-width:2px
+    style SP2 fill:#fdd835,stroke:#f57f17,stroke-width:2px
+    style SP3 fill:#fdd835,stroke:#f57f17,stroke-width:2px
+    style IDP1 fill:#fbc02d,stroke:#f57f17,stroke-width:2px
+    style SZ1 fill:#f9a825,stroke:#f57f17,stroke-width:2px
+    style SZ2 fill:#f9a825,stroke:#f57f17,stroke-width:2px
+    style SZ3 fill:#f9a825,stroke:#f57f17,stroke-width:2px
+```
+
+---
+
 ## Component Relationship Diagrams
 
 This section provides detailed relationship diagrams for each major component, showing all connections to neighboring components across layers.
