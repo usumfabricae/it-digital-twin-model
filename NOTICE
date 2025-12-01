@@ -1,0 +1,30 @@
+IT Infrastructure and Application Dependency Ontology
+Copyright 2024 IT Infrastructure Ontology Contributors
+
+This product includes software developed by the IT Infrastructure Ontology Working Group.
+
+This ontology is based on and references the following industry standards and frameworks:
+
+- TOGAF (The Open Group Architecture Framework)
+- CIM (Common Information Model) - DMTF
+- ITIL (Information Technology Infrastructure Library)
+- ArchiMate - The Open Group
+- Kubernetes API - Cloud Native Computing Foundation
+- AWS, Azure, and GCP Cloud Provider APIs
+
+The ontology uses the following semantic web standards:
+
+- OWL 2 (Web Ontology Language) - W3C
+- RDF (Resource Description Framework) - W3C
+- RDFS (RDF Schema) - W3C
+- SHACL (Shapes Constraint Language) - W3C
+- SPARQL 1.1 Query Language - W3C
+
+Framework attributions and sources are documented in:
+- layer-specifications/*.md files
+- framework-analysis/*.md files
+- ontology/it-infrastructure-ontology.ttl
+
+For complete documentation, see:
+- README.md
+- .kiro/specs/it-infrastructure-ontology/README.md
